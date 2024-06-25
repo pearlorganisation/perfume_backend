@@ -18,6 +18,15 @@ const perfumeSchema = new mongoose.Schema(
       required: true,
     },
     gallery: [String],
+    purchaseLinks: {
+      type: [
+        {
+          link: String,
+          company: String,
+          linkType: Number,
+        },
+      ],
+    },
 
     mainAccords: [{ name: String, color: String, percentage: Number }],
     pyramid: {

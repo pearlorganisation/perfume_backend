@@ -1,7 +1,12 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import perfume from "../models/perfume.js";
 export const newPerfume = asyncHandler(async (req, res, next) => {
-  const newPerfume = new perfume({ ...req?.body, banner: req?.file?.path });
+  const { gallery, banner } = req?.files;
+  const newPerfume = new perfume({
+    ...req?.body,
+    banner: banner[0]?.path,
+    gallery,
+  });
   await newPerfume.save();
   res
     .status(201)

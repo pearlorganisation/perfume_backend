@@ -29,15 +29,12 @@ const perfumeSchema = new mongoose.Schema(
     },
 
     mainAccords: [{ name: String, color: String, percentage: Number }],
-    pyramid: {
-      type: [
-        {
-          topNote: [{ name: String, photo: String }],
-          middleNote: [{ name: String, photo: String }],
-          baseNote: [{ name: String, photo: String }],
-        },
-      ],
-    },
+
+    baseNote: [{ type: mongoose.Types.ObjectId, ref: "notes" }],
+
+    topNote: [{ type: mongoose.Types.ObjectId, ref: "notes" }],
+
+    middleNote: [{ type: mongoose.Types.ObjectId, ref: "notes" }],
   },
   { timestamps: true }
 );

@@ -14,6 +14,19 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
 });
 
 export const getAllPerfume = asyncHandler(async (req, res, next) => {
-  const perfumeData = await perfume.find();
+  const perfumeData = await perfume
+    .find()
+    .populate(["middleNote", "topNote", "baseNote"]);
+
   res.status(200).json({ status: true, data });
+});
+
+export const deletePerfume = asyncHandler(async (req, res, next) => {
+  const isValidId = await perfume.findByIdAndDelete(req?.params?.id);
+  if (!isValidId) {
+    return res
+      .status(400)
+      .json({ status: true, message: "No data found with given id!!" });
+  }
+  res.status(200).json({ status: true, message: "Deleted successfully!!" });
 });

@@ -10,9 +10,11 @@ const PORT = 8000 || process.env.PORT;
 
 import authRoutes from "./src/routes/auth.js";
 import perfumeRoutes from "./src/routes/perfume.js";
+import noteRoutes from "./src/routes/note.js";
 
 app.use("api/v1/auth", authRoutes);
 app.use("api/v1/perfume", perfumeRoutes);
+app.use("/api/v1/note", noteRoutes);
 
 app.listen(PORT, () => {
   connectDB();

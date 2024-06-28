@@ -13,6 +13,7 @@ import perfumeRoutes from "./src/routes/perfume.js";
 import noteRoutes from "./src/routes/note.js";
 
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/reviews");
 app.use("/api/v1/perfume", perfumeRoutes);
 app.use("/api/v1/note", noteRoutes);
 

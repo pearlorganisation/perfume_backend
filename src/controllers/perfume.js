@@ -39,7 +39,7 @@ export const deletePerfume = asyncHandler(async (req, res, next) => {
 });
 
 export const getSinglePerfume = asyncHandler(async (req, res, next) => {
-  const data = await perfume.findById(req?.params?.id);
+  const data = await perfume.findById(req?.params?.id).populate(["middleNote", "topNote", "baseNote"]);
   if (!data) {
     return res.status(400).json({
       status: false,

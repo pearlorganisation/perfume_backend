@@ -6,7 +6,9 @@ export const newNote = asyncHandler(async (req, res, next) => {
   const { name } = req?.body;
   const note = new notes({ name, image: req?.file?.path });
   await note.save();
-  res.status(201).json({ status: true, message: "Created successfully!!" });
+  res
+    .status(201)
+    .json({ status: true, message: "Created successfully!!", note });
 });
 
 export const getAllNote = asyncHandler(async (req, res, next) => {

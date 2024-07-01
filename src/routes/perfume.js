@@ -3,6 +3,7 @@ import { upload } from "../config/cloudinary.js";
 import {
   deletePerfume,
   getAllPerfume,
+  getSinglePerfume,
   newPerfume,
 } from "../controllers/perfume.js";
 const router = express.Router();
@@ -12,6 +13,6 @@ router
   .post(upload.fields([{ name: "gallery" }, { name: "banner" }]), newPerfume)
   .get(getAllPerfume);
 
-router.route("/:id").delete(deletePerfume);
+router.route("/:id").delete(deletePerfume).get(getSinglePerfume);
 
 export default router;

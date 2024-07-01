@@ -17,9 +17,7 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
     baseNote: JSON.parse(baseNote),
   });
   await newPerfume.save();
-  res
-    .status(201)
-    .json({ status: true, message: "New perfume created successfully!!" });
+  res.status(201).json({ status: true, newPerfume });
 });
 
 export const getAllPerfume = asyncHandler(async (req, res, next) => {
@@ -38,4 +36,16 @@ export const deletePerfume = asyncHandler(async (req, res, next) => {
       .json({ status: true, message: "No data found with given id!!" });
   }
   res.status(200).json({ status: true, message: "Deleted successfully!!" });
+});
+
+export const getSinglePerfume = asyncHandler(async (req, res, next) => {
+  const data = await perfume.findById(req?.params?.id);
+  if (!data) {
+    return res.status(400).json({
+      status: false,
+      message: "No perfume data found with given id!!",
+    });
+  }
+
+  res.status(200).json({ status: true, data });
 });

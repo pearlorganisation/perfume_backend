@@ -8,6 +8,24 @@ dotenv.config();
 const app = express();
 const PORT = 8000 || process.env.PORT;
 
+//CORS
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:3000",
+      "http://localhost:5174",
+      "https://perfumetrics.com",
+      "https://admin.perfumetrics.com",
+    ],
+    credentials: true,
+    methods: ["GET", "PUT", "POST", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization", "x-csrf-token"],
+    exposedHeaders: ["*", "Authorization"],
+  })
+);
+
+
 import authRoutes from "./src/routes/auth.js";
 import perfumeRoutes from "./src/routes/perfume.js";
 import noteRoutes from "./src/routes/note.js";

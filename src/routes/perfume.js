@@ -6,6 +6,7 @@ import {
   getSinglePerfume,
   newPerfume,
 } from "../controllers/perfume.js";
+
 const router = express.Router();
 
 router

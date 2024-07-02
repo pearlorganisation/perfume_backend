@@ -10,7 +10,10 @@ const router = express.Router();
 
 router
   .route("/")
-  .post(upload.fields([{ name: "gallery" }, { name: "banner" }]), newPerfume)
+  .post(
+    upload.fields([{ name: "gallery" }, { name: "banner" }, { name: "logo" }]),
+    newPerfume
+  )
   .get(getAllPerfume);
 
 router.route("/:id").delete(deletePerfume).get(getSinglePerfume);

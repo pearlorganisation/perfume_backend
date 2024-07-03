@@ -31,7 +31,12 @@ const perfumeSchema = new mongoose.Schema(
         },
       ],
     },
-
+    pros: {
+      type: [{ pros: String, likes: Number, disLikes: Number }],
+    },
+    cons: {
+      type: [{ pros: String, likes: Number, disLikes: Number }],
+    },
     mainAccords: [{ name: String, color: String, percentage: Number }],
 
     baseNote: [{ type: mongoose.Types.ObjectId, ref: "notes" }],

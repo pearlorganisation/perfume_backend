@@ -3,13 +3,15 @@ import perfume from "../models/perfume.js";
 export const newPerfume = asyncHandler(async (req, res, next) => {
   const { gallery, banner } = req?.files;
 
-  const { purchaseLinks, mainAccords, middleNote, topNote, baseNote } =
+  const { purchaseLinks, mainAccords, middleNote, topNote, baseNote, pros, cons } =
     req?.body;
 
   const newPerfume = new perfume({
     ...req?.body,
     banner: banner[0]?.path,
     gallery,
+    pros: JSON.parse(pros),
+    cons: JSON.parse(cons),
     purchaseLinks: JSON.parse(purchaseLinks),
     mainAccords: JSON.parse(mainAccords),
     middleNote: JSON.parse(middleNote),

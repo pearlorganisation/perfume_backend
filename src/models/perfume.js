@@ -21,17 +21,7 @@ const perfumeSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    gallery: [
-      {
-        fieldname: String,
-        originalname: String,
-        encoding: String,
-        mimetype: String,
-        path: String,
-        size: Number,
-        filename: String,
-      },
-    ],
+    gallery: [],
     purchaseLinks: {
       type: [
         {
@@ -41,7 +31,12 @@ const perfumeSchema = new mongoose.Schema(
         },
       ],
     },
-
+    pros: {
+      type: [{ pros: String, likes: Number, disLikes: Number }],
+    },
+    cons: {
+      type: [{ pros: String, likes: Number, disLikes: Number }],
+    },
     mainAccords: [{ name: String, color: String, percentage: Number }],
 
     baseNote: [{ type: mongoose.Types.ObjectId, ref: "notes" }],

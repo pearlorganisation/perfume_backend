@@ -3,8 +3,15 @@ import perfume from "../models/perfume.js";
 export const newPerfume = asyncHandler(async (req, res, next) => {
   const { gallery, banner, logo } = req?.files;
 
-  const { purchaseLinks, mainAccords, middleNote, topNote, baseNote, pros, cons } =
-    req?.body;
+  const {
+    purchaseLinks,
+    mainAccords,
+    middleNote,
+    topNote,
+    baseNote,
+    pros,
+    cons,
+  } = req?.body;
 
   const newPerfume = new perfume({
     ...req?.body,
@@ -38,11 +45,25 @@ export const deletePerfume = asyncHandler(async (req, res, next) => {
       .status(400)
       .json({ status: true, message: "No data found with given id!!" });
   }
-  res.status(200).json({ status: true, message: "Deleted successfully!!" });
+
+  //get all perfume data
+  const perfumeData = await perfume
+    .find()
+    .populate(["middleNote", "topNote", "baseNote"]);
+    
+  res
+    .status(200)
+    .json({
+      status: true,
+      message: "Deleted successfully!!",
+      perfumeData: perfumeData,
+    });
 });
 
 export const getSinglePerfume = asyncHandler(async (req, res, next) => {
-  const data = await perfume.findById(req?.params?.id).populate(["middleNote", "topNote", "baseNote"]);
+  const data = await perfume
+    .findById(req?.params?.id)
+    .populate(["middleNote", "topNote", "baseNote"]);
   if (!data) {
     return res.status(400).json({
       status: false,

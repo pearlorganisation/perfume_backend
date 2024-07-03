@@ -8,7 +8,7 @@ export const signup = asyncHandler(async (req, res, next) => {
   await savedData.save();
   res
     .status(201)
-    .json({ status: true, message: "New user created successfully!!" });
+    .json({ success: true, message: "New user created successfully!!" });
 });
 
 export const signin = asyncHandler(async (req, res, next) => {

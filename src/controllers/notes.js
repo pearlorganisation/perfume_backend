@@ -23,7 +23,9 @@ export const deleteNote = asyncHandler(async (req, res, next) => {
       .status(400)
       .json({ status: false, messaeg: "No note found with given id!!" });
   }
+  const data = await notes.find();
+
   res
     .status(200)
-    .json({ status: true, message: "Note deleted successfully!!" });
+    .json({ status: true, message: "Note deleted successfully!!", data: data });
 });

@@ -20,5 +20,5 @@ export const signin = asyncHandler(async (req, res, next) => {
   if (pin != isUserValid?.pin) {
     return next(new errorResponse("Invalid pin,Please try again!!", 400));
   }
-  res.status(200).json({ status: true, message: "signin successfully!!" });
+  res.status(200).json({data:isUserValid, status: true, message: "signin successfully!!" });
 });

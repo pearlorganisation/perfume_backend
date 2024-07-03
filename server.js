@@ -6,6 +6,7 @@ import connectDB from "./src/config/db.js";
 //MIDDLEWARES
 dotenv.config();
 const app = express();
+app.use(express.json())
 const PORT = 8000 || process.env.PORT;
 
 //CORS
@@ -29,12 +30,13 @@ app.use(
 import authRoutes from "./src/routes/auth.js";
 import perfumeRoutes from "./src/routes/perfume.js";
 import noteRoutes from "./src/routes/note.js";
+import { error } from "./src/middlewares/error.js";
 
 app.use("/api/v1/auth", authRoutes);
 
 app.use("/api/v1/perfume", perfumeRoutes);
 app.use("/api/v1/note", noteRoutes);
-
+app.use(error)
 app.listen(PORT, () => {
   connectDB();
   console.log(`Listening to port ${PORT}`);

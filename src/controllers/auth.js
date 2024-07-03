@@ -4,6 +4,7 @@ import errorResponse from "../utils/errorResponse.js";
 
 export const signup = asyncHandler(async (req, res, next) => {
   const savedData = new auth(req?.body);
+  console.log(req?.body)
   await savedData.save();
   res
     .status(201)

@@ -21,7 +21,7 @@ const perfumeSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    gallery: [String],
+    gallery: [],
     purchaseLinks: {
       type: [
         {

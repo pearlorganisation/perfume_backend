@@ -31,9 +31,3 @@ export const singleReview = asyncHandler(async (req, res, next) => {
   console.log(data, total);
   res.status(200).json({ status: true, data });
 });
-
-export const updateReview = asyncHandler(async (req, res, next) => {
-  const total = await reviews.countDocuments();
-  const data = await reviews.findById(req?.params?.id);
-  console.log(data, "hello data");
-});

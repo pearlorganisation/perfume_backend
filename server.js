@@ -30,6 +30,7 @@ import authRoutes from "./src/routes/auth.js";
 import reviewRoutes from "./src/routes/review.js";
 import perfumeRoutes from "./src/routes/perfume.js";
 import noteRoutes from "./src/routes/note.js";
+import newsRoutes from "./src/routes/news.js";
 import { error } from "./src/middlewares/error.js";
 
 app.use("/api/v1/auth", authRoutes);
@@ -37,6 +38,8 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/perfume", perfumeRoutes);
 app.use("/api/v1/review", reviewRoutes);
 app.use("/api/v1/note", noteRoutes);
+app.use("/api/v1/news", newsRoutes);
+
 app.use(error);
 app.listen(PORT, () => {
   connectDB();

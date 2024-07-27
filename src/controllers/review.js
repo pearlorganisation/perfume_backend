@@ -23,11 +23,170 @@ export const newPerfumeReview = asyncHandler(async (req, res, next) => {
 });
 
 export const singleReview = asyncHandler(async (req, res, next) => {
-  const total = await reviews.countDocuments();
-  const data = await reviews.findById(req?.params?.id);
-  if (!data) {
-    return next(new errorResponse("No data found with given id!", 400));
-  }
-  console.log(data, total);
+  const aggregationPipeline = [
+    {
+      $facet: {
+        reaction: [
+          { $match: { "reaction.name": { $ne: null } } },
+          {
+            $group: {
+              _id: "$reaction.name",
+              count: { $sum: 1 },
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              result: {
+                $push: {
+                  k: "$_id",
+                  v: "$count",
+                },
+              },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              reaction: { $arrayToObject: "$result" },
+            },
+          },
+        ],
+        season: [
+          { $unwind: "$season" },
+          { $match: { "season.name": { $ne: null } } },
+          {
+            $group: {
+              _id: "$season.name",
+              count: { $sum: 1 },
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              result: {
+                $push: {
+                  k: "$_id",
+                  v: "$count",
+                },
+              },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              season: { $arrayToObject: "$result" },
+            },
+          },
+        ],
+        priceValue: [
+          { $match: { priceValue: { $ne: null } } },
+          {
+            $group: {
+              _id: "$priceValue",
+              count: { $sum: 1 },
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              result: {
+                $push: {
+                  k: "$_id",
+                  v: "$count",
+                },
+              },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              priceValue: { $arrayToObject: "$result" },
+            },
+          },
+        ],
+        gender: [
+          { $match: { gender: { $ne: null } } },
+          {
+            $group: {
+              _id: "$gender",
+              count: { $sum: 1 },
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              result: {
+                $push: {
+                  k: "$_id",
+                  v: "$count",
+                },
+              },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              gender: { $arrayToObject: "$result" },
+            },
+          },
+        ],
+        sillage: [
+          { $match: { sillage: { $ne: null } } },
+          {
+            $group: {
+              _id: "$sillage",
+              count: { $sum: 1 },
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              result: {
+                $push: {
+                  k: "$_id",
+                  v: "$count",
+                },
+              },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              sillage: { $arrayToObject: "$result" },
+            },
+          },
+        ],
+        longevity: [
+          { $match: { longevity: { $ne: null } } },
+          {
+            $group: {
+              _id: "$longevity",
+              count: { $sum: 1 },
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              result: {
+                $push: {
+                  k: "$_id",
+                  v: "$count",
+                },
+              },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              longevity: { $arrayToObject: "$result" },
+            },
+          },
+        ],
+      },
+    },
+  ];
+
+  const data = await reviews.aggregate(aggregationPipeline).exec();
   res.status(200).json({ status: true, data });
 });

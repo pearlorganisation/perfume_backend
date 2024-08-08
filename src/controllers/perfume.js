@@ -50,14 +50,12 @@ export const deletePerfume = asyncHandler(async (req, res, next) => {
   const perfumeData = await perfume
     .find()
     .populate(["middleNote", "topNote", "baseNote"]);
-    
-  res
-    .status(200)
-    .json({
-      status: true,
-      message: "Deleted successfully!!",
-      perfumeData: perfumeData,
-    });
+
+  res.status(200).json({
+    status: true,
+    message: "Deleted successfully!!",
+    perfumeData: perfumeData,
+  });
 });
 
 export const getSinglePerfume = asyncHandler(async (req, res, next) => {

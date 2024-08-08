@@ -11,6 +11,15 @@ const reviewsSchema = new mongoose.Schema(
         required: true,
       },
     },
+    likes: {
+      type: Number,
+      default: 0,
+    },
+    disLikes: {
+      type: Number,
+      default: 0,
+    },
+
     season: [
       {
         name: {

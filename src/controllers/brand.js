@@ -5,7 +5,10 @@ import errorResponse from "../utils/errorResponse.js";
 export const newBrand = asyncHandler(async (req, res, next) => {
   const newBrand = new brand(req?.body);
   await newBrand.save();
-  res.status(201).json({ status: true, message: "   " });
+  const data = await brand.find();
+  res
+    .status(201)
+    .json({ status: true, message: "Created successfully!!", data });
 });
 
 export const getAllBrands = asyncHandler(async (req, res, next) => {
@@ -27,6 +30,6 @@ export const updateBrand = asyncHandler(async (req, res, next) => {
   if (!isValidId) {
     return res
       .status(400)
-      .json({ status: true, message: "brand updated successfully!1" });
+      .json({ status: true, message: "brand updated successfully!!" });
   }
 });

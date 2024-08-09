@@ -6,9 +6,7 @@ export const newBrand = asyncHandler(async (req, res, next) => {
   const newBrand = new brand(req?.body);
   await newBrand.save();
   const data = await brand.find();
-  res
-    .status(201)
-    .json({ status: true, message: "Created successfully!!", data });
+  res.status(201).json({ status: true, message: "Created successfully!!" });
 });
 
 export const getAllBrands = asyncHandler(async (req, res, next) => {
@@ -22,11 +20,9 @@ export const deleteBrand = asyncHandler(async (req, res, next) => {
   if (!isValidId) {
     return res
       .status(400)
-      .json({ status: true, message: "No data found with given id!!", data });
+      .json({ status: true, message: "No data found with given id!!" });
   }
-  res
-    .status(200)
-    .json({ status: true, data, message: "Deleted Successfully!!" });
+  res.status(200).json({ status: true, message: "Deleted Successfully!!" });
 });
 
 export const updateBrand = asyncHandler(async (req, res, next) => {
@@ -35,7 +31,7 @@ export const updateBrand = asyncHandler(async (req, res, next) => {
   if (!isValidId) {
     return res
       .status(400)
-      .json({ status: true, message: "brand updated successfully!!", data });
+      .json({ status: true, message: "brand updated successfully!!" });
   }
   res.status(200).json({
     status: true,

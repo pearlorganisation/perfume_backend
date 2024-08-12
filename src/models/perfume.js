@@ -28,6 +28,7 @@ const perfumeSchema = new mongoose.Schema(
           link: String,
           company: String,
           linkType: Number,
+          logo:String,
         },
       ],
     },

@@ -22,3 +22,8 @@ export const signin = asyncHandler(async (req, res, next) => {
   }
   res.status(200).json({data:isUserValid, status: true, message: "signin successfully!!" });
 });
+
+export const getAllUsers = asyncHandler(async (req, res, next) => {
+  const allUsers = await auth.find();
+  res.status(200).json({data:allUsers, status: true, message: "Success Fetched!!" });
+});

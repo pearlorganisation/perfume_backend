@@ -2,12 +2,14 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./src/config/db.js";
+import morgan from "morgan";
 
 //MIDDLEWARES
 dotenv.config();
 const app = express();
 app.use(express.json());
-const PORT = 8000 || process.env.PORT;
+app.use(morgan("dev"));
+const PORT = process.env.PORT || 8000;
 
 //CORS
 app.use(

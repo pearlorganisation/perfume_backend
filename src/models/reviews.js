@@ -4,10 +4,34 @@ const reviewsSchema = new mongoose.Schema(
   {
     perfume: { type: mongoose.Types.ObjectId, ref: "perfume" },
     reviewBy: { type: mongoose.Types.ObjectId, ref: "auth" },
-    reaction: { name: String, rating: Number },
-    season: [{ name: String, rating: Number }],
+    reaction: {
+      name: {
+        type: String,
+        enum: ["Worst", "Good", "Not Good", "Fine", "Very Good"],
+        required: true,
+      },
+    },
+    likes: {
+      type: Number,
+      default: 0,
+    },
+    disLikes: {
+      type: Number,
+      default: 0,
+    },
+
+    season: [
+      {
+        name: {
+          type: String,
+          enum: ["Spring", "Summer", "Fall", "Winter", "day", "Night"],
+          required: true,
+        },
+      },
+    ],
     notes: [{ type: mongoose.Types.ObjectId, ref: "notes" }],
-    longetivity: {
+
+    longevity: {
       type: String,
       enum: [
         "no vote",
@@ -18,6 +42,7 @@ const reviewsSchema = new mongoose.Schema(
         "eternal",
       ],
     },
+    // longetivity: {},
     sillage: {
       type: String,
       enum: ["no vote", "intimate", "moderate", "strong", "enormous"],
@@ -30,17 +55,25 @@ const reviewsSchema = new mongoose.Schema(
       type: String,
       enum: ["way overpriced", "overpriced", "ok", "good value", "great value"],
     },
-    review: {
-      type: [{ review: String, gallery: [String] }],
-    },
-    pros: {
-      type: [{ pros: String, likes: Number, disLikes: Number }],
-    },
-    cons: {
-      type: [{ pros: String, likes: Number, disLikes: Number }],
-    },
+    review: [
+      {
+        review: String,
+        gallery: [String],
+      },
+    ],
+    pros: [
+      {
+        pros: mongoose.Types.ObjectId,
+        isLiked: Boolean,
+      },
+    ],
+    cons: [
+      {
+        cons: mongoose.Types.ObjectId,
+        isLiked: Boolean,
+      },
+    ],
   },
-
   { timestamps: true }
 );
 

@@ -9,6 +9,10 @@ const perfumeSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    brand: {
+      type: mongoose.Types.ObjectId,
+      ref: "brand",
+    },
     banner: {
       type: String,
       required: true,

@@ -42,6 +42,7 @@ const reviewsSchema = new mongoose.Schema(
         "eternal",
       ],
     },
+    // longetivity: {},
     sillage: {
       type: String,
       enum: ["no vote", "intimate", "moderate", "strong", "enormous"],

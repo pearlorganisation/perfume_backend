@@ -22,6 +22,34 @@ export const newPerfumeReview = asyncHandler(async (req, res, next) => {
     .json({ status: true, message: "review submitted successfully" });
 });
 
+export const updatePefumeReview = asyncHandler(async (req, res, next) => {
+  const { id } = req?.params;
+  const { likes, disLikes } = req?.body;
+  const existingPerfume = await reviews.findById(id);
+  if (!existingPerfume) {
+    return res
+      .status(400)
+      .json({ status: true, message: "No perfume data found with given id!!" });
+  }
+
+  const { notes, season, review, cons, pros } = req?.body;
+  const { reviewGallery } = req?.files;
+
+  const newReview = await reviews.findByIdAndUpdate(id, {
+    ...req?.body,
+
+    likes: likes ? existingPerfume?.likes,
+    notes: notes ? JSON.parse(notes) : "",
+    disLikes:disLikes ?existingPerfume?.disLikes++ ,
+    pros: pros ? JSON.parse(pros) : "",
+    cons: cons ? JSON.parse(cons) : "",
+    season: season ? JSON.parse(season) : "",
+    review: review
+      ? review.push({ review: JSON.parse(review), gallery: reviewGallery })
+      : "",
+  });
+});
+
 export const singleReview = asyncHandler(async (req, res, next) => {
   const aggregationPipeline = [
     {

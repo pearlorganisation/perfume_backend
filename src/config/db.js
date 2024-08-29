@@ -3,8 +3,6 @@ import chalk from "chalk";
 const connectDB = async () => {
   try {
     const options = {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
       serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
       socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
     };

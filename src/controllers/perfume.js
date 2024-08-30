@@ -9,6 +9,7 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
     middleNote,
     topNote,
     baseNote,
+    ratingFragrams,
     pros,
     cons,
   } = req?.body;
@@ -21,6 +22,7 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
     cons: JSON.parse(cons),
     logo: logo[0].path,
     purchaseLinks: JSON.parse(purchaseLinks),
+    ratingFragrams: JSON.parse(ratingFragrams),
     mainAccords: JSON.parse(mainAccords),
     middleNote: JSON.parse(middleNote),
     topNote: JSON.parse(topNote),

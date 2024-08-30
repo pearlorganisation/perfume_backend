@@ -1,4 +1,44 @@
 import mongoose from "mongoose";
+
+const ratingFragramSchema = new mongoose.Schema({
+  longitivity: {
+    min: 0,
+    max: 10,
+    type: Number,
+    required: [true, "Required Field"],
+  },
+  sillage: {
+    min: 0,
+    max: 10,
+    type: Number,
+    required: [true, "Required Field"],
+  },
+  compliment: {
+    min: 0,
+    max: 10,
+    type: Number,
+    required: [true, "Required Field"],
+  },
+  overall: {
+    min: 0,
+    max: 10,
+    type: Number,
+    required: [true, "Required Field"],
+  },
+  pricing: {
+    type: Number,
+    min: 0,
+    max: 10,
+    required: [true, "Required Field"],
+  },
+  gender: {
+    type: String,
+    required: [true, "Required Field"],
+    maxlength: 1,
+    enum: ["M", "F", "O"],
+  },
+});
+
 const perfumeSchema = new mongoose.Schema(
   {
     perfume: {
@@ -32,7 +72,7 @@ const perfumeSchema = new mongoose.Schema(
           link: String,
           company: String,
           linkType: Number,
-          logo:String,
+          logo: String,
         },
       ],
     },
@@ -49,6 +89,10 @@ const perfumeSchema = new mongoose.Schema(
     topNote: [{ type: mongoose.Types.ObjectId, ref: "notes" }],
 
     middleNote: [{ type: mongoose.Types.ObjectId, ref: "notes" }],
+
+    ratingFragrams: {
+      type: ratingFragramSchema,
+    },
   },
   { timestamps: true }
 );

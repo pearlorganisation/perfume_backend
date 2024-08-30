@@ -3,23 +3,31 @@ import errorResponse from "../utils/errorResponse.js";
 import reviews from "../models/reviews.js";
 
 export const newPerfumeReview = asyncHandler(async (req, res, next) => {
-  const { notes, season, review, cons, pros } = req?.body;
-  const { reviewGallery } = req?.files;
+  const { notes, season,reaction, review, cons, pros ,sillage,longevity,gender,priceValue } = req?.body;
+  // const { reviewGallery } = req?.files;
 
-  const newReview = new review({
+   console.log("im in controller")
+
+  const newReview = new reviews({
     ...req?.body,
-    notes: notes ? JSON.parse(notes) : "",
-    pros: pros ? JSON.parse(pros) : "",
-    cons: cons ? JSON.parse(cons) : "",
-    season: season ? JSON.parse(season) : "",
-    review: review
-      ? review.push({ review: JSON.parse(review), gallery: reviewGallery })
-      : "",
+    notes: notes ? JSON.parse(notes) : "[]",
+    // pros: pros ? JSON.parse(pros) : "[]",
+    // cons: cons ? JSON.parse(cons) : "[]",
+    season: season || "",
+    longevity: longevity || "",
+    sillage: sillage || "",
+    gender: gender || "",
+    priceValue: priceValue || "",
+    reaction: reaction || "",
+    // review: review
+    //   ? review.push({ review: JSON.parse(review), gallery: reviewGallery })
+    //   : "",
   });
+  await newReview.save();
 
   res
     .status(201)
-    .json({ status: true, message: "review submitted successfully" });
+    .json({ status: true, message: "review submitted successfully",data: newReview});
 });
 
 export const updatePefumeReview = asyncHandler(async (req, res, next) => {
@@ -51,6 +59,7 @@ export const updatePefumeReview = asyncHandler(async (req, res, next) => {
 });
 
 export const singleReview = asyncHandler(async (req, res, next) => {
+
   const aggregationPipeline = [
     {
       $facet: {

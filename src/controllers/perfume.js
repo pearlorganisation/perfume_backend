@@ -1,5 +1,6 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import perfume from "../models/perfume.js";
+import { ProductReviewCount } from "../models/productReviewCount.js";
 export const newPerfume = asyncHandler(async (req, res, next) => {
   const { gallery, banner, logo } = req?.files;
 
@@ -49,14 +50,23 @@ export const deletePerfume = asyncHandler(async (req, res, next) => {
   }
 
   //get all perfume data
-  const perfumeData = await perfume
-    .find()
-    .populate(["middleNote", "topNote", "baseNote"]);
+  // const perfumeData = await perfume
+  //   .find()
+  //   .populate(["middleNote", "topNote", "baseNote"]);
+
+  const deleteReviewCounts = await ProductReviewCount.findByIdAndDelete(
+    isValidId.productReviewCoundId
+  );
+  console.log(
+    "THIS is deleted review count ",
+    deleteReviewCounts,
+    "gjsgdjsa",
+    isValidId
+  );
 
   res.status(200).json({
     status: true,
     message: "Deleted successfully!!",
-    perfumeData: perfumeData,
   });
 });
 

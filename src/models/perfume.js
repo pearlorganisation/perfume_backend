@@ -39,6 +39,7 @@ const ratingFragramSchema = new mongoose.Schema({
   },
 });
 
+import { ProductReviewCount } from "./productReviewCount.js";
 const perfumeSchema = new mongoose.Schema(
   {
     perfume: {
@@ -55,7 +56,7 @@ const perfumeSchema = new mongoose.Schema(
     },
     banner: {
       type: String,
-      required: true,
+      // required: true,
     },
     details: {
       type: String,
@@ -78,9 +79,11 @@ const perfumeSchema = new mongoose.Schema(
     },
     pros: {
       type: [{ pros: String, likes: Number, disLikes: Number }],
+      type: [{}],
     },
     cons: {
       type: [{ pros: String, likes: Number, disLikes: Number }],
+      type: [{}],
     },
     mainAccords: [{ name: String, color: String, percentage: Number }],
 
@@ -93,8 +96,32 @@ const perfumeSchema = new mongoose.Schema(
     ratingFragrams: {
       type: ratingFragramSchema,
     },
+    productReviewCoundId: {
+      type: mongoose.Types.ObjectId,
+    },
   },
   { timestamps: true }
 );
+
+perfumeSchema.pre("save", async function (next) {
+  if (this.isNew) {
+    try {
+      // Create a new ProductReviewCount document
+      const newCount = await ProductReviewCount.create({
+        totalVotes: 0,
+        productId: this._id,
+      });
+
+      // Assign the _id of the new ProductReviewCount document to productReviewCoundId
+      this.productReviewCoundId = newCount._id;
+
+      next(); // Proceed with saving the perfume document
+    } catch (error) {
+      next(error); // Handle errors
+    }
+  } else {
+    next(); // Skip if document is not new (for updates)
+  }
+});
 
 export default mongoose.model("perfume", perfumeSchema, "perfume");

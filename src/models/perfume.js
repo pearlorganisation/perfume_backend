@@ -8,16 +8,16 @@ const perfumeSchema = new mongoose.Schema(
     },
     logo: {
       type: String,
+      required: true,
+    },
+    brand: {
+      type: mongoose.Types.ObjectId,
+      ref: "brand",
+    },
+    banner: {
+      type: String,
       // required: true,
     },
-    // brand: {
-    //   type: mongoose.Types.ObjectId,
-    //   ref: "brand",
-    // },
-    // banner: {
-    //   type: String,
-    //   // required: true,
-    // },
     details: {
       type: String,
       required: true,
@@ -30,19 +30,19 @@ const perfumeSchema = new mongoose.Schema(
     purchaseLinks: {
       type: [
         {
-          // link: String,
-          // company: String,
-          // linkType: Number,
-          // logo:String,
+          link: String,
+          company: String,
+          linkType: Number,
+          logo:String,
         },
       ],
     },
     pros: {
-      // type: [{ pros: String, likes: Number, disLikes: Number }],
+      type: [{ pros: String, likes: Number, disLikes: Number }],
       type:[{}]
     },
     cons: {
-      // type: [{ pros: String, likes: Number, disLikes: Number }],
+      type: [{ pros: String, likes: Number, disLikes: Number }],
       type:[{}]
     },
     mainAccords: [{ name: String, color: String, percentage: Number }],

@@ -56,24 +56,24 @@ const reviewsSchema = new mongoose.Schema(
     productReviewCount:{
       type:mongoose.Types.ObjectId,ref:"ProductReviewCount"
     },
-    // review: [
-    //   {
-    //     review: String,
-    //     gallery: [String],
-    //   },
-    // ],
-    // pros: [
-    //   {
-    //     pros: mongoose.Types.ObjectId,
-    //     isLiked: Boolean,
-    //   },
-    // ],
-    // cons: [
-    //   {
-    //     cons: mongoose.Types.ObjectId,
-    //     isLiked: Boolean,
-    //   },
-    // ],
+    review: [
+      {
+        review: String,
+        gallery: [String],
+      },
+    ],
+    pros: [
+      {
+        pros: mongoose.Types.ObjectId,
+        isLiked: Boolean,
+      },
+    ],
+    cons: [
+      {
+        cons: mongoose.Types.ObjectId,
+        isLiked: Boolean,
+      },
+    ],
   },
   { timestamps: true }
 );

@@ -7,12 +7,11 @@ const reviewsSchema = new mongoose.Schema(
     perfume: { type: mongoose.Types.ObjectId, ref: "perfume" },
     reviewBy: { type: mongoose.Types.ObjectId, ref: "auth" },
     reaction: {
-      name: {
         type: String,
         enum: ["worst", "good", "notGood", "fine", "veryGood"],
-        // required: true,
-        default:"good"
-      },
+        required: true,
+        // default:"good"
+      
     },
     likes: {
       type: Number,
@@ -90,6 +89,7 @@ reviewsSchema.pre('save', async function (next) {
         this.productReviewCount = perfumeDoc.productReviewCoundId;
          console.log(this,"shasshaj");
         this.previousValues = {
+          reaction:perfumeDoc.reaction,
           sillage: perfumeDoc.sillage,
           longevity: perfumeDoc.longevity,
           gender: perfumeDoc.gender,
@@ -105,8 +105,7 @@ reviewsSchema.pre('save', async function (next) {
     const perfumeDoc = await perfume.findById(this.perfume).exec();
     if (perfumeDoc) {
       console.log(this,"shasshaj","perfuyfufh",perfumeDoc);
-
-      this.totalVotes++;
+      
       this.productReviewCount = perfumeDoc.productReviewCoundId;
 
     }
@@ -131,6 +130,7 @@ reviewsSchema.post('save', async function (doc) {
       if (doc.gender) updates[`gender.${doc.gender}`] = 1;
       if (doc.priceValue) updates[`priceValue.${doc.priceValue}`] = 1;
       if (doc.season) updates[`season.${doc.season}`] = 1;
+      if (doc.reaction) updates[`reaction.${doc.reaction}`] = 1;
     } else {
       // Update: Adjust counts based on previous and new values
       if (previousValues.sillage !== doc.sillage) {
@@ -153,6 +153,10 @@ reviewsSchema.post('save', async function (doc) {
         if (previousValues.season) updates[`season.${previousValues.season}`] = -1;
         if (doc.season) updates[`season.${doc.season}`] = 1;
       }
+      if (previousValues.reaction !== doc.reaction) {
+        if (previousValues.reaction) updates[`reaction.${previousValues.reaction}`] = -1;
+        if (doc.reaction) updates[`reaction.${doc.reaction}`] = 1;
+      }
     }
 
     // Apply updates to ProductReviewCount
@@ -160,10 +164,7 @@ reviewsSchema.post('save', async function (doc) {
       console.log("this is product review count",doc.productReviewCount)
       const data = await ProductReviewCount.findOneAndUpdate(
         { _id: doc.productReviewCount },
-        { $inc: updates },
-        {
-          $totalVotes:doc.totalVotes
-        },
+        { $inc: updates,totalVotes:1 },
         {upsert: true, new: true, setDefaultsOnInsert: true} 
       );
 

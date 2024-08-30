@@ -5,6 +5,13 @@ const productReviewCountSchema = new mongoose.Schema({
     productId: {
         type: mongoose.Types.ObjectId
     },
+    reaction:{
+        worst:{ type: Number, default: 0 },
+        good:{ type: Number, default: 0 },
+        notGood:{ type: Number, default: 0 },
+        fine:{ type: Number, default: 0 },
+        veryGood:{ type: Number, default: 0 },
+    },
     sillage: {
         noVote: { type: Number, default: 0 },
         intimate: { type: Number, default: 0 },
@@ -48,11 +55,6 @@ const productReviewCountSchema = new mongoose.Schema({
 
 }, {
     timestamps: true
-
-
-
-
-
 });
 
 export const ProductReviewCount = mongoose.model('ProductReviewCount', productReviewCountSchema);

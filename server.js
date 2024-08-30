@@ -35,10 +35,12 @@ import noteRoutes from "./src/routes/note.js";
 import brandRoutes from "./src/routes/brands.js";
 import newsRoutes from "./src/routes/news.js";
 import { error } from "./src/middlewares/error.js";
+import { topRatedPerfumeRouter } from "./src/routes/topRatedPerfume.js";
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/brand", brandRoutes);
 app.use("/api/v1/perfume", perfumeRoutes);
+app.use("/api/v1/topRatedPerfume", topRatedPerfumeRouter);
 app.use("/api/v1/review", reviewRoutes);
 app.use("/api/v1/note", noteRoutes);
 app.use("/api/v1/news", newsRoutes);

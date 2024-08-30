@@ -3,7 +3,7 @@ import errorResponse from "../utils/errorResponse.js";
 import reviews from "../models/reviews.js";
 
 export const newPerfumeReview = asyncHandler(async (req, res, next) => {
-  const { notes, season, review, cons, pros ,sillage,longevity,gender,priceValue } = req?.body;
+  const { notes, season,reaction, review, cons, pros ,sillage,longevity,gender,priceValue } = req?.body;
   // const { reviewGallery } = req?.files;
 
    console.log("im in controller")
@@ -13,11 +13,12 @@ export const newPerfumeReview = asyncHandler(async (req, res, next) => {
     notes: notes ? JSON.parse(notes) : "[]",
     // pros: pros ? JSON.parse(pros) : "[]",
     // cons: cons ? JSON.parse(cons) : "[]",
-    season: season ? JSON.parse(season) : "",
-    longevity: longevity ? JSON.parse(longevity) : "",
-    sillage: sillage ? JSON.parse(sillage) : "",
-    gender: gender ? JSON.parse(gender) : "",
-    priceValue: priceValue ? JSON.parse(priceValue) : "",
+    season: season || "",
+    longevity: longevity || "",
+    sillage: sillage || "",
+    gender: gender || "",
+    priceValue: priceValue || "",
+    reaction: reaction || "",
     // review: review
     //   ? review.push({ review: JSON.parse(review), gallery: reviewGallery })
     //   : "",

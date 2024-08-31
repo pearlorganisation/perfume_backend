@@ -1,12 +1,13 @@
 import express from "express";
 import { upload } from "../config/cloudinary.js";
-import { newPerfumeReview, singleReview } from "../controllers/review.js";
+import { getAllReview, newPerfumeReview } from "../controllers/review.js";
 const router = express.Router();
 
 router
   .route("/")
-  .get(singleReview)
-  .post(upload.array("reviewGallery"), newPerfumeReview);
-router.route("/:id").get(singleReview);
+  .post(upload.array("commentGallery"), newPerfumeReview);
+router.route("/:id")
+.get(getAllReview);
+;
 
-export default router;
+export const reviewRouter = router;

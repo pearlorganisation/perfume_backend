@@ -3,27 +3,27 @@ import errorResponse from "../utils/errorResponse.js";
 import reviews from "../models/reviews.js";
 
 export const newPerfumeReview = asyncHandler(async (req, res, next) => {
-  const { notes, season,reaction, review, cons, pros ,sillage,longevity,gender,priceValue } = req?.body;
-  // const { reviewGallery } = req?.files;
-
-   console.log("im in controller")
+  const { notes, season,reaction, commentsFields,sillage,longevity,gender,priceValue } = req?.body;
+  const { commentGallery } = req?.files;
+  const commentData = commentsFields ? JSON.parse(commentsFields) : {};
+  
+   console.log("im in controller");
 
   const newReview = new reviews({
     ...req?.body,
     notes: notes ? JSON.parse(notes) : "[]",
-    // pros: pros ? JSON.parse(pros) : "[]",
-    // cons: cons ? JSON.parse(cons) : "[]",
     season: season || "",
     longevity: longevity || "",
     sillage: sillage || "",
     gender: gender || "",
     priceValue: priceValue || "",
     reaction: reaction || "",
-    // review: review
-    //   ? review.push({ review: JSON.parse(review), gallery: reviewGallery })
-    //   : "",
+    commentsFields:commentData,
+    commentGallery:commentGallery || []
   });
-  await newReview.save();
+
+
+   await newReview.save();
 
   res
     .status(201)
@@ -58,172 +58,348 @@ export const updatePefumeReview = asyncHandler(async (req, res, next) => {
   });
 });
 
-export const singleReview = asyncHandler(async (req, res, next) => {
+// export const singleReview = asyncHandler(async (req, res, next) => {
 
-  const aggregationPipeline = [
-    {
-      $facet: {
-        reaction: [
-          { $match: { "reaction.name": { $ne: null } } },
-          {
-            $group: {
-              _id: "$reaction.name",
-              count: { $sum: 1 },
-            },
-          },
-          {
-            $group: {
-              _id: null,
-              result: {
-                $push: {
-                  k: "$_id",
-                  v: "$count",
-                },
-              },
-            },
-          },
-          {
-            $project: {
-              _id: 0,
-              reaction: { $arrayToObject: "$result" },
-            },
-          },
-        ],
-        season: [
-          { $unwind: "$season" },
-          { $match: { "season.name": { $ne: null } } },
-          {
-            $group: {
-              _id: "$season.name",
-              count: { $sum: 1 },
-            },
-          },
-          {
-            $group: {
-              _id: null,
-              result: {
-                $push: {
-                  k: "$_id",
-                  v: "$count",
-                },
-              },
-            },
-          },
-          {
-            $project: {
-              _id: 0,
-              season: { $arrayToObject: "$result" },
-            },
-          },
-        ],
-        priceValue: [
-          { $match: { priceValue: { $ne: null } } },
-          {
-            $group: {
-              _id: "$priceValue",
-              count: { $sum: 1 },
-            },
-          },
-          {
-            $group: {
-              _id: null,
-              result: {
-                $push: {
-                  k: "$_id",
-                  v: "$count",
-                },
-              },
-            },
-          },
-          {
-            $project: {
-              _id: 0,
-              priceValue: { $arrayToObject: "$result" },
-            },
-          },
-        ],
-        gender: [
-          { $match: { gender: { $ne: null } } },
-          {
-            $group: {
-              _id: "$gender",
-              count: { $sum: 1 },
-            },
-          },
-          {
-            $group: {
-              _id: null,
-              result: {
-                $push: {
-                  k: "$_id",
-                  v: "$count",
-                },
-              },
-            },
-          },
-          {
-            $project: {
-              _id: 0,
-              gender: { $arrayToObject: "$result" },
-            },
-          },
-        ],
-        sillage: [
-          { $match: { sillage: { $ne: null } } },
-          {
-            $group: {
-              _id: "$sillage",
-              count: { $sum: 1 },
-            },
-          },
-          {
-            $group: {
-              _id: null,
-              result: {
-                $push: {
-                  k: "$_id",
-                  v: "$count",
-                },
-              },
-            },
-          },
-          {
-            $project: {
-              _id: 0,
-              sillage: { $arrayToObject: "$result" },
-            },
-          },
-        ],
-        longevity: [
-          { $match: { longevity: { $ne: null } } },
-          {
-            $group: {
-              _id: "$longevity",
-              count: { $sum: 1 },
-            },
-          },
-          {
-            $group: {
-              _id: null,
-              result: {
-                $push: {
-                  k: "$_id",
-                  v: "$count",
-                },
-              },
-            },
-          },
-          {
-            $project: {
-              _id: 0,
-              longevity: { $arrayToObject: "$result" },
-            },
-          },
-        ],
-      },
-    },
-  ];
+//   const aggregationPipeline = [
+//     {
+//       $facet: {
+//         reaction: [
+//           { $match: { "reaction.name": { $ne: null } } },
+//           {
+//             $group: {
+//               _id: "$reaction.name",
+//               count: { $sum: 1 },
+//             },
+//           },
+//           {
+//             $group: {
+//               _id: null,
+//               result: {
+//                 $push: {
+//                   k: "$_id",
+//                   v: "$count",
+//                 },
+//               },
+//             },
+//           },
+//           {
+//             $project: {
+//               _id: 0,
+//               reaction: { $arrayToObject: "$result" },
+//             },
+//           },
+//         ],
+//         season: [
+//           { $unwind: "$season" },
+//           { $match: { "season.name": { $ne: null } } },
+//           {
+//             $group: {
+//               _id: "$season.name",
+//               count: { $sum: 1 },
+//             },
+//           },
+//           {
+//             $group: {
+//               _id: null,
+//               result: {
+//                 $push: {
+//                   k: "$_id",
+//                   v: "$count",
+//                 },
+//               },
+//             },
+//           },
+//           {
+//             $project: {
+//               _id: 0,
+//               season: { $arrayToObject: "$result" },
+//             },
+//           },
+//         ],
+//         priceValue: [
+//           { $match: { priceValue: { $ne: null } } },
+//           {
+//             $group: {
+//               _id: "$priceValue",
+//               count: { $sum: 1 },
+//             },
+//           },
+//           {
+//             $group: {
+//               _id: null,
+//               result: {
+//                 $push: {
+//                   k: "$_id",
+//                   v: "$count",
+//                 },
+//               },
+//             },
+//           },
+//           {
+//             $project: {
+//               _id: 0,
+//               priceValue: { $arrayToObject: "$result" },
+//             },
+//           },
+//         ],
+//         gender: [
+//           { $match: { gender: { $ne: null } } },
+//           {
+//             $group: {
+//               _id: "$gender",
+//               count: { $sum: 1 },
+//             },
+//           },
+//           {
+//             $group: {
+//               _id: null,
+//               result: {
+//                 $push: {
+//                   k: "$_id",
+//                   v: "$count",
+//                 },
+//               },
+//             },
+//           },
+//           {
+//             $project: {
+//               _id: 0,
+//               gender: { $arrayToObject: "$result" },
+//             },
+//           },
+//         ],
+//         sillage: [
+//           { $match: { sillage: { $ne: null } } },
+//           {
+//             $group: {
+//               _id: "$sillage",
+//               count: { $sum: 1 },
+//             },
+//           },
+//           {
+//             $group: {
+//               _id: null,
+//               result: {
+//                 $push: {
+//                   k: "$_id",
+//                   v: "$count",
+//                 },
+//               },
+//             },
+//           },
+//           {
+//             $project: {
+//               _id: 0,
+//               sillage: { $arrayToObject: "$result" },
+//             },
+//           },
+//         ],
+//         longevity: [
+//           { $match: { longevity: { $ne: null } } },
+//           {
+//             $group: {
+//               _id: "$longevity",
+//               count: { $sum: 1 },
+//             },
+//           },
+//           {
+//             $group: {
+//               _id: null,
+//               result: {
+//                 $push: {
+//                   k: "$_id",
+//                   v: "$count",
+//                 },
+//               },
+//             },
+//           },
+//           {
+//             $project: {
+//               _id: 0,
+//               longevity: { $arrayToObject: "$result" },
+//             },
+//           },
+//         ],
+//       },
+//     },
+//   ];
 
-  const data = await reviews.aggregate(aggregationPipeline).exec();
-  res.status(200).json({ status: true, data });
+//   const data = await reviews.aggregate(aggregationPipeline).exec();
+//   res.status(200).json({ status: true, data });
+// });
+
+
+export const getAllReview = asyncHandler(async (req, res, next) => {
+
+  // const aggregationPipeline = [
+  //   {
+  //     $facet: {
+  //       reaction: [
+  //         { $match: { "reaction.name": { $ne: null } } },
+  //         {
+  //           $group: {
+  //             _id: "$reaction.name",
+  //             count: { $sum: 1 },
+  //           },
+  //         },
+  //         {
+  //           $group: {
+  //             _id: null,
+  //             result: {
+  //               $push: {
+  //                 k: "$_id",
+  //                 v: "$count",
+  //               },
+  //             },
+  //           },
+  //         },
+  //         {
+  //           $project: {
+  //             _id: 0,
+  //             reaction: { $arrayToObject: "$result" },
+  //           },
+  //         },
+  //       ],
+  //       season: [
+  //         { $unwind: "$season" },
+  //         { $match: { "season.name": { $ne: null } } },
+  //         {
+  //           $group: {
+  //             _id: "$season.name",
+  //             count: { $sum: 1 },
+  //           },
+  //         },
+  //         {
+  //           $group: {
+  //             _id: null,
+  //             result: {
+  //               $push: {
+  //                 k: "$_id",
+  //                 v: "$count",
+  //               },
+  //             },
+  //           },
+  //         },
+  //         {
+  //           $project: {
+  //             _id: 0,
+  //             season: { $arrayToObject: "$result" },
+  //           },
+  //         },
+  //       ],
+  //       priceValue: [
+  //         { $match: { priceValue: { $ne: null } } },
+  //         {
+  //           $group: {
+  //             _id: "$priceValue",
+  //             count: { $sum: 1 },
+  //           },
+  //         },
+  //         {
+  //           $group: {
+  //             _id: null,
+  //             result: {
+  //               $push: {
+  //                 k: "$_id",
+  //                 v: "$count",
+  //               },
+  //             },
+  //           },
+  //         },
+  //         {
+  //           $project: {
+  //             _id: 0,
+  //             priceValue: { $arrayToObject: "$result" },
+  //           },
+  //         },
+  //       ],
+  //       gender: [
+  //         { $match: { gender: { $ne: null } } },
+  //         {
+  //           $group: {
+  //             _id: "$gender",
+  //             count: { $sum: 1 },
+  //           },
+  //         },
+  //         {
+  //           $group: {
+  //             _id: null,
+  //             result: {
+  //               $push: {
+  //                 k: "$_id",
+  //                 v: "$count",
+  //               },
+  //             },
+  //           },
+  //         },
+  //         {
+  //           $project: {
+  //             _id: 0,
+  //             gender: { $arrayToObject: "$result" },
+  //           },
+  //         },
+  //       ],
+  //       sillage: [
+  //         { $match: { sillage: { $ne: null } } },
+  //         {
+  //           $group: {
+  //             _id: "$sillage",
+  //             count: { $sum: 1 },
+  //           },
+  //         },
+  //         {
+  //           $group: {
+  //             _id: null,
+  //             result: {
+  //               $push: {
+  //                 k: "$_id",
+  //                 v: "$count",
+  //               },
+  //             },
+  //           },
+  //         },
+  //         {
+  //           $project: {
+  //             _id: 0,
+  //             sillage: { $arrayToObject: "$result" },
+  //           },
+  //         },
+  //       ],
+  //       longevity: [
+  //         { $match: { longevity: { $ne: null } } },
+  //         {
+  //           $group: {
+  //             _id: "$longevity",
+  //             count: { $sum: 1 },
+  //           },
+  //         },
+  //         {
+  //           $group: {
+  //             _id: null,
+  //             result: {
+  //               $push: {
+  //                 k: "$_id",
+  //                 v: "$count",
+  //               },
+  //             },
+  //           },
+  //         },
+  //         {
+  //           $project: {
+  //             _id: 0,
+  //             longevity: { $arrayToObject: "$result" },
+  //           },
+  //         },
+  //       ],
+  //     },
+  //   },
+  // ];
+
+  const {id} = req.params;
+  console.log("id",id);
+
+  // const data = await reviews.findMany({perfume:"66d2dd11dd2391f48772a570"}).lean();
+  const data = await reviews.find({perfume:id});
+  console.log(data);
+  res.status(200).json({ status: true, message:"Reviews Fetched Successfully ",data });
 });

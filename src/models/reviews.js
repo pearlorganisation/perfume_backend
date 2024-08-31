@@ -1,26 +1,23 @@
 import mongoose from "mongoose";
 import { ProductReviewCount } from "./productReviewCount.js";
 import perfume from "./perfume.js";
+import { Comments } from "./comments.js";
 
 const reviewsSchema = new mongoose.Schema(
   {
     perfume: { type: mongoose.Types.ObjectId, ref: "perfume" },
     reviewBy: { type: mongoose.Types.ObjectId, ref: "auth" },
+    isApproved:{
+      type:Boolean,
+      default:false
+    },
     reaction: {
         type: String,
         enum: ["worst", "good", "notGood", "fine", "veryGood"],
         required: true,
-        // default:"good"
       
     },
-    likes: {
-      type: Number,
-      default: 0,
-    },
-    disLikes: {
-      type: Number,
-      default: 0,
-    },
+
     season: {
       type:String,
       enum:["spring","summer","fall","day","night"]
@@ -54,27 +51,30 @@ const reviewsSchema = new mongoose.Schema(
     },
 
     productReviewCount:{
-      type:mongoose.Types.ObjectId,ref:"ProductReviewCount"
+      type:mongoose.Types.ObjectId,
+      ref:"ProductReviewCount"
     },
-    review: [
-      {
-        review: String,
-        gallery: [String],
+    commentsId:{
+      type:mongoose.Types.ObjectId,
+      ref:'Comments'
+    },
+    commentsFields:{
+      logo:{
+        type:String,
+        default:"https://t3.ftcdn.net/jpg/07/40/66/04/360_F_740660413_jMpbvqGDfKQfBfncRYnZRJT70rIRHIaX.jpg"
       },
-    ],
-    pros: [
-      {
-        pros: mongoose.Types.ObjectId,
-        isLiked: Boolean,
+      title:{
+        type:String
       },
-    ],
-    cons: [
-      {
-        cons: mongoose.Types.ObjectId,
-        isLiked: Boolean,
+      description:{
+        type:String
       },
-    ],
-  },
+    },
+    commentGallery:{
+      type:[{}]
+    }
+
+ },
   { timestamps: true }
 );
 
@@ -84,10 +84,13 @@ reviewsSchema.pre('save', async function (next) {
 
   if (!this.isNew) {
     try {
-      const perfumeDoc = await perfume.findById(this.perfume).exec();
+
+      const perfumeDoc = await perfume.findById(this.perfumeId).exec();
       if (perfumeDoc) {
         this.productReviewCount = perfumeDoc.productReviewCoundId;
-         console.log(this,"shasshaj");
+        console.log("thisdgadajd is" ,this.productReviewCount)
+        console.log("thisdgadajd is" ,perfumeDoc.productReviewCoundId)
+
         this.previousValues = {
           reaction:perfumeDoc.reaction,
           sillage: perfumeDoc.sillage,
@@ -115,11 +118,11 @@ reviewsSchema.pre('save', async function (next) {
 
 // Update counts after saving
 reviewsSchema.post('save', async function (doc) {
-
+   
   try {
     const previousValues = doc.previousValues || {};
     const updates = {};
-    // console.log('Post-save hook triggered', doc);
+    console.log('Post-save hook triggered', this);
 
 
     // Check if the document is new
@@ -158,24 +161,32 @@ reviewsSchema.post('save', async function (doc) {
         if (doc.reaction) updates[`reaction.${doc.reaction}`] = 1;
       }
     }
-
+    
     // Apply updates to ProductReviewCount
     if (Object.keys(updates).length > 0) {
-      console.log("this is product review count",doc.productReviewCount)
-      const data = await ProductReviewCount.findOneAndUpdate(
+      console.log("this is product review count",this.productReviewCount)
+      const productReviewdata = await ProductReviewCount.findOneAndUpdate(
         { _id: doc.productReviewCount },
         { $inc: updates,totalVotes:1 },
         {upsert: true, new: true, setDefaultsOnInsert: true} 
       );
 
-      console.log(data,"this is data !!!");
+    
     }
+    const newComment = await Comments({commentsFields:doc.commentsFields,perfumeId:doc,userId:doc.reviewBy,commentGallery:doc.commentGallery});
+
+      console.log("New Comment Created",newComment);
+
+
+   
+  
   } catch (err) {
     console.error('Error updating ProductReviewCount:', err);
   }
 });
 
 
+  
 
 
 

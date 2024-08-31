@@ -40,6 +40,9 @@ const ratingFragramSchema = new mongoose.Schema({
 });
 
 import { ProductReviewCount } from "./productReviewCount.js";
+import { ProsCons } from "./prosCons.js";
+import { Comments } from "./comments.js";
+
 const perfumeSchema = new mongoose.Schema(
   {
     perfume: {
@@ -66,7 +69,7 @@ const perfumeSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    gallery: [],
+    gallery: [{}],
     purchaseLinks: {
       type: [
         {
@@ -78,13 +81,17 @@ const perfumeSchema = new mongoose.Schema(
       ],
     },
     pros: {
-      type: [{ pros: String, likes: Number, disLikes: Number }],
       type: [{}],
     },
     cons: {
-      type: [{ pros: String, likes: Number, disLikes: Number }],
       type: [{}],
     },
+    prosConsId:{
+     type:mongoose.Types.ObjectId,ref:'ProsCons'
+    },
+    // commentsId :{
+    //   type:mongoose.Types.ObjectId,ref:'comments'
+    // },
     mainAccords: [{ name: String, color: String, percentage: Number }],
 
     baseNote: [{ type: mongoose.Types.ObjectId, ref: "notes" }],
@@ -106,14 +113,23 @@ const perfumeSchema = new mongoose.Schema(
 perfumeSchema.pre("save", async function (next) {
   if (this.isNew) {
     try {
+
+      console.log("we are coming here man");
       // Create a new ProductReviewCount document
       const newCount = await ProductReviewCount.create({
         totalVotes: 0,
         productId: this._id,
       });
 
+      const newProsCons = await ProsCons.create({
+        pros:this.pros,
+        cons:this.cons,
+        perfumeId:this.id
+      });
+
       // Assign the _id of the new ProductReviewCount document to productReviewCoundId
       this.productReviewCoundId = newCount._id;
+      this.prosConsId = newProsCons._id;
 
       next(); // Proceed with saving the perfume document
     } catch (error) {
@@ -123,5 +139,26 @@ perfumeSchema.pre("save", async function (next) {
     next(); // Skip if document is not new (for updates)
   }
 });
+
+
+
+//deletion of perfume
+
+perfumeSchema.post('remove',async function(){
+  
+  try {
+    const productReviewCountDocument = await ProductReviewCount.findByIdAndDelete(doc.productReviewCountId);
+    const prosConsDocument = await ProsCons.findByIdAndDelete(doc.prosConsId);
+
+    console.log(productReviewCountDocument, "ProductReviewCount Document Deleted!!");
+    console.log(prosConsDocument, "ProsCons Document Deleted!!");
+
+    const commentsDeleted = await Comments.deleteMany({ perfumeId: doc._id });
+    console.log("All Comments Deleted", commentsDeleted);
+  } catch (error) {
+    console.error('Error during post-remove:', error);
+  }
+
+})
 
 export default mongoose.model("perfume", perfumeSchema, "perfume");

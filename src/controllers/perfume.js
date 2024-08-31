@@ -14,11 +14,12 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
     pros,
     cons,
   } = req?.body;
-
+   
+  console.log(gallery,"this is gallery ");
   const newPerfume = new perfume({
     ...req?.body,
     banner: banner[0]?.path,
-    gallery,
+    gallery:gallery||[],
     pros: JSON.parse(pros),
     cons: JSON.parse(cons),
     logo: logo[0].path,
@@ -30,6 +31,23 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
     baseNote: JSON.parse(baseNote),
   });
   await newPerfume.save();
+
+
+  // const dataForProsCons = await perfume({
+  //   $match:{
+  //     _id:newPerfume._id,
+  //     perfume:newPerfume.perfume
+  //   }
+  // });
+
+
+
+  // const prosConsData = ProsCons.create({
+  //   perfumeId:newPerfume._id
+  // })
+  
+  console.log("Data for the pros cons ")
+
   res.status(201).json({ status: true, newPerfume });
 });
 
@@ -54,15 +72,17 @@ export const deletePerfume = asyncHandler(async (req, res, next) => {
   //   .find()
   //   .populate(["middleNote", "topNote", "baseNote"]);
 
-  const deleteReviewCounts = await ProductReviewCount.findByIdAndDelete(
-    isValidId.productReviewCoundId
-  );
-  console.log(
-    "THIS is deleted review count ",
-    deleteReviewCounts,
-    "gjsgdjsa",
-    isValidId
-  );
+  // const deleteReviewCounts = await ProductReviewCount.findByIdAndDelete(
+  //   isValidId.productReviewCoundId
+  // );
+
+
+  // console.log(
+  //   "THIS is deleted review count ",
+  //   deleteReviewCounts,
+  //   "gjsgdjsa",
+  //   isValidId
+  // );
 
   res.status(200).json({
     status: true,

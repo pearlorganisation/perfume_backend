@@ -103,3 +103,11 @@ export const getSinglePerfume = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({ status: true, data });
 });
+
+
+export const getPerfumeReview = asyncHandler(async (req, res, next) => {
+  const data = await perfume
+    .find().lean().sort({createdAt:-1}).select("perfume description reviewBy ")
+ 
+  res.status(200).json({ status: true, data });
+});

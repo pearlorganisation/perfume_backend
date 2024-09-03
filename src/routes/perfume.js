@@ -10,7 +10,7 @@ import { getAllRecentPerfume } from "../controllers/recentPerfumes.js";
 
 const router = express.Router();
 
-router.route('/recent/:id').get(getAllRecentPerfume)
+router.route('/recent').get(getAllRecentPerfume)
 
 router
   .route("/")

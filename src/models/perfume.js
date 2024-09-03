@@ -38,6 +38,20 @@ const ratingFragramSchema = new mongoose.Schema({
     enum: ["M", "F", "O"],
   },
 });
+const proConSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: [true, "Title for pros or cons is a required field!"]
+  },
+  likes: {
+    type: Number,
+    default: 0
+  },
+  disLikes: {
+    type: Number,
+    default: 0
+  }
+});
 
 import { ProductReviewCount } from "./productReviewCount.js";
 import { ProsCons } from "./prosCons.js";
@@ -81,13 +95,21 @@ const perfumeSchema = new mongoose.Schema(
       ],
     },
     pros: {
-      type: [{}],
+      type: [proConSchema],
     },
     cons: {
-      type: [{}],
+      type: [proConSchema],
     },
     prosConsId:{
      type:mongoose.Types.ObjectId,ref:'ProsCons'
+    },
+    likes:{
+      type:Number,
+      default:0
+    },
+    dislike:{
+      type:Number,
+      default:0
     },
     // commentsId :{
     //   type:mongoose.Types.ObjectId,ref:'comments'
@@ -120,6 +142,8 @@ perfumeSchema.pre("save", async function (next) {
         totalVotes: 0,
         productId: this._id,
       });
+
+      console.log("sdfgsdfs",this);
 
       const newProsCons = await ProsCons.create({
         pros:this.pros,

@@ -5,8 +5,8 @@ import { Comments } from "./comments.js";
 
 const reviewsSchema = new mongoose.Schema(
   {
-    perfume: { type: mongoose.Types.ObjectId, ref: "perfume" },
-    reviewBy: { type: mongoose.Types.ObjectId, ref: "auth" },
+    perfume: { type: mongoose.Types.ObjectId, ref: "perfume",index:true},
+    reviewBy: { type: mongoose.Types.ObjectId, ref: "auth",index:true },
     isApproved:{
       type:Boolean,
       default:false
@@ -17,15 +17,12 @@ const reviewsSchema = new mongoose.Schema(
         required: true,
       
     },
-
     season: {
       type:String,
       enum:["spring","summer","fall","day","night"]
       
     },
-
     notes: [{ type: mongoose.Types.ObjectId, ref: "notes" }],
-
     longevity: {
       type: String,
       enum: [
@@ -49,7 +46,6 @@ const reviewsSchema = new mongoose.Schema(
       type: String,
       enum: ["wayOverPriced", "overPriced", "ok", "goodValue", "greatValue"],
     },
-
     productReviewCount:{
       type:mongoose.Types.ObjectId,
       ref:"ProductReviewCount"
@@ -190,5 +186,5 @@ reviewsSchema.post('save', async function (doc) {
 
 
 
-
+reviewsSchema.index({ perfume: 1, reviewBy: 1 }, { unique: true });
 export default mongoose.model("review", reviewsSchema, "review");

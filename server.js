@@ -8,6 +8,7 @@ import morgan from "morgan";
 dotenv.config();
 const app = express();
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 const PORT = process.env.PORT || 8000;
 
@@ -49,9 +50,9 @@ app.use("/api/v1/review", reviewRouter);
 app.use("/api/v1/note", noteRoutes);
 app.use("/api/v1/news", newsRoutes);
 app.use("/api/v1/comment", commentRouter);
-app.use("/api/v1/prosCons",prosConsRouter);
-app.use("/api/v1/productReviewCount",productReviewRouter);
-app.use("/api/v1/newArrival",newArrivalRouter);
+app.use("/api/v1/prosCons", prosConsRouter);
+app.use("/api/v1/productReviewCount", productReviewRouter);
+app.use("/api/v1/newArrival", newArrivalRouter);
 
 app.use(error);
 app.listen(PORT, () => {

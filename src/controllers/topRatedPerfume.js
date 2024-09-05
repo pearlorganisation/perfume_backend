@@ -131,12 +131,12 @@ export const updateTopRatedPerfume = asyncHandler(async (req, res) => {
 export const deleteTopRatedPerfume = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const deletedTopRatedPerfume = await TopRatedPerfume.findByIdAndDelete(id);
-  const deletePerfume = await perfume.findByIdAndDelete(
-    deletedTopRatedPerfume.perfumeId
-  );
-  const deleteReviewCount = await reviews.findByIdAndDelete(
-    deletePerfume.productReviewCoundId
-  );
+  // const deletePerfume = await perfume.findByIdAndDelete(
+  //   deletedTopRatedPerfume.perfumeId
+  // );
+  // const deleteReviewCount = await reviews.findByIdAndDelete(
+  //   deletePerfume.productReviewCoundId
+  // );
 
   console.log("deleteReviewCount");
 

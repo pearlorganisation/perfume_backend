@@ -67,6 +67,10 @@ const perfumeSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    reviewBy: {
+      type: String,
+      // required: true,
+    },
     brand: {
       type: mongoose.Types.ObjectId,
       ref: "brand",

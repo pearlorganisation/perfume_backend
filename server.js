@@ -40,6 +40,7 @@ import { commentRouter } from "./src/routes/comments.js";
 import { prosConsRouter } from "./src/routes/prosCons.js";
 import { productReviewRouter } from "./src/routes/productReviewCount.js";
 import { newArrivalRouter } from "./src/routes/newArrival.js";
+import { relatedPerfumeRouter } from "./src/routes/otherRelatedPerfume.js";
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/brand", brandRoutes);
@@ -49,9 +50,10 @@ app.use("/api/v1/review", reviewRouter);
 app.use("/api/v1/note", noteRoutes);
 app.use("/api/v1/news", newsRoutes);
 app.use("/api/v1/comment", commentRouter);
-app.use("/api/v1/prosCons",prosConsRouter);
-app.use("/api/v1/productReviewCount",productReviewRouter);
-app.use("/api/v1/newArrival",newArrivalRouter);
+app.use("/api/v1/prosCons", prosConsRouter);
+app.use("/api/v1/productReviewCount", productReviewRouter);
+app.use("/api/v1/newArrival", newArrivalRouter);
+app.use("/api/v1/reletedPerfume", relatedPerfumeRouter);
 
 app.use(error);
 app.listen(PORT, () => {

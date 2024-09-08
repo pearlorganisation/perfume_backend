@@ -14,8 +14,7 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
     pros,
     cons,
   } = req?.body;
-   
-  console.log(gallery,"this is gallery ");
+
   const newPerfume = new perfume({
     ...req?.body,
     banner: banner[0]?.path,

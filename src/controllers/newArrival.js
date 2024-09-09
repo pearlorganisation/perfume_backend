@@ -25,7 +25,7 @@ export const addNewArrival = asyncHandler(async (req, res, next) => {
 
 export const getNewArrival = asyncHandler(async (req, res, next) => {
     const limit = 25
-    const reviewsSidebarData = await newArrivalModel.find({}).populate().sort({ createdAt: -1 }).limit(limit);
+    const reviewsSidebarData = await newArrivalModel.find({}).populate(["brand"]).sort({ createdAt: -1 }).limit(limit);
 
     res.status(200).json({ status: true, data: reviewsSidebarData });
 });

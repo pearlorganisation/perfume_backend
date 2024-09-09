@@ -67,6 +67,10 @@ const perfumeSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    reviewBy: {
+      type: String,
+      // required: true,
+    },
     brand: {
       type: mongoose.Types.ObjectId,
       ref: "brand",
@@ -135,7 +139,6 @@ const perfumeSchema = new mongoose.Schema(
 perfumeSchema.pre("save", async function (next) {
   if (this.isNew) {
     try {
-
       console.log("we are coming here man");
       // Create a new ProductReviewCount document
       const newCount = await ProductReviewCount.create({

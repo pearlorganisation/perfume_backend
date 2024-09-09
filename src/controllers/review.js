@@ -3,31 +3,45 @@ import errorResponse from "../utils/errorResponse.js";
 import reviews from "../models/reviews.js";
 
 export const newPerfumeReview = asyncHandler(async (req, res, next) => {
-  const { notes, season,reaction, commentsFields,sillage,longevity,gender,priceValue } = req?.body;
-  const { commentGallery } = req?.files;
+  const {
+    notes,
+    season,
+    reaction,
+    commentsFields,
+    sillage,
+    longevity,
+    gender,
+    priceValue,
+  } = req?.body;
+
+  let commentGallery = req?.files?.commentGallery;
+  if (!commentGallery) {
+    commentGallery = [];
+  }
   const commentData = commentsFields ? JSON.parse(commentsFields) : {};
-  
-   console.log("im in controller");
+
+  console.log("im in controller", req);
 
   const newReview = new reviews({
     ...req?.body,
-    notes: notes ? JSON.parse(notes) : "[]",
+    notes: notes ? JSON.parse(notes) : [],
     season: season || "",
     longevity: longevity || "",
     sillage: sillage || "",
     gender: gender || "",
     priceValue: priceValue || "",
     reaction: reaction || "",
-    commentsFields:commentData,
-    commentGallery:commentGallery || []
+    commentsFields: commentData || [],
+    commentGallery: commentGallery || [],
   });
 
+  await newReview.save();
 
-   await newReview.save();
-
-  res
-    .status(201)
-    .json({ status: true, message: "review submitted successfully",data: newReview});
+  res.status(201).json({
+    status: true,
+    message: "review submitted successfully",
+    data: newReview,
+  });
 });
 
 export const updatePefumeReview = asyncHandler(async (req, res, next) => {
@@ -228,9 +242,7 @@ export const updatePefumeReview = asyncHandler(async (req, res, next) => {
 //   res.status(200).json({ status: true, data });
 // });
 
-
 export const getAllReview = asyncHandler(async (req, res, next) => {
-
   // const aggregationPipeline = [
   //   {
   //     $facet: {
@@ -395,11 +407,13 @@ export const getAllReview = asyncHandler(async (req, res, next) => {
   //   },
   // ];
 
-  const {id} = req.params;
-  console.log("id",id);
+  const { id } = req.params;
+  console.log("id", id);
 
   // const data = await reviews.findMany({perfume:"66d2dd11dd2391f48772a570"}).lean();
-  const data = await reviews.find({perfume:id});
+  const data = await reviews.find({ perfume: id });
   console.log(data);
-  res.status(200).json({ status: true, message:"Reviews Fetched Successfully ",data });
+  res
+    .status(200)
+    .json({ status: true, message: "Reviews Fetched Successfully ", data });
 });

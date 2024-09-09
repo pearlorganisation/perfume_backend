@@ -14,8 +14,7 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
     pros,
     cons,
   } = req?.body;
-   
-  console.log(gallery,"this is gallery ");
+
   const newPerfume = new perfume({
     ...req?.body,
     banner: banner[0]?.path,
@@ -54,7 +53,7 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
 export const getAllPerfume = asyncHandler(async (req, res, next) => {
   const perfumeData = await perfume
     .find()
-    .populate(["middleNote", "topNote", "baseNote"]);
+    .populate(["middleNote", "topNote", "baseNote"]).lean().sort({createdAt:-1}).limit(50);
 
   res.status(200).json({ status: true, data: perfumeData });
 });
@@ -101,5 +100,13 @@ export const getSinglePerfume = asyncHandler(async (req, res, next) => {
     });
   }
 
+  res.status(200).json({ status: true, data });
+});
+
+
+export const getPerfumeReview = asyncHandler(async (req, res, next) => {
+  const data = await perfume
+    .find().lean().sort({createdAt:-1}).select("perfume description reviewBy ")
+ 
   res.status(200).json({ status: true, data });
 });

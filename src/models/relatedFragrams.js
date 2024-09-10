@@ -1,14 +1,15 @@
 import mongoose from "mongoose";
 
 
-const newArrivalSchema = new mongoose.Schema({
+const relatedFragramsSchema = new mongoose.Schema({
     perfumeName:{
         type:String,
         required: true
     },
     brand:{
         type:mongoose.Schema.ObjectId,
-        ref:"brand"
+        ref:"brand",
+        required: true,
     },
     banner:{
         type:String,
@@ -17,9 +18,13 @@ const newArrivalSchema = new mongoose.Schema({
     link: {
         type: String,
         required: true
+    },
+    perfume: {
+        type: mongoose.Schema.ObjectId,
+        ref: "perfume",
+        required: true,
     }
-    
 }, {timestamps: true});
 
 
-export const NewArrivalPerfume = mongoose.model('NewArrival',newArrivalSchema, 'NewArrival');
+export const relatedFragrams = mongoose.model('relatedFragrams',relatedFragramsSchema, 'relatedFragrams');

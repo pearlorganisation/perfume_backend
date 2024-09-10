@@ -14,8 +14,7 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
     pros,
     cons,
   } = req?.body;
-   
-  console.log(gallery,"this is gallery ");
+
   const newPerfume = new perfume({
     ...req?.body,
     banner: banner[0]?.path,
@@ -67,22 +66,6 @@ export const deletePerfume = asyncHandler(async (req, res, next) => {
       .json({ status: true, message: "No data found with given id!!" });
   }
 
-  //get all perfume data
-  // const perfumeData = await perfume
-  //   .find()
-  //   .populate(["middleNote", "topNote", "baseNote"]);
-
-  // const deleteReviewCounts = await ProductReviewCount.findByIdAndDelete(
-  //   isValidId.productReviewCoundId
-  // );
-
-
-  // console.log(
-  //   "THIS is deleted review count ",
-  //   deleteReviewCounts,
-  //   "gjsgdjsa",
-  //   isValidId
-  // );
 
   res.status(200).json({
     status: true,
@@ -111,3 +94,18 @@ export const getPerfumeReview = asyncHandler(async (req, res, next) => {
  
   res.status(200).json({ status: true, data });
 });
+
+
+// get male perfumes
+
+export const getMalePerfumes = asyncHandler(async(req, res, next) => {
+  const data = await perfume.find({"ratingFragrams.gender": "M"}).sort({createdAt:-1})
+  res.status(200).json({status: true, data})
+})
+
+// get female perfumes
+
+export const getFemalePerfumes = asyncHandler(async(req, res, next) => {
+  const data = await perfume.find({"ratingFragrams.gender": "F"}).sort({createdAt:-1})
+  res.status(200).json({status: true, data})
+})

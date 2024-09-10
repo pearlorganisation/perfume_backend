@@ -14,6 +14,38 @@ export const getAllBrands = asyncHandler(async (req, res, next) => {
   res.status(200).json({ status: true, data });
 });
 
+export const getAllBrandsMenu = asyncHandler(async (req, res, next) => {
+  const pipeLine = [
+    {
+      $lookup: {
+        from: "perfume",
+        localField: "_id",
+        foreignField: "brand",
+        as: "AllPerfume",
+      },
+    },
+    // {
+    //   $lookup: {
+    //     from: "perfume",
+    //     localField: "_id",
+    //     foreignField: "brand",
+    //     as: "PerfumeId",
+    //   },
+    // },
+    {
+      $project: {
+        brand: 1,
+        AllPerfume: {
+          perfume: 1,
+          _id: 1,
+        },
+      },
+    },
+  ];
+  const data = await brand.aggregate(pipeLine).exec();
+  res.status(200).json({ status: true, data });
+});
+
 export const deleteBrand = asyncHandler(async (req, res, next) => {
   const isValidId = await brand.findByIdAndDelete(req?.params?.id);
   const data = await brand.find();

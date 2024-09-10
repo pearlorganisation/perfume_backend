@@ -18,7 +18,7 @@ const reviewsSchema = new mongoose.Schema(
     },
     season: {
       type: String,
-      enum: ["spring", "summer", "fall", "day", "night"],
+      enum: ["spring", "summer", "fall", "day", "night", "winter"],
     },
     notes: [{ type: mongoose.Types.ObjectId, ref: "notes" }],
     longevity: {

@@ -43,7 +43,20 @@ export const createComment = async (req, res) => {
   }
 };
 
-// Get all comments
+// Get all comments as per perfumeId
+export const getComments = asyncHandler(async (req, res) => {
+  const comments = await Comments.find({}).populate(["userId"]).lean().sort({createdAt: -1}).select("logo title description userId perfumeId").limit(25);
+  if (!comments) {
+    res.status(400).json({ success: false, message: "Not found !!" });
+  }
+  res.status(200).json({
+    success: true,
+    message: "Comments Fetched Successfully!!",
+    data: comments,
+  });
+});
+
+// Get all comments as per perfumeId
 export const getAllComments = asyncHandler(async (req, res) => {
   const { id } = req.params;
 

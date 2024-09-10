@@ -23,6 +23,8 @@ import reviewsSidebarRouter from "./src/routes/reviewsSidebar.js"
 import celebrityPerfumesRouter from "./src/routes/celebrityPerfumes.js"
 import genderPerfumesRouter from "./src/routes/genderPerfumes.js"
 import relatedFragramRouter from "./src/routes/relatedFragrams.js";
+import { requestReviewRouter } from "./src/routes/requestReview.js";
+import { writeReviewRouter } from "./src/routes/writeReview.js";
 
 
 
@@ -75,6 +77,8 @@ app.use("/api/v1/reviewsSidebar", reviewsSidebarRouter);
 app.use("/api/v1/celebrityPerfumes", celebrityPerfumesRouter);
 app.use("/api/v1/genderPerfumes", genderPerfumesRouter);
 app.use("/api/v1/relatedFragrams", relatedFragramRouter);
+app.use("/api/v1/requestReview", requestReviewRouter);
+app.use("/api/v1/writeReview", writeReviewRouter);
 
 
 

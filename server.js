@@ -23,6 +23,7 @@ import celebrityPerfumesRouter from "./src/routes/celebrityPerfumes.js";
 import genderPerfumesRouter from "./src/routes/genderPerfumes.js";
 import relatedFragramRouter from "./src/routes/relatedFragrams.js";
 import perfumeCategoriesRouter from "./src/routes/perfumeCategories.js";
+import fragramsRouter from "./src/routes/fragrams.js";
 
 //MIDDLEWARES
 dotenv.config();
@@ -69,6 +70,8 @@ app.use("/api/v1/celebrityPerfumes", celebrityPerfumesRouter);
 app.use("/api/v1/genderPerfumes", genderPerfumesRouter);
 app.use("/api/v1/relatedFragrams", relatedFragramRouter);
 app.use("/api/v1/perfumeCategories", perfumeCategoriesRouter);
+app.use("/api/v1/fragrams", fragramsRouter);
+
 
 
 app.use(error);

@@ -47,6 +47,8 @@ const productReviewCountSchema = new mongoose.Schema({
         fall: { type: Number, default: 0 },
         day: { type: Number, default: 0 },
         night: { type: Number, default: 0 },
+        winter: { type: Number, default: 0 },
+
     },
     totalVotes: {
         type: Number,

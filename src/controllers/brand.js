@@ -24,14 +24,6 @@ export const getAllBrandsMenu = asyncHandler(async (req, res, next) => {
         as: "AllPerfume",
       },
     },
-    // {
-    //   $lookup: {
-    //     from: "perfume",
-    //     localField: "_id",
-    //     foreignField: "brand",
-    //     as: "PerfumeId",
-    //   },
-    // },
     {
       $project: {
         brand: 1,

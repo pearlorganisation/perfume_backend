@@ -37,6 +37,14 @@ export const newPerfumeReview = asyncHandler(async (req, res, next) => {
 
   await newReview.save();
 
+  if (!newReview) {
+    res.status(400).json({
+      status: false,
+      message: "Bad Request or dublicacy",
+      data: newReview,
+    });
+  }
+
   res.status(201).json({
     status: true,
     message: "review submitted successfully",

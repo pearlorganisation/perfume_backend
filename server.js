@@ -43,8 +43,7 @@ import { prosConsRouter } from "./src/routes/prosCons.js";
 import { productReviewRouter } from "./src/routes/productReviewCount.js";
 import { newArrivalRouter } from "./src/routes/newArrival.js";
 import { relatedPerfumeRouter } from "./src/routes/otherRelatedPerfume.js";
-import reviewsSidebarRouter from "./src/routes/reviewsSidebar.js"
-
+import reviewsSidebarRouter from "./src/routes/reviewsSidebar.js";
 
 //routes
 app.use("/api/v1/auth", authRoutes);
@@ -60,7 +59,6 @@ app.use("/api/v1/productReviewCount", productReviewRouter);
 app.use("/api/v1/newArrival", newArrivalRouter);
 app.use("/api/v1/reletedPerfume", relatedPerfumeRouter);
 app.use("/api/v1/reviewsSidebar", reviewsSidebarRouter);
-
 
 app.use(error);
 app.listen(PORT, () => {

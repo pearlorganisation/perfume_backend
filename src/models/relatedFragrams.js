@@ -19,7 +19,7 @@ const relatedFragramsSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    perfumeId: {
+    perfume: {
         type: mongoose.Schema.ObjectId,
         ref: "perfume",
         required: true,

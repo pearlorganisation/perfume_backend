@@ -20,12 +20,12 @@ export const addRelatedFragram = asyncHandler(async (req, res, next) => {
     banner: banner[0]?.path,
     brand,
     link,
-    perfumeId,
+    perfume: perfumeId,
   };
 
   await relatedFragramsModel.create(payload);
 
-  const result = await relatedFragramsModel.find({ perfumeId });
+  const result = await relatedFragramsModel.find({ perfume: perfumeId });
 
   res
     .status(200)
@@ -40,7 +40,7 @@ export const getRelatedFragrams = asyncHandler(async (req, res, next) => {
   }
 
   const relatedFragramsData = await relatedFragramsModel
-    .find({ perfumeId: perfumeId })
+    .find({ perfume: perfumeId })
     .populate({
       path: "perfumeId",
       as: "perfume",

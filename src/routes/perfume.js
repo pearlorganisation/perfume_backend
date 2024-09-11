@@ -15,7 +15,7 @@ router.route('/recent').get(getAllRecentPerfume)
 router
   .route("/")
   .post(
-    upload.fields([{ name: "gallery" }, { name: "banner" }, { name: "logo" }]),
+    upload.fields([{ name: "gallery" }, { name: "banner" }, { name: "logo" }, {name: "video"}]),
     newPerfume
   )
   .get(getAllPerfume);

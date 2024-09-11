@@ -27,6 +27,7 @@ import perfumeCategoriesRouter from "./src/routes/perfumeCategories.js";
 import fragramsRouter from "./src/routes/fragrams.js";
 import { requestReviewRouter } from "./src/routes/requestReview.js";
 import { writeReviewRouter } from "./src/routes/writeReview.js";
+import globalDataRouter from "./src/routes/globalData.js";
 
 
 
@@ -83,6 +84,8 @@ app.use("/api/v1/perfumeCategories", perfumeCategoriesRouter);
 app.use("/api/v1/fragrams", fragramsRouter);
 app.use("/api/v1/requestReview", requestReviewRouter);
 app.use("/api/v1/writeReview", writeReviewRouter);
+app.use("/api/v1/globalData", globalDataRouter);
+
 
 
 

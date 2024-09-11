@@ -25,6 +25,8 @@ import genderPerfumesRouter from "./src/routes/genderPerfumes.js"
 import relatedFragramRouter from "./src/routes/relatedFragrams.js";
 import perfumeCategoriesRouter from "./src/routes/perfumeCategories.js";
 import fragramsRouter from "./src/routes/fragrams.js";
+import { requestReviewRouter } from "./src/routes/requestReview.js";
+import { writeReviewRouter } from "./src/routes/writeReview.js";
 
 
 
@@ -79,8 +81,8 @@ app.use("/api/v1/genderPerfumes", genderPerfumesRouter);
 app.use("/api/v1/relatedFragrams", relatedFragramRouter);
 app.use("/api/v1/perfumeCategories", perfumeCategoriesRouter);
 app.use("/api/v1/fragrams", fragramsRouter);
-
-
+app.use("/api/v1/requestReview", requestReviewRouter);
+app.use("/api/v1/writeReview", writeReviewRouter);
 
 
 

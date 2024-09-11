@@ -1,6 +1,7 @@
 import brand from "../models/brand.js";
+import perfume from "../models/perfume.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import errorResponse from "../utils/errorResponse.js";
+// import errorResponse from "../utils/errorResponse.js";
 
 export const newBrand = asyncHandler(async (req, res, next) => {
   const newBrand = new brand(req?.body);
@@ -45,6 +46,22 @@ export const getAllBrandsMenu = asyncHandler(async (req, res, next) => {
   const data = await brand.aggregate(pipeLine).exec();
   res.status(200).json({ status: true, data });
 });
+
+
+export const getSingleBrandPerfumes = asyncHandler(async (req, res) => {
+
+  const {brandName} = req?.params
+  console.log(brand)
+   const brandData = await brand.findOne({ brand: brandName });
+   if (!brandData) {
+       return res.status(404).json({ message: "Brand not found" });
+   }
+
+   // Find perfumes that match the brand ID
+   const perfumes = await perfume.find({ brand: brandData._id }).sort({'createdAt': -1}).select("perfume banner brand");
+
+   res.status(200).json(perfumes);
+})
 
 export const deleteBrand = asyncHandler(async (req, res, next) => {
   const isValidId = await brand.findByIdAndDelete(req?.params?.id);

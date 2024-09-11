@@ -2,7 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import perfume from "../models/perfume.js";
 import { ProductReviewCount } from "../models/productReviewCount.js";
 export const newPerfume = asyncHandler(async (req, res, next) => {
-  const { gallery, banner, logo } = req?.files;
+  const { gallery, banner, logo, video } = req?.files;
 
   const {
     purchaseLinks,
@@ -18,6 +18,7 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
   const newPerfume = new perfume({
     ...req?.body,
     banner: banner[0]?.path,
+    video: video[0],
     gallery:gallery||[],
     pros: JSON.parse(pros),
     cons: JSON.parse(cons),

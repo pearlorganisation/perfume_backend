@@ -13,9 +13,19 @@ cloudinary.config({
 
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
-  params: {
-    folder: "Design Destination",
-    // allowed_formats: ["jpg", "png", "jpeg"], // Allowed file formats
+  params: async (req, file) => {
+    let resourceType = 'image'; // Default is image
+
+    // If the file is a video, set resource_type to video
+    if (file.mimetype.startsWith('video')) {
+      resourceType = 'video';
+    }
+
+    return {
+      folder: "Design Destination",
+      resource_type: resourceType,
+      public_id: file.originalname.split('.')[0],
+    };
   },
 });
 

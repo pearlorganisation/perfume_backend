@@ -1,4 +1,4 @@
-import {globalDataModel} from "../models/globalData.js";
+import { globalDataModel } from "../models/globalData.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 export const addGlobalData = asyncHandler(async (req, res, next) => {
@@ -9,13 +9,12 @@ export const addGlobalData = asyncHandler(async (req, res, next) => {
     res.status(500).json({ status: false, message: "Incomplete data" });
   }
 
-
   const payload = {
     item: file[0],
-    itemType: itemType
+    itemType: itemType,
   };
 
-  console.log(payload)
+  console.log(payload);
 
   await globalDataModel.create(payload);
   const result = await globalDataModel.find({ itemType: itemType });
@@ -32,24 +31,22 @@ export const getGlobalData = asyncHandler(async (req, res, next) => {
     res.status(500).json({ status: false, message: "Missing Item Type" });
   }
 
-  const data = await globalDataModel.find({itemType: itemType})
+  const data = await globalDataModel.find({ itemType: itemType });
 
-  res.status(200).json({ status: true, data:data });
+  res.status(200).json({ status: true, data: data });
 });
 
-
 export const getSingleGlobalData = asyncHandler(async (req, res, next) => {
-    const { id } = req?.params;
-  
-    if (!id) {
-      res.status(500).json({ status: false, message: "Missing ID" });
-    }
-  
-    const data = await globalDataModel.findById(id)
-  
-    res.status(200).json({ status: true, data:data });
-  });
+  const { id } = req?.params;
 
+  if (!id) {
+    res.status(500).json({ status: false, message: "Missing ID" });
+  }
+
+  const data = await globalDataModel.findById(id);
+
+  res.status(200).json({ status: true, data: data });
+});
 
 export const deleteGlobalData = asyncHandler(async (req, res, next) => {
   const isValidId = await globalDataModel.findByIdAndDelete(req?.params?.id);
@@ -74,7 +71,7 @@ export const updateGlobalData = asyncHandler(async (req, res) => {
   }
 
   const payload = {
-    itemType
+    itemType,
   };
 
   const { file } = req?.files;

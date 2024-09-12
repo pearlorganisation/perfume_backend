@@ -50,7 +50,7 @@ export const deleteRequestReview = asyncHandler(async (req, res) => {
     res.status(200).json({ message: 'Review deleted successfully' });
 });
 
-export const approveRequestReview = asyncHandler(async (req, res) => {
+export const updateStatus = asyncHandler(async (req, res) => {
      
     const {status} = req.body;
     const review = await RequestReviewSchema.findByIdAndUpdate(req.params.id, {status:status}, { new: true, runValidators: true });

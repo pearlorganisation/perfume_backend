@@ -32,3 +32,16 @@ const storage = new CloudinaryStorage({
 export const upload = multer({
   storage: storage,
 });
+
+
+export const deleteFilesFromCloudinary = async (fileNames) => {
+  const fileNameLen = fileNames.length
+  for(let i=0;i<fileNameLen;i++){
+   cloudinary.uploader.destroy(fileNames[i]).then((res) => {
+      console.log(res)
+    }).catch((err) => {
+      return {status: false, error: err}
+    })
+  } 
+  return {status: true, message: 'file deleted successfully'}
+}

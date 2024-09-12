@@ -4,9 +4,9 @@ import { addGlobalData, deleteGlobalData, getGlobalData, getSingleGlobalData, up
 
 const globalDataRouter = express.Router();
 
-globalDataRouter.route("/").get(getGlobalData).post(upload.fields([{ name: "file" }]),addGlobalData)
+globalDataRouter.route("/").get(getGlobalData).post(upload.fields([{ name: "file" }]),addGlobalData).delete(deleteGlobalData)
   
-globalDataRouter.route("/:id").get(getSingleGlobalData).patch(upload.fields([{ name: "file" }]), updateGlobalData).delete(deleteGlobalData)
+globalDataRouter.route("/:id").get(getSingleGlobalData).patch(upload.fields([{ name: "file" }]), updateGlobalData)
 
 
 export default globalDataRouter;

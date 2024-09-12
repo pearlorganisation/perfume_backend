@@ -52,6 +52,7 @@ export const getSingleGlobalData = asyncHandler(async (req, res, next) => {
 
 
 export const deleteGlobalData = asyncHandler(async (req, res, next) => {
+  
   const isValidId = await globalDataModel.findByIdAndDelete(req?.params?.id);
   if (!isValidId) {
     return res
@@ -85,7 +86,7 @@ export const updateGlobalData = asyncHandler(async (req, res) => {
 
   console.log(payload);
 
-  await fragramsModel.findOneAndUpdate({ _id: id }, payload);
+  await globalDataModel.findOneAndUpdate({ _id: id }, payload);
   res
     .status(200)
     .json({ status: true, message: "Global Data Updated successfully" });

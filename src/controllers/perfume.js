@@ -18,8 +18,8 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
   const newPerfume = new perfume({
     ...req?.body,
     banner: banner[0]?.path,
-    video: video[0],
-    gallery:gallery||[],
+    video: video?.length ? video[0] : [],
+    gallery: gallery || [],
     pros: JSON.parse(pros),
     cons: JSON.parse(cons),
     logo: logo[0].path,
@@ -32,7 +32,6 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
   });
   await newPerfume.save();
 
-
   // const dataForProsCons = await perfume({
   //   $match:{
   //     _id:newPerfume._id,
@@ -40,13 +39,11 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
   //   }
   // });
 
-
-
   // const prosConsData = ProsCons.create({
   //   perfumeId:newPerfume._id
   // })
-  
-  console.log("Data for the pros cons ")
+
+  console.log("Data for the pros cons ");
 
   res.status(201).json({ status: true, newPerfume });
 });
@@ -54,7 +51,10 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
 export const getAllPerfume = asyncHandler(async (req, res, next) => {
   const perfumeData = await perfume
     .find()
-    .populate(["middleNote", "topNote", "baseNote"]).lean().sort({createdAt:-1}).limit(50);
+    .populate(["middleNote", "topNote", "baseNote"])
+    .lean()
+    .sort({ createdAt: -1 })
+    .limit(50);
 
   res.status(200).json({ status: true, data: perfumeData });
 });
@@ -66,7 +66,6 @@ export const deletePerfume = asyncHandler(async (req, res, next) => {
       .status(400)
       .json({ status: true, message: "No data found with given id!!" });
   }
-
 
   res.status(200).json({
     status: true,
@@ -88,25 +87,30 @@ export const getSinglePerfume = asyncHandler(async (req, res, next) => {
   res.status(200).json({ status: true, data });
 });
 
-
 export const getPerfumeReview = asyncHandler(async (req, res, next) => {
   const data = await perfume
-    .find().lean().sort({createdAt:-1}).select("perfume description reviewBy ")
- 
+    .find()
+    .lean()
+    .sort({ createdAt: -1 })
+    .select("perfume description reviewBy ");
+
   res.status(200).json({ status: true, data });
 });
 
-
 // get male perfumes
 
-export const getMalePerfumes = asyncHandler(async(req, res, next) => {
-  const data = await perfume.find({"ratingFragrams.gender": "M"}).sort({createdAt:-1})
-  res.status(200).json({status: true, data})
-})
+export const getMalePerfumes = asyncHandler(async (req, res, next) => {
+  const data = await perfume
+    .find({ "ratingFragrams.gender": "M" })
+    .sort({ createdAt: -1 });
+  res.status(200).json({ status: true, data });
+});
 
 // get female perfumes
 
-export const getFemalePerfumes = asyncHandler(async(req, res, next) => {
-  const data = await perfume.find({"ratingFragrams.gender": "F"}).sort({createdAt:-1})
-  res.status(200).json({status: true, data})
-})
+export const getFemalePerfumes = asyncHandler(async (req, res, next) => {
+  const data = await perfume
+    .find({ "ratingFragrams.gender": "F" })
+    .sort({ createdAt: -1 });
+  res.status(200).json({ status: true, data });
+});

@@ -87,6 +87,11 @@ const perfumeSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    mapOfLinks:{
+      type:Map,
+      of: mongoose.Schema.Types.Mixed,
+      required:true
+    },
     gallery: [{}],
     purchaseLinks: {
       type: [
@@ -137,6 +142,7 @@ const perfumeSchema = new mongoose.Schema(
 );
 
 perfumeSchema.pre("save", async function (next) {
+  console.log("we are coming here man",this);
   if (this.isNew) {
     try {
       console.log("we are coming here man");

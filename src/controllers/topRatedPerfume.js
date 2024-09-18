@@ -31,11 +31,8 @@ export const createTopRatedPerfume = asyncHandler(async (req, res, next) => {
       if (error.code === 11000) {
         console.error("Duplicate key error:", error.message);
         return next(
-          new errorResponse(
-            "Duplicate Entry Intiated By User Product Id Already Exist !!",
-            409
-          )
-        ); // Adjust status code if needed
+          new errorResponse("These Perfumes are already in Top Perfume !!", 409)
+        );
       }
 
       // Handle other errors

@@ -41,16 +41,16 @@ const ratingFragramSchema = new mongoose.Schema({
 const proConSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: [true, "Title for pros or cons is a required field!"]
+    required: [true, "Title for pros or cons is a required field!"],
   },
   likes: {
     type: Number,
-    default: 0
+    default: 0,
   },
   disLikes: {
     type: Number,
-    default: 0
-  }
+    default: 0,
+  },
 });
 
 import { ProductReviewCount } from "./productReviewCount.js";
@@ -80,7 +80,7 @@ const perfumeSchema = new mongoose.Schema(
       required: true,
     },
     video: {
-      type: [], 
+      type: [],
     },
     details: {
       type: String,
@@ -90,16 +90,14 @@ const perfumeSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    mapOfLinks: {
+      type: Map,
+      of: mongoose.Schema.Types.Mixed,
+      required: true,
+    },
     gallery: [{}],
     purchaseLinks: {
-      type: [
-        {
-          link: String,
-          company: String,
-          linkType: Number,
-          logo: String,
-        },
-      ],
+      type: [{}],
     },
     pros: {
       type: [proConSchema],
@@ -107,16 +105,17 @@ const perfumeSchema = new mongoose.Schema(
     cons: {
       type: [proConSchema],
     },
-    prosConsId:{
-     type:mongoose.Types.ObjectId,ref:'ProsCons'
+    prosConsId: {
+      type: mongoose.Types.ObjectId,
+      ref: "ProsCons",
     },
-    likes:{
-      type:Number,
-      default:0
+    likes: {
+      type: Number,
+      default: 0,
     },
-    dislike:{
-      type:Number,
-      default:0
+    dislike: {
+      type: Number,
+      default: 0,
     },
     // commentsId :{
     //   type:mongoose.Types.ObjectId,ref:'comments'
@@ -140,6 +139,7 @@ const perfumeSchema = new mongoose.Schema(
 );
 
 perfumeSchema.pre("save", async function (next) {
+  console.log("we are coming here man", this);
   if (this.isNew) {
     try {
       console.log("we are coming here man");
@@ -149,12 +149,12 @@ perfumeSchema.pre("save", async function (next) {
         productId: this._id,
       });
 
-      console.log("sdfgsdfs",this);
+      console.log("sdfgsdfs", this);
 
       const newProsCons = await ProsCons.create({
-        pros:this.pros,
-        cons:this.cons,
-        perfumeId:this.id
+        pros: this.pros,
+        cons: this.cons,
+        perfumeId: this.id,
       });
 
       // Assign the _id of the new ProductReviewCount document to productReviewCoundId
@@ -170,25 +170,25 @@ perfumeSchema.pre("save", async function (next) {
   }
 });
 
-
-
 //deletion of perfume
 
-perfumeSchema.post('remove',async function(){
-  
+perfumeSchema.post("remove", async function () {
   try {
-    const productReviewCountDocument = await ProductReviewCount.findByIdAndDelete(doc.productReviewCountId);
+    const productReviewCountDocument =
+      await ProductReviewCount.findByIdAndDelete(doc.productReviewCountId);
     const prosConsDocument = await ProsCons.findByIdAndDelete(doc.prosConsId);
 
-    console.log(productReviewCountDocument, "ProductReviewCount Document Deleted!!");
+    console.log(
+      productReviewCountDocument,
+      "ProductReviewCount Document Deleted!!"
+    );
     console.log(prosConsDocument, "ProsCons Document Deleted!!");
 
     const commentsDeleted = await Comments.deleteMany({ perfumeId: doc._id });
     console.log("All Comments Deleted", commentsDeleted);
   } catch (error) {
-    console.error('Error during post-remove:', error);
+    console.error("Error during post-remove:", error);
   }
-
-})
+});
 
 export default mongoose.model("perfume", perfumeSchema, "perfume");

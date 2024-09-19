@@ -15,6 +15,34 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
     cons,
   } = req?.body;
 
+  const arr = JSON.parse(purchaseLinks);
+  let map = new Map();
+
+  for (let i = 0; i < arr.length; i++) {
+    const currentItem = arr[i];
+
+    if (map.has(currentItem.country)) {
+      let prevCompanyData = map.get(currentItem.country);
+      prevCompanyData.companiesList.push({
+        company: currentItem.company,
+        link: currentItem.link || "abhishek",
+      });
+      map.set(currentItem.country, prevCompanyData);
+    } else {
+      let companies = [];
+      companies.push({
+        company: currentItem.company,
+        link: currentItem?.link || "abhishek",
+      });
+      map.set(currentItem.country, { companiesList: companies });
+    }
+  }
+  console.log("Map content before conversion:", Array.from(map.entries()));
+
+  // Convert the Map to an object for MongoDB
+  const mapsOfLinks = Object.fromEntries(map);
+
+  console.log("Converted mapsOfLinks:", JSON.stringify(mapsOfLinks, null, 2));
   const newPerfume = new perfume({
     ...req?.body,
     banner: banner[0]?.path,
@@ -22,7 +50,8 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
     gallery: gallery || [],
     pros: JSON.parse(pros),
     cons: JSON.parse(cons),
-    logo: logo[0].path,
+    logo: logo[0]?.path,
+    mapOfLinks: mapsOfLinks, // Set the converted object here
     purchaseLinks: JSON.parse(purchaseLinks),
     ratingFragrams: JSON.parse(ratingFragrams),
     mainAccords: JSON.parse(mainAccords),
@@ -30,20 +59,10 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
     topNote: JSON.parse(topNote),
     baseNote: JSON.parse(baseNote),
   });
+
   await newPerfume.save();
 
-  // const dataForProsCons = await perfume({
-  //   $match:{
-  //     _id:newPerfume._id,
-  //     perfume:newPerfume.perfume
-  //   }
-  // });
-
-  // const prosConsData = ProsCons.create({
-  //   perfumeId:newPerfume._id
-  // })
-
-  console.log("Data for the pros cons ");
+  console.log("Data for the pros cons");
 
   res.status(201).json({ status: true, newPerfume });
 });
@@ -51,7 +70,7 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
 export const getAllPerfume = asyncHandler(async (req, res, next) => {
   const perfumeData = await perfume
     .find()
-    .populate(["middleNote", "topNote", "baseNote"])
+    .populate(["middleNote", "topNote", "baseNote", "brand"])
     .lean()
     .sort({ createdAt: -1 })
     .limit(50);

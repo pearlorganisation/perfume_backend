@@ -3,6 +3,8 @@ import newsModel from "../models/news.js";
 import errorResponse from "../utils/errorResponse.js";
 
 export const newNews = asyncHandler(async (req, res, next) => {
+  console.log("sadfsadfas", req.body);
+
   const newDoc = new newsModel({ ...req?.body, image: req?.file?.path });
   await newDoc.save();
   res
@@ -25,7 +27,6 @@ export const deleteNews = asyncHandler(async (req, res, next) => {
     .json({ status: true, mesasge: "News deleted successfully!!" });
 });
 
-
 export const updateNews = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
@@ -38,7 +39,7 @@ export const updateNews = asyncHandler(async (req, res) => {
     content: req.body.content,
   };
 
-  const {banner} = req?.files
+  const { banner } = req?.files;
 
   if (banner && banner?.length > 0) {
     payload.banner = banner[0]?.path;

@@ -232,7 +232,7 @@ export const getPerfumeReview = asyncHandler(async (req, res, next) => {
 
 export const getMalePerfumes = asyncHandler(async (req, res, next) => {
   const data = await perfumeModel
-    .find({ "ratingFragrams.gender": "M" })
+    .find({ "ratingFragrams.gender": { $in: ["M", "O"] } })
     .sort({ createdAt: -1 });
   res.status(200).json({ status: true, data });
 });
@@ -241,7 +241,7 @@ export const getMalePerfumes = asyncHandler(async (req, res, next) => {
 
 export const getFemalePerfumes = asyncHandler(async (req, res, next) => {
   const data = await perfumeModel
-    .find({ "ratingFragrams.gender": "F" })
+    .find({ "ratingFragrams.gender": { $in: ["F", "O"] } })
     .sort({ createdAt: -1 });
   res.status(200).json({ status: true, data });
 });

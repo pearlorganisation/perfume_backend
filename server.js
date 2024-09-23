@@ -4,7 +4,6 @@ import dotenv from "dotenv";
 import connectDB from "./src/config/db.js";
 import morgan from "morgan";
 
-
 // importing routers
 
 import authRoutes from "./src/routes/auth.js";
@@ -19,14 +18,15 @@ import { commentRouter } from "./src/routes/comments.js";
 import { prosConsRouter } from "./src/routes/prosCons.js";
 import { productReviewRouter } from "./src/routes/productReviewCount.js";
 import { newArrivalRouter } from "./src/routes/newArrival.js";
-import reviewsSidebarRouter from "./src/routes/reviewsSidebar.js"
-import celebrityPerfumesRouter from "./src/routes/celebrityPerfumes.js"
-import genderPerfumesRouter from "./src/routes/genderPerfumes.js"
+import reviewsSidebarRouter from "./src/routes/reviewsSidebar.js";
+import celebrityPerfumesRouter from "./src/routes/celebrityPerfumes.js";
+import genderPerfumesRouter from "./src/routes/genderPerfumes.js";
 import relatedFragramRouter from "./src/routes/relatedFragrams.js";
+import perfumeCategoriesRouter from "./src/routes/perfumeCategories.js";
+import fragramsRouter from "./src/routes/fragrams.js";
 import { requestReviewRouter } from "./src/routes/requestReview.js";
 import { writeReviewRouter } from "./src/routes/writeReview.js";
-
-
+import globalDataRouter from "./src/routes/globalData.js";
 
 //MIDDLEWARES
 dotenv.config();
@@ -54,11 +54,6 @@ app.use(
   })
 );
 
-
-
-
-
-
 //routes
 
 app.use("/api/v1/auth", authRoutes);
@@ -77,9 +72,11 @@ app.use("/api/v1/reviewsSidebar", reviewsSidebarRouter);
 app.use("/api/v1/celebrityPerfumes", celebrityPerfumesRouter);
 app.use("/api/v1/genderPerfumes", genderPerfumesRouter);
 app.use("/api/v1/relatedFragrams", relatedFragramRouter);
+app.use("/api/v1/perfumeCategories", perfumeCategoriesRouter);
+app.use("/api/v1/fragrams", fragramsRouter);
 app.use("/api/v1/requestReview", requestReviewRouter);
 app.use("/api/v1/writeReview", writeReviewRouter);
-
+app.use("/api/v1/globalData", globalDataRouter);
 
 
 app.use(error);

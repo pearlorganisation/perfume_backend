@@ -19,13 +19,13 @@ export const createRequestReview = asyncHandler(async (req, res) => {
 
 // Get all review requests
 export const getAllRequestReviews = asyncHandler(async (req, res) => {
-    const reviews = await RequestReviewSchema.find().populate( 'userId').lean();
+    const reviews = await RequestReviewSchema.find().populate( 'userId','userName').lean();
     res.status(200).json({status:true,message:"Data Received Successfully",data:reviews});
 });
 
 // Get a single review request by ID
 export const getRequestReviewById = asyncHandler(async (req, res) => {
-    const review = await RequestReviewSchema.findById(req.params.id).populate( 'userId').lean();
+    const review = await RequestReviewSchema.findById(req.params.id).populate( 'userId','userName').lean();
     if (!review) {
         return res.status(404).json({ message: 'Review not found' });
     }

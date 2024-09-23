@@ -1,9 +1,8 @@
-import { NewArrivalPerfume as newArrivalModel } from "../models/newArrival.js";
-import { relatedFragrams as relatedFragramsModel } from "../models/relatedFragrams.js";
+import { fragrams as fragramsModel } from "../models/fragrams.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
-export const addRelatedFragram = asyncHandler(async (req, res, next) => {
-  const { perfumeName, brand, link, perfumeId } = req?.body;
+export const addFragram = asyncHandler(async (req, res, next) => {
+  const { title, postBy, link, rating, perfumeId } = req?.body;
 
   if (!perfumeId) {
     res.status(500).json({ status: false, message: "Missing Perfume ID" });
@@ -11,51 +10,49 @@ export const addRelatedFragram = asyncHandler(async (req, res, next) => {
 
   const { banner } = req?.files;
 
-  if (!perfumeName && !banner && !brand && !link) {
+  if (!title && !banner && !postBy && !rating && !link) {
     res.status(500).json({ status: false, message: "Incomplete data" });
   }
 
   const payload = {
-    perfumeName,
+    title,
     banner: banner[0]?.path,
-    brand,
+    postBy,
     link,
+    rating,
     perfume: perfumeId,
   };
 
-  await relatedFragramsModel.create(payload);
+  await fragramsModel.create(payload);
 
-  const result = await relatedFragramsModel.find({ perfume: perfumeId });
+  const result = await fragramsModel.find({ perfume: perfumeId });
 
   res
     .status(200)
-    .json({ status: true, message: "Related Fragram Added", data: result });
+    .json({ status: true, message: "Fragram Added", data: result });
 });
 
-export const getRelatedFragrams = asyncHandler(async (req, res, next) => {
+export const getFragrams = asyncHandler(async (req, res, next) => {
   const { perfumeId } = req?.query;
 
   if (!perfumeId) {
     res.status(500).json({ status: false, message: "Missing Perfume ID" });
   }
 
-  const relatedFragramsData = await relatedFragramsModel
+  const fragramsData = await fragramsModel
     .find({ perfume: perfumeId })
     .populate({
       path: "perfume",
       as: "perfume",
       select: "perfume banner",
     })
-    .populate("brand")
     .sort({ createdAt: -1 });
 
-  res.status(200).json({ status: true, data: relatedFragramsData });
+  res.status(200).json({ status: true, data: fragramsData });
 });
 
-export const deleteRelatedFragram = asyncHandler(async (req, res, next) => {
-  const isValidId = await relatedFragramsModel.findByIdAndDelete(
-    req?.params?.id
-  );
+export const deleteFragram = asyncHandler(async (req, res, next) => {
+  const isValidId = await fragramsModel.findByIdAndDelete(req?.params?.id);
   if (!isValidId) {
     return res
       .status(400)
@@ -68,14 +65,14 @@ export const deleteRelatedFragram = asyncHandler(async (req, res, next) => {
   });
 });
 
-export const getSingleRelatedFragram = asyncHandler(async (req, res, next) => {
+export const getSingleFragram = asyncHandler(async (req, res, next) => {
   const { id } = req?.params;
 
   if (!id) {
     req.status(500).json({ status: false, message: "Missing ID" });
   }
 
-  const data = await relatedFragramsModel.findById(id);
+  const data = await fragramsModel.findById(id);
   if (!data) {
     return res.status(400).json({
       status: false,
@@ -85,8 +82,8 @@ export const getSingleRelatedFragram = asyncHandler(async (req, res, next) => {
   res.status(200).json({ status: true, data });
 });
 
-export const updateRelatedFragram = asyncHandler(async (req, res) => {
-  const { perfumeName, brand, link } = req?.body;
+export const updateFragram = asyncHandler(async (req, res) => {
+  const { title, postBy, rating, link } = req?.body;
   const { id } = req.params;
 
   if (!id) {
@@ -94,9 +91,10 @@ export const updateRelatedFragram = asyncHandler(async (req, res) => {
   }
 
   const payload = {
-    perfumeName,
-    brand,
+    title,
     link,
+    postBy,
+    rating,
   };
 
   const { banner } = req?.files;
@@ -107,8 +105,8 @@ export const updateRelatedFragram = asyncHandler(async (req, res) => {
 
   console.log(payload);
 
-  await relatedFragramsModel.findOneAndUpdate({ _id: id }, payload);
+  await fragramsModel.findOneAndUpdate({ _id: id }, payload);
   res
     .status(200)
-    .json({ status: true, message: "Related Fragram Updated successfully" });
+    .json({ status: true, message: "Fragram Updated successfully" });
 });

@@ -5,7 +5,6 @@ import { asyncHandler } from '../utils/asyncHandler.js';
 // Create a new review request
 export const createWriteReview = asyncHandler(async (req, res) => {
     
-    console.log("we ca,e ",req.body);
     const images = req?.files || [];
     const {description,userId,perfumeName} = req.body;
      
@@ -23,13 +22,13 @@ export const createWriteReview = asyncHandler(async (req, res) => {
 
 // Get all review requests
 export const getAllWriteReview = asyncHandler(async (req, res) => {
-    const reviews = await WriteReviewSchema.find().populate( 'userId').lean();
+    const reviews = await WriteReviewSchema.find().populate( 'userId','userName').lean();
     res.status(200).json({status:true,message:"Data Fetched Successfully ",data:reviews});
 });
 
 // Get a single review request by ID
 export const getWriteReview = asyncHandler(async (req, res) => {
-    const review = await WriteReviewSchema.findById(req.params.id).populate( 'userId').lean();
+    const review = await WriteReviewSchema.findById(req.params.id).populate( 'userId','userName').lean();
     if (!review) {
         return res.status(404).json({ message: 'Review not found' });
     }

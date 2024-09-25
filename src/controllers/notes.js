@@ -53,7 +53,7 @@ export const getAllNote = asyncHandler(async (req, res, next) => {
     .find({ name: { $regex: search, $options: 'i' } })
     .skip(skip)
     .limit(limit)
-    .lean(); // Optional: convert to plain JS objects
+    .lean();
 
   // Send response
   res.status(200).json({

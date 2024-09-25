@@ -9,11 +9,13 @@ import {
   updatePerfume,
 } from "../controllers/perfume.js";
 import { getAllRecentPerfume } from "../controllers/recentPerfumes.js";
+import { addVoteToPerfume, addVoteToPerfumeProsCons } from "../controllers/userGlobalCount.js";
 
 const router = express.Router();
 
 router.route("/recent").get(getAllRecentPerfume);
-
+router.route("/voteProsCons").patch(addVoteToPerfumeProsCons);
+router.route("/votePerfume").patch(addVoteToPerfume);
 router
   .route("/")
   .post(

@@ -1,18 +1,19 @@
 import mongoose from "mongoose";
 
-const proCon = new mongoose.Schema({
+const proCon = new mongoose.Schema({    
     title:{
         type:String,
         required : [true,"Title for pros is required field !!"]
     },
-    likes:{
+    likesVote:{
         type:Number,
         default:0
     },
-    disLikes:{
+    disLikesVote:{
         type:Number,
         default:0
     }
+
 })
 
 const prosConsSchema = new mongoose.Schema({
@@ -25,13 +26,8 @@ const prosConsSchema = new mongoose.Schema({
     },
     perfumeId: {
         type: mongoose.Types.ObjectId,
-        ref: "perfume"
+        ref: "perfume",
     },
-    userId:{
-        type:mongoose.Schema.ObjectId,
-        ref:"auth"
-    }
-
 
 });
 

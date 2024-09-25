@@ -24,7 +24,6 @@ export const addReviewSidebar = asyncHandler(async (req, res, next) => {
 });
 
 export const getReviewsSidebar = asyncHandler(async (req, res, next) => {
-    console.log('findingnnn')
     const reviewsSidebarData = await reviewsSidebarModel.find({}).sort({ createdAt: -1 }).limit(21);
 
     res.status(200).json({ status: true, data: reviewsSidebarData });

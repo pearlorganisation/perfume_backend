@@ -1,5 +1,6 @@
 import auth from "../models/auth.js";
 import perfume from "../models/perfume.js";
+import { ProsCons } from "../models/prosCons.js";
 import { userGlobalCountModel } from "../models/userGlobalCounts.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import errorResponse from "../utils/errorResponse.js";
@@ -8,16 +9,18 @@ import errorResponse from "../utils/errorResponse.js";
 
 export const addVoteToPerfumeProsCons = asyncHandler(async (req, res, next) => {
     const { prosConsId, userId, userVote, cons, pros } = req.body;
-
+    
+    console.log("req.body",req.body);
     if (!userId || !prosConsId) {
         return next(new errorResponse("Bad Request: IDs Not Provided!", 400));
     }
 
     const isUserExist = await auth.findById(userId).lean();
-    const isProsConsExist = await perfume.findOne({ prosConsId }).lean();
+    const isPerfumeExist = await perfume.findOne({ prosConsId }).lean();
+    const isProsConsExist = await ProsCons.findById( prosConsId ).lean();
 
 
-    if (!isUserExist || !isProsConsExist) {
+    if (!isUserExist || !isProsConsExist || !isPerfumeExist) {
         return next(new errorResponse("User or Perfume Not Found!", 404));
     }
 
@@ -31,44 +34,160 @@ export const addVoteToPerfumeProsCons = asyncHandler(async (req, res, next) => {
 
 
         const userGlobalData = await userGlobalCountModel.findOne({ userId }).lean();
-        const existingProsVote = userGlobalData.pros.find(el => el.prosId?.toString() === pros);
+        const existingProsVote = userGlobalData.pros.find(el => el.prosId.toString() === pros);
+        const {disLikesVote,likesVote} = isProsConsExist.pros.find((el)=> el._id.toString() === pros);
 
-        if (existingProsVote) {
+
+        if(existingProsVote?.vote === userVote) 
+           return  res.status(200).json({ status:true,message: "Voting Saved!!" });
+        
+        if (existingProsVote ) {
+            console.log("coming in existing vote");
+            //user data 
             updateQuery = await userGlobalCountModel.findOneAndUpdate(
                 { userId, 'pros._id': existingProsVote._id },
                 { $set: { 'pros.$.vote': userVote } },
                 { new: true }
             );
-        }
-        else {
+
+            console.log("updateQuery",updateQuery);
+
+
+            if(userVote === -1)
+            {
+                const updateConsVote = await ProsCons.findOneAndUpdate(
+                    { _id:prosConsId, 'pros._id': pros },
+                    {$set: { 'pros.$.disLikesVote': disLikesVote + 1, 'pros.$.likesVote': likesVote - 1 }}
+                    ,{new:true}
+                );
+
+                    console.log("updateConsVote dislike",updateConsVote)
+            }
+            else{
+
+                
+                const updateConsVote = await ProsCons.findOneAndUpdate(
+                    { _id:prosConsId, 'pros._id': pros },
+                    {$set: { 'pros.$.disLikesVote': disLikesVote - 1, 'pros.$.likesVote': likesVote + 1 }}
+                ,{new:true} );
+
+                    console.log("updateConsVote like",updateConsVote)
+            }
+
+
+
+
+            
+        } else  {
+
+
             updateQuery = await userGlobalCountModel.findOneAndUpdate(
                 { userId },
                 { $push: { pros: { prosId: pros, vote: userVote } } },
                 { new: true }
             );
-        }
 
+            if (userVote === -1) {
+                const updateConsVote = await ProsCons.findOneAndUpdate(
+                    { _id:prosConsId, 'pros._id': pros },
+                    { $set: { 'pros.$.disLikesVote': disLikesVote+1 } },
+                    
+                );
+
+            console.log("updateConsVote disLikes",updateConsVote);
+
+            }
+            else{
+                const updateConsVote = await ProsCons.findOneAndUpdate(
+                    { _id:prosConsId, 'pros._id': pros },
+                    { $set: { 'pros.$.likesVote': likesVote+1}},
+                   
+                );
+
+                    console.log("updateConsVote likes ",updateConsVote);
+            }
+
+
+
+        }
 
 
 
     } else if (cons) {
 
         const userGlobalData = await userGlobalCountModel.findOne({ userId }).lean();
-        const existingConsVote = userGlobalData.cons.find(el => el.consId?.toString() === cons);
+        const existingConsVote = userGlobalData.cons.find(el => el.consId.toString() === cons);
+        const {disLikesVote,likesVote} = isProsConsExist.cons.find((el)=> el._id.toString() === cons);
 
-        if (existingConsVote) {
 
+        if(existingConsVote?.vote === userVote) 
+           return  res.status(200).json({ status:true,message: "Voting Saved!!" });
+        
+        if (existingConsVote ) {
+            console.log("coming in existing vote");
+            //user data 
             updateQuery = await userGlobalCountModel.findOneAndUpdate(
                 { userId, 'cons._id': existingConsVote._id },
                 { $set: { 'cons.$.vote': userVote } },
                 { new: true }
             );
-        } else {
+
+            console.log("updateQuery",updateQuery);
+
+
+            if(userVote === -1)
+            {
+                const updateConsVote = await ProsCons.findOneAndUpdate(
+                    { _id:prosConsId, 'cons._id': cons },
+                    {$set: { 'cons.$.disLikesVote': disLikesVote + 1, 'cons.$.likesVote': likesVote - 1 }}
+                    ,{new:true}
+                );
+
+                    console.log("updateConsVote dislike",updateConsVote)
+            }
+            else{
+
+                
+                const updateConsVote = await ProsCons.findOneAndUpdate(
+                    { _id:prosConsId, 'cons._id': cons },
+                    {$set: { 'cons.$.disLikesVote': disLikesVote - 1, 'cons.$.likesVote': likesVote + 1 }}
+                ,{new:true} );
+
+                    console.log("updateConsVote like",updateConsVote)
+            }
+
+
+
+
+            
+        } else  {
+
+
             updateQuery = await userGlobalCountModel.findOneAndUpdate(
                 { userId },
                 { $push: { cons: { consId: cons, vote: userVote } } },
                 { new: true }
             );
+
+            if (userVote === -1) {
+                const updateConsVote = await ProsCons.findOneAndUpdate(
+                    { _id:prosConsId, 'cons._id': cons },
+                    { $set: { 'cons.$.disLikesVote': disLikesVote+1 } },
+                    
+                );
+
+            console.log("updateConsVote disLikes",updateConsVote);
+
+            }
+            else{
+                const updateConsVote = await ProsCons.findOneAndUpdate(
+                    { _id:prosConsId, 'cons._id': cons },
+                    { $set: { 'cons.$.likesVote': likesVote+1}},
+                   
+                );
+
+                    console.log("updateConsVote likes ",updateConsVote);
+            }
 
 
 
@@ -90,7 +209,6 @@ export const addVoteToPerfume = asyncHandler(async (req, res, next) => {
     }
 
     const isPerfumeExists = await perfume.findById(perfumeId).lean();
-    console.log("asdsad",isPerfumeExists);
     let updatedQuery;
     if (isPerfumeExists) {
         const userGlobalCountData = await userGlobalCountModel.findOne({ userId }).lean();
@@ -107,29 +225,28 @@ export const addVoteToPerfume = asyncHandler(async (req, res, next) => {
             })
 
 
-            if((isPerfumeVoteExists.vote !== userVote) && userVote === -1)
-                { 
-                    //   console.log("updatedUserVote",updatedUserVote);
-                    const updatedPerfumeVote = await perfume.findByIdAndUpdate(perfumeId,{
-                        $set:{dislike:isPerfumeExists.dislike + 1,likes:isPerfumeExists.likes -1 }
-                    },{
-                        new:true
-                    });
-        
-                    console.log(updatedPerfumeVote,"updatedPerfumeVote");
-                }
-                else if(isPerfumeVoteExists.vote !== userVote){
-                    const updatedPerfumeVote = await perfume.findByIdAndUpdate(perfumeId,{
-                        $set:{likes:isPerfumeExists.likes + 1,dislike:isPerfumeExists.dislike - 1},
-                    },{
-                        new:true
-                    });  
+            if ((isPerfumeVoteExists.vote !== userVote) && userVote === -1) {
+                //   console.log("updatedUserVote",updatedUserVote);
+                const updatedPerfumeVote = await perfume.findByIdAndUpdate(perfumeId, {
+                    $set: { dislike: isPerfumeExists.dislike + 1, likes: isPerfumeExists.likes - 1 }
+                }, {
+                    new: true
+                });
 
-                    
+                console.log(updatedPerfumeVote, "updatedPerfumeVote");
+            }
+            else if (isPerfumeVoteExists.vote !== userVote) {
+                const updatedPerfumeVote = await perfume.findByIdAndUpdate(perfumeId, {
+                    $set: { likes: isPerfumeExists.likes + 1, dislike: isPerfumeExists.dislike - 1 },
+                }, {
+                    new: true
+                });
 
-                    console.log(updatedPerfumeVote,"updatedPerfumeVote");
 
-                }
+
+                console.log(updatedPerfumeVote, "updatedPerfumeVote");
+
+            }
         }
         else {
 
@@ -139,32 +256,30 @@ export const addVoteToPerfume = asyncHandler(async (req, res, next) => {
             }, {
                 new: true
             });
-              
-            if(userVote === -1)
-            {
-                const updatedPerfumeVote = await perfume.findByIdAndUpdate(perfumeId,{
-                    $set:{dislike:isPerfumeExists.dislike + 1 }
-                },{
-                    new:true
-                });
-                console.log(updatedPerfumeVote,"updatedPerfumeVote");
-            }else
-            {
-                const updatedPerfumeVote = await perfume.findByIdAndUpdate(perfumeId,{
-                    $set:{likes:isPerfumeExists.likes + 1 }
-                },{
-                    new:true
-                });
-                console.log(updatedPerfumeVote,"updatedPerfumeVote");  
-            }
-            
 
-            
+            if (userVote === -1) {
+                const updatedPerfumeVote = await perfume.findByIdAndUpdate(perfumeId, {
+                    $set: { dislike: isPerfumeExists.dislike + 1 }
+                }, {
+                    new: true
+                });
+                console.log(updatedPerfumeVote, "updatedPerfumeVote");
+            } else {
+                const updatedPerfumeVote = await perfume.findByIdAndUpdate(perfumeId, {
+                    $set: { likes: isPerfumeExists.likes + 1 }
+                }, {
+                    new: true
+                });
+                console.log(updatedPerfumeVote, "updatedPerfumeVote");
+            }
+
+
+
 
         }
-       
 
-       
+
+
 
         return res.status(200).json({ status: true, message: "Perfume Vote Done Successfully !!", updatedQuery })
     }

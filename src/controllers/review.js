@@ -20,8 +20,6 @@ export const newPerfumeReview = asyncHandler(async (req, res, next) => {
   }
   const commentData = commentsFields ? JSON.parse(commentsFields) : {};
 
-  console.log("im in controller", req);
-
   const newReview = new reviews({
     ...req?.body,
     notes: notes ? JSON.parse(notes) : [],
@@ -251,175 +249,28 @@ export const updatePefumeReview = asyncHandler(async (req, res, next) => {
 // });
 
 export const getAllReview = asyncHandler(async (req, res, next) => {
-  // const aggregationPipeline = [
-  //   {
-  //     $facet: {
-  //       reaction: [
-  //         { $match: { "reaction.name": { $ne: null } } },
-  //         {
-  //           $group: {
-  //             _id: "$reaction.name",
-  //             count: { $sum: 1 },
-  //           },
-  //         },
-  //         {
-  //           $group: {
-  //             _id: null,
-  //             result: {
-  //               $push: {
-  //                 k: "$_id",
-  //                 v: "$count",
-  //               },
-  //             },
-  //           },
-  //         },
-  //         {
-  //           $project: {
-  //             _id: 0,
-  //             reaction: { $arrayToObject: "$result" },
-  //           },
-  //         },
-  //       ],
-  //       season: [
-  //         { $unwind: "$season" },
-  //         { $match: { "season.name": { $ne: null } } },
-  //         {
-  //           $group: {
-  //             _id: "$season.name",
-  //             count: { $sum: 1 },
-  //           },
-  //         },
-  //         {
-  //           $group: {
-  //             _id: null,
-  //             result: {
-  //               $push: {
-  //                 k: "$_id",
-  //                 v: "$count",
-  //               },
-  //             },
-  //           },
-  //         },
-  //         {
-  //           $project: {
-  //             _id: 0,
-  //             season: { $arrayToObject: "$result" },
-  //           },
-  //         },
-  //       ],
-  //       priceValue: [
-  //         { $match: { priceValue: { $ne: null } } },
-  //         {
-  //           $group: {
-  //             _id: "$priceValue",
-  //             count: { $sum: 1 },
-  //           },
-  //         },
-  //         {
-  //           $group: {
-  //             _id: null,
-  //             result: {
-  //               $push: {
-  //                 k: "$_id",
-  //                 v: "$count",
-  //               },
-  //             },
-  //           },
-  //         },
-  //         {
-  //           $project: {
-  //             _id: 0,
-  //             priceValue: { $arrayToObject: "$result" },
-  //           },
-  //         },
-  //       ],
-  //       gender: [
-  //         { $match: { gender: { $ne: null } } },
-  //         {
-  //           $group: {
-  //             _id: "$gender",
-  //             count: { $sum: 1 },
-  //           },
-  //         },
-  //         {
-  //           $group: {
-  //             _id: null,
-  //             result: {
-  //               $push: {
-  //                 k: "$_id",
-  //                 v: "$count",
-  //               },
-  //             },
-  //           },
-  //         },
-  //         {
-  //           $project: {
-  //             _id: 0,
-  //             gender: { $arrayToObject: "$result" },
-  //           },
-  //         },
-  //       ],
-  //       sillage: [
-  //         { $match: { sillage: { $ne: null } } },
-  //         {
-  //           $group: {
-  //             _id: "$sillage",
-  //             count: { $sum: 1 },
-  //           },
-  //         },
-  //         {
-  //           $group: {
-  //             _id: null,
-  //             result: {
-  //               $push: {
-  //                 k: "$_id",
-  //                 v: "$count",
-  //               },
-  //             },
-  //           },
-  //         },
-  //         {
-  //           $project: {
-  //             _id: 0,
-  //             sillage: { $arrayToObject: "$result" },
-  //           },
-  //         },
-  //       ],
-  //       longevity: [
-  //         { $match: { longevity: { $ne: null } } },
-  //         {
-  //           $group: {
-  //             _id: "$longevity",
-  //             count: { $sum: 1 },
-  //           },
-  //         },
-  //         {
-  //           $group: {
-  //             _id: null,
-  //             result: {
-  //               $push: {
-  //                 k: "$_id",
-  //                 v: "$count",
-  //               },
-  //             },
-  //           },
-  //         },
-  //         {
-  //           $project: {
-  //             _id: 0,
-  //             longevity: { $arrayToObject: "$result" },
-  //           },
-  //         },
-  //       ],
-  //     },
-  //   },
-  // ];
-
   const { id } = req.params;
   console.log("id", id);
 
   // const data = await reviews.findMany({perfume:"66d2dd11dd2391f48772a570"}).lean();
   const data = await reviews.find({ perfume: id });
+  console.log(data);
+  res
+    .status(200)
+    .json({ status: true, message: "Reviews Fetched Successfully ", data });
+});
+
+export const getReviewByUserId = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  console.log("id", id);
+
+  // const data = await reviews.findMany({perfume:"66d2dd11dd2391f48772a570"}).lean();
+  const data = await reviews
+    .find({ reviewBy: id })
+    .select(
+      "-commentsFields -notes -productReviewCount -updatedAt -createdAt -commentGallery"
+    )
+    .lean();
   console.log(data);
   res
     .status(200)

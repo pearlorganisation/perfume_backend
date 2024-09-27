@@ -17,6 +17,16 @@ export const getAllNews = asyncHandler(async (req, res, next) => {
   res.status(200).json({ status: true, data });
 });
 
+export const getNewsById = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+
+  if (!id) {
+    res.status(500).json({ status: false, message: "Missing id" });
+  }
+  const data = await newsModel.findById({ _id: id });
+  res.status(200).json({ status: true, data });
+});
+
 export const deleteNews = asyncHandler(async (req, res, next) => {
   const deletedData = await newsModel.findByIdAndDelete(req?.params?.id);
   if (!deletedData) {

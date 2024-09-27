@@ -24,6 +24,29 @@ export const signin = asyncHandler(async (req, res, next) => {
 });
 
 export const getAllUsers = asyncHandler(async (req, res, next) => {
-  const allUsers = await auth.find();
-  res.status(200).json({data:allUsers, status: true, message: "Success Fetched!!" });
+  const {Page,Limit,Search} = req.params;
+
+  let page = 1;
+  let limit = 10;
+  let search = '';
+
+  if (Page) {
+    page = Math.max(1, JSON.parse(Page)); // Ensure page is at least 1
+  }
+  
+  if (Limit) {
+    limit = Math.max(1, JSON.parse(Limit)); // Ensure limit is at least 1
+  }
+
+  if (Search) {
+    search = Search;
+  }
+
+  const skip = (page - 1)*limit;
+  
+  const totalUsersCount = await auth.countDocuments().lean();
+  
+  
+  const allUsers = await auth.find({ userName: { $regex: search, $options: 'i' } }).skip(skip).limit(10).lean();
+  res.status(200).json({totalUsers:totalUsersCount,totalPage :Math.ceil(totalUsersCount/limit) ,data:allUsers, status: true, message: "Success Fetched!!" });
 });

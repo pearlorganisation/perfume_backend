@@ -67,7 +67,6 @@ app.use("/api/v1/comment", commentRouter);
 app.use("/api/v1/prosCons", prosConsRouter);
 app.use("/api/v1/productReviewCount", productReviewRouter);
 app.use("/api/v1/newArrival", newArrivalRouter);
-// app.use("/api/v1/reletedPerfume", relatedPerfumeRouter);
 app.use("/api/v1/reviewsSidebar", reviewsSidebarRouter);
 app.use("/api/v1/celebrityPerfumes", celebrityPerfumesRouter);
 app.use("/api/v1/genderPerfumes", genderPerfumesRouter);

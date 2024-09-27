@@ -72,7 +72,6 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
 export const updatePerfume = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
 
-  console.log("assdas", req?.files);
   const { gallery, banner, logo, video } = req?.files;
 
   let query = {};
@@ -180,14 +179,43 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
 });
 
 export const getAllPerfume = asyncHandler(async (req, res, next) => {
+  
+  const {Page,Limit,Search} = req.query;
+  
+  let page = 1;
+  let limit = 10;
+  let search = '';
+
+  if(Page)
+  {
+    page = Math.max(page,Page);
+  }
+  if(Limit)
+  {
+    limit = Math.max(limit,Limit);
+  }
+  if(Search)
+  {
+    search = Search;
+  }
+
+  let skip = (page-1)*limit;
+   console.log(search,"asdsada");
+
+   const totalDocuments = await perfumeModel.countDocuments({ perfume: { $regex: search, $options: 'i' } });
+   const totalPage = Math.ceil(totalDocuments / limit);
+  
+
   const perfumeData = await perfumeModel
-    .find()
+    .find({perfume:{$regex:search,$options:'i'}})
     .populate(["middleNote", "topNote", "baseNote", "brand"])
+    .skip(skip)
+    .limit(limit)
     .lean()
     .sort({ createdAt: -1 })
-    .limit(50);
+    
 
-  res.status(200).json({ status: true, data: perfumeData });
+  res.status(200).json({ status: true, data: perfumeData,totalDocuments,totalPage});
 });
 
 export const deletePerfume = asyncHandler(async (req, res, next) => {

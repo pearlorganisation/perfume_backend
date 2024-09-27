@@ -17,7 +17,6 @@ export const getAllNote = asyncHandler(async (req, res, next) => {
   let limit = 10; // Default to 10 results
   let search = ''; // Default to an empty search string
 
-  // Parse Page and Limit, with validation
   if (Page) {
     page = Math.max(1, JSON.parse(Page)); // Ensure page is at least 1
   }

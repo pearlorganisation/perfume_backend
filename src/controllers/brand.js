@@ -11,8 +11,35 @@ export const newBrand = asyncHandler(async (req, res, next) => {
 });
 
 export const getAllBrands = asyncHandler(async (req, res, next) => {
-  const data = await brand.find();
-  res.status(200).json({ status: true, data });
+  const {Page,Limit,Search} = req.query;
+  
+  let page = 1;
+  let limit = 10;
+  let search = '';
+
+  if(Page)
+  {
+    page = Math.max(page,Page);
+  }
+  if(Limit)
+  {
+    limit = Math.max(limit,Limit);
+  }
+  if(Search)
+  {
+    search = Search;
+  }
+
+  let skip = (page-1)*limit;
+
+   const totalDocuments = await brand.countDocuments({ brand: { $regex: search, $options: 'i' } }).lean();
+   const totalPage = Math.ceil(totalDocuments / limit);
+
+
+
+
+  const data = await brand.find({brand:{$regex:search,$options:'i'}}).skip(skip).limit(limit).lean();
+  res.status(200).json({ status: true, data,totalDocuments,totalPage });
 });
 
 export const getAllBrandsMenu = asyncHandler(async (req, res, next) => {

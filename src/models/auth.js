@@ -3,7 +3,7 @@ import { userGlobalCountModel } from "./userGlobalCounts.js";
 
 const authSchema = new mongoose.Schema(
   {
-    userName: { type: String, required: true, unique: true },
+    userName: { type: String, required: true, unique: true,index:true },
     pin: { type: String, required: true },
   },
 

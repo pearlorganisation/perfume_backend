@@ -24,7 +24,7 @@ export const signin = asyncHandler(async (req, res, next) => {
 });
 
 export const getAllUsers = asyncHandler(async (req, res, next) => {
-  const {Page,Limit,Search} = req.params;
+  const {Page,Limit,Search} = req.query;
 
   let page = 1;
   let limit = 10;
@@ -44,9 +44,12 @@ export const getAllUsers = asyncHandler(async (req, res, next) => {
 
   const skip = (page - 1)*limit;
   
-  const totalUsersCount = await auth.countDocuments().lean();
-  
+
+  const totalUsersCount = await auth.countDocuments({ userName: { $regex: search, $options: 'i' } }).lean();
+
   
   const allUsers = await auth.find({ userName: { $regex: search, $options: 'i' } }).skip(skip).limit(10).lean();
+  
+
   res.status(200).json({totalUsers:totalUsersCount,totalPage :Math.ceil(totalUsersCount/limit) ,data:allUsers, status: true, message: "Success Fetched!!" });
 });

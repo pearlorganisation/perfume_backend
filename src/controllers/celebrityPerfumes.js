@@ -76,14 +76,12 @@ export const deleteCelebrityPerfume = asyncHandler(async (req, res) => {
   if (!id) {
     return res.status(400).json({ status: false, message: "No id provided" });
   }
-  const isIdValid = await blogsModel.findByIdAndDelete(id);
+  const isIdValid = await celebrityPerfumesModel.findByIdAndDelete(id);
   if (!isIdValid) {
-    return res
-      .status(400)
-      .json({
-        status: false,
-        messaeg: "No celebrity perfume found with given id!!",
-      });
+    return res.status(400).json({
+      status: false,
+      messaeg: "No celebrity perfume found with given id!!",
+    });
   }
 
   res

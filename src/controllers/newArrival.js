@@ -67,3 +67,36 @@ export const getAllNewArrival = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({ status: true, data });
 });
+
+
+export const getAllNewArrivalAdmin = asyncHandler(async (req, res, next) => {
+  //  need to paginate this later =>
+    const {Page,Limit,Search} = req.query;
+  
+  let page = 1;
+  let limit = 10;
+  let search = '';
+
+  if(Page)
+  {
+    page = Math.max(page,Page);
+  }
+  if(Limit)
+  {
+    limit = Math.max(limit,Limit);
+  }
+  if(Search)
+  {
+    search = Search;
+  }
+
+  let skip = (page-1)*limit;
+
+   const totalDocuments = await newArrivalModel.countDocuments({ perfumeName: { $regex: search, $options: 'i' } });
+   const totalPage = Math.ceil(totalDocuments / limit);
+  
+
+  const data = await newArrivalModel.find({ perfumeName: { $regex: search, $options: 'i' } }).skip(skip).limit(limit).lean().sort({ createdAt: -1 });
+
+  res.status(200).json({ status: true, data ,totalPage,totalDocuments});
+});

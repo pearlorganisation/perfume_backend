@@ -6,9 +6,12 @@ import {
   getNewsById,
   newNews,
   updateNews,
+  getAllNewsAdmin,
 } from "../controllers/news.js";
 
 const router = express.Router();
+
+router.route("/admin").get(getAllNewsAdmin);
 router.route("/").get(getAllNews).post(upload.single("image"), newNews);
 router
   .route("/:id")

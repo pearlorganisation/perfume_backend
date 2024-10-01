@@ -93,6 +93,38 @@ export const getAllTopRatedPerfumes = asyncHandler(async (req, res) => {
   res.status(200).json(topRatedPerfumes);
 });
 
+export const getAllTopRatedPerfumesForAdmin = asyncHandler(async (req, res) => {
+  
+  const {Page,Limit,Search} = req.query;
+  
+  let page = 1;
+  let limit = 10;
+  let search = '';
+
+  if(Page)
+  {
+    page = Math.max(page,Page);
+  }
+  if(Limit)
+  {
+    limit = Math.max(limit,Limit);
+  }
+  if(Search)
+  {
+    search = Search;
+  }
+
+  let skip = (page-1)*limit;
+   console.log(search,"asdsada");
+
+   const totalDocuments = await TopRatedPerfume.countDocuments({ perfumeName: { $regex: search, $options: 'i' } });
+   const totalPage = Math.ceil(totalDocuments / limit);
+    
+   
+  const topRatedPerfumes = await TopRatedPerfume.find({ perfumeName: { $regex: search, $options: 'i' } }).skip(skip).limit(limit).lean();
+  res.status(200).json({status:true,message:"Top Rated Perfume Fetched Successfully !!",totalDocuments,totalPage,topRatedPerfumes});
+});
+
 // Retrieve a single top-rated perfume by ID
 export const getTopRatedPerfumeById = asyncHandler(async (req, res) => {
   const { id } = req.params;
@@ -102,7 +134,7 @@ export const getTopRatedPerfumeById = asyncHandler(async (req, res) => {
     res.status(404).json({ message: "TopRatedPerfume not found" });
   }
 
-  res.status(200).json(topRatedPerfume);
+  res.status(200).json({status:true,message:"Top Rated Perfume Fetched Successfully !!",topRatedPerfume});
 });
 
 // Update a top-rated perfume by ID --pending
@@ -128,18 +160,12 @@ export const updateTopRatedPerfume = asyncHandler(async (req, res) => {
 export const deleteTopRatedPerfume = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const deletedTopRatedPerfume = await TopRatedPerfume.findByIdAndDelete(id);
-  // const deletePerfume = await perfume.findByIdAndDelete(
-  //   deletedTopRatedPerfume.perfumeId
-  // );
-  // const deleteReviewCount = await reviews.findByIdAndDelete(
-  //   deletePerfume.productReviewCoundId
-  // );
 
-  console.log("deleteReviewCount");
+
 
   if (!deletedTopRatedPerfume) {
     res.status(404).json({ message: "TopRatedPerfume not found" });
   }
 
-  res.status(200).json({ message: "TopRatedPerfume deleted successfully" });
+  res.status(200).json({status:true, message: "TopRatedPerfume deleted successfully" });
 });

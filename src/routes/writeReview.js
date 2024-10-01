@@ -11,7 +11,7 @@ import { upload } from "../config/cloudinary.js";
 
 const router = express.Router();
 router.patch("/status/:id", approveWriteReview);
-router.post("/", upload.array("images"), createWriteReview);
+router.post("/", upload.array("images"),createWriteReview);
 router.get("/", getAllWriteReview);
 router.get("/:id", getWriteReview);
 router.put("/:id", updateWriteReview);

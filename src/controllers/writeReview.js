@@ -25,11 +25,37 @@ export const createWriteReview = asyncHandler(async (req, res) => {
 
 // Get all review requests
 export const getAllWriteReview = asyncHandler(async (req, res) => {
-  const reviews = await WriteReviewSchema.find().populate("userId").lean();
+  const {Page,Limit,Search} = req.query;
+  
+  let page = 1;
+  let limit = 10;
+  let search = '';
+
+  if(Page)
+  {
+    page = Math.max(page,Page);
+  }
+  if(Limit)
+  {
+    limit = Math.max(limit,Limit);
+  }
+  if(Search)
+  {
+    search = Search;
+  }
+
+  let skip = (page-1)*limit;
+   console.log(search,"asdsada");
+
+   const totalDocuments = await WriteReviewSchema.countDocuments( { perfumeName: { $regex: search, $options: 'i' } } );
+   const totalPage = Math.ceil(totalDocuments / limit);
+  const reviews = await WriteReviewSchema.find({ perfumeName: { $regex: search, $options: 'i' } }).populate("userId").skip(skip).limit(limit).lean();
   res.status(200).json({
     status: true,
     message: "Data Fetched Successfully ",
     data: reviews,
+    totalDocuments,
+    totalPage
   });
 });
 

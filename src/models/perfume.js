@@ -139,7 +139,6 @@ const perfumeSchema = new mongoose.Schema(
 );
 
 perfumeSchema.pre("save", async function (next) {
-  console.log("we are coming here man", this);
   if (this.isNew) {
     try {
       console.log("we are coming here man");
@@ -149,7 +148,6 @@ perfumeSchema.pre("save", async function (next) {
         productId: this._id,
       });
 
-      console.log("sdfgsdfs", this);
 
       const newProsCons = await ProsCons.create({
         pros: this.pros,
@@ -166,7 +164,9 @@ perfumeSchema.pre("save", async function (next) {
       next(error); // Handle errors
     }
   } else {
-    next(); // Skip if document is not new (for updates)
+
+
+    next(); 
   }
 });
 

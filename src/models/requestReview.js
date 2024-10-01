@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 
 
 const requestReviewSchema = new mongoose.Schema({
+
+   images: {
+      type: [{}],
+    },
    perfumeName:{
     type:String,
     minlength: [3,"Perfume Name should be greater than 3 Words or more than that"],
@@ -9,7 +13,7 @@ const requestReviewSchema = new mongoose.Schema({
    },
    userId:{
     type:mongoose.Schema.Types.ObjectId,
-    ref:'auth'
+    ref:'Auth'
    },
    description:{
     type:String,
@@ -25,4 +29,4 @@ const requestReviewSchema = new mongoose.Schema({
 });
 
 
-export const RequestReviewSchema = new mongoose.model('RequestReview',requestReviewSchema)
+export const RequestReviewModel = new mongoose.model('RequestReview',requestReviewSchema)

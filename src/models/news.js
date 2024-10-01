@@ -17,10 +17,10 @@ const newsSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    content: {
-      type: String,
-      // required: true,
+    details:{
+      type:String
     },
+
   },
   { timestamps: true }
 );

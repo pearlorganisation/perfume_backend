@@ -4,11 +4,14 @@ import {
   addCelebrityPerfume,
   deleteCelebrityPerfume,
   getCelebrityPerfume,
+  getCelebrityPerfumeAdmin,
   getCelebrityPerfumes,
   updateCelebrityPerfume,
 } from "../controllers/celebrityPerfumes.js";
 
 const router = express.Router();
+
+router.route('/admin').get(getCelebrityPerfumeAdmin);
 
 router
   .route("/")

@@ -24,6 +24,42 @@ export const getCelebrityPerfume = asyncHandler(async (req, res) => {
   res.status(200).json({ status: true, data: result });
 });
 
+
+export const getCelebrityPerfumeAdmin = asyncHandler(async (req, res) => {
+
+  const {Page,Limit,Search} = req.query;
+  
+  let page = 1;
+  let limit = 10;
+  let search = '';
+
+  if(Page)
+  {
+    page = Math.max(page,Page);
+  }
+  if(Limit)
+  {
+    limit = Math.max(limit,Limit);
+  }
+  if(Search)
+  {
+    search = Search;
+  }
+
+  let skip = (page-1)*limit;
+   console.log(search,"asdsada");
+
+   const totalDocuments = await celebrityPerfumesModel.countDocuments({ title: { $regex: search, $options: 'i' } });
+   const totalPage = Math.ceil(totalDocuments / limit);
+  
+  const result = await celebrityPerfumesModel.find({ title: { $regex: search, $options: 'i' } }).skip(skip).limit(limit).lean();
+
+  res.status(200).json({ status: true,totalDocuments,totalPage, data: result });
+});
+
+
+
+
 export const addCelebrityPerfume = asyncHandler(async (req, res) => {
   const { title, content } = req?.body;
   const { banner } = req?.files;

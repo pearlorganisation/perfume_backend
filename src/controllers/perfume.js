@@ -78,8 +78,6 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
 
   if (gallery && gallery.length > 0) {
     const gall = await uploadFile(gallery);
-
-    console.log("we came here");
     query.gallery = gall.result;
   }
 
@@ -146,7 +144,6 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
   // Convert the Map to an object for MongoDB
   const mapsOfLinks = Object.fromEntries(map);
 
-  console.log("Converted mapsOfLinks:", JSON.stringify(mapsOfLinks, null, 2));
 
   query.mapOfLinks = mapsOfLinks;
   query.purchaseLinks = JSON.parse(purchaseLinks);
@@ -163,7 +160,6 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
   query.perfume = perfume;
   query.brand = brand;
 
-  console.log("dsfsdf", query);
 
   const updatedPerfume = await perfumeModel.findByIdAndUpdate(id, { ...query });
 

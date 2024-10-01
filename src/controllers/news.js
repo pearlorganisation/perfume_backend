@@ -39,7 +39,6 @@ export const deleteNews = asyncHandler(async (req, res, next) => {
 
 export const updateNews = asyncHandler(async (req, res) => {
   const { id } = req.params;
-
   if (!id) {
     res.status(500).json({ status: false, message: "Missing id" });
   }
@@ -49,12 +48,14 @@ export const updateNews = asyncHandler(async (req, res) => {
     content: req.body.content,
   };
 
-  const { banner } = req?.files;
+  const banner = req?.file;
 
-  if (banner && banner?.length > 0) {
-    payload.banner = banner[0]?.path;
+  if (banner) {
+    payload.image = banner.path;
   }
 
-  await newsModel.findOneAndUpdate({ _id: req.body.id }, payload);
+  const updateModel = await newsModel.findOneAndUpdate({ _id: id }, payload);
+  updateModel.save();
+
   res.status(200).json({ status: true, message: "Blog Updated successfully" });
 });

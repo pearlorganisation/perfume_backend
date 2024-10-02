@@ -144,7 +144,6 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
   // Convert the Map to an object for MongoDB
   const mapsOfLinks = Object.fromEntries(map);
 
-
   query.mapOfLinks = mapsOfLinks;
   query.purchaseLinks = JSON.parse(purchaseLinks);
   query.ratingFragrams = JSON.parse(ratingFragrams);
@@ -160,7 +159,6 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
   query.perfume = perfume;
   query.brand = brand;
 
-
   const updatedPerfume = await perfumeModel.findByIdAndUpdate(id, { ...query });
 
   // await newPerfume.save();
@@ -175,43 +173,43 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
 });
 
 export const getAllPerfume = asyncHandler(async (req, res, next) => {
-  
-  const {Page,Limit,Search} = req.query;
-  
+  const { Page, Limit, Search } = req.query;
+  console.log("req.query", req.query);
   let page = 1;
   let limit = 10;
-  let search = '';
-
-  if(Page)
-  {
-    page = Math.max(page,Page);
+  let search = "";
+  if (Page) {
+    page = Math.max(page, Page);
   }
-  if(Limit)
-  {
-    limit = Math.max(limit,Limit);
+  if (Limit) {
+    limit = Math.max(limit, Limit);
   }
-  if(Search)
-  {
+  if (Search) {
     search = Search;
   }
 
-  let skip = (page-1)*limit;
-   console.log(search,"asdsada");
+  let skip = (page - 1) * limit;
+  console.log(search, "asdsada");
 
-   const totalDocuments = await perfumeModel.countDocuments({ perfume: { $regex: search, $options: 'i' } });
-   const totalPage = Math.ceil(totalDocuments / limit);
-  
+  const totalDocuments = await perfumeModel.countDocuments({
+    perfume: { $regex: search, $options: "i" },
+  });
+  const totalPage = Math.ceil(totalDocuments / limit);
 
+  if (Limit === "infinite") {
+    limit = totalDocuments;
+  }
   const perfumeData = await perfumeModel
-    .find({perfume:{$regex:search,$options:'i'}})
+    .find({ perfume: { $regex: search, $options: "i" } })
     .populate(["middleNote", "topNote", "baseNote", "brand"])
     .skip(skip)
     .limit(limit)
     .lean()
-    .sort({ createdAt: -1 })
-    
+    .sort({ createdAt: -1 });
 
-  res.status(200).json({ status: true, data: perfumeData,totalDocuments,totalPage});
+  res
+    .status(200)
+    .json({ status: true, data: perfumeData, totalDocuments, totalPage });
 });
 
 export const deletePerfume = asyncHandler(async (req, res, next) => {

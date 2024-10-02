@@ -11,35 +11,38 @@ export const newBrand = asyncHandler(async (req, res, next) => {
 });
 
 export const getAllBrands = asyncHandler(async (req, res, next) => {
-  const {Page,Limit,Search} = req.query;
-  
+  const { Page, Limit, Search } = req.query;
+
   let page = 1;
   let limit = 10;
-  let search = '';
+  let search = "";
 
-  if(Page)
-  {
-    page = Math.max(page,Page);
+  if (Page) {
+    page = Math.max(page, Page);
   }
-  if(Limit)
-  {
-    limit = Math.max(limit,Limit);
+  if (Limit) {
+    limit = Math.max(limit, Limit);
   }
-  if(Search)
-  {
+  if (Search) {
     search = Search;
   }
 
-  let skip = (page-1)*limit;
+  let skip = (page - 1) * limit;
 
-   const totalDocuments = await brand.countDocuments({ brand: { $regex: search, $options: 'i' } }).lean();
-   const totalPage = Math.ceil(totalDocuments / limit);
+  const totalDocuments = await brand
+    .countDocuments({ brand: { $regex: search, $options: "i" } })
+    .lean();
+  const totalPage = Math.ceil(totalDocuments / limit);
 
-
-
-
-  const data = await brand.find({brand:{$regex:search,$options:'i'}}).skip(skip).limit(limit).lean();
-  res.status(200).json({ status: true, data,totalDocuments,totalPage });
+  if (Limit === "infinite") {
+    limit = totalDocuments;
+  }
+  const data = await brand
+    .find({ brand: { $regex: search, $options: "i" } })
+    .skip(skip)
+    .limit(limit)
+    .lean();
+  res.status(200).json({ status: true, data, totalDocuments, totalPage });
 });
 
 export const getAllBrandsMenu = asyncHandler(async (req, res, next) => {
@@ -66,21 +69,22 @@ export const getAllBrandsMenu = asyncHandler(async (req, res, next) => {
   res.status(200).json({ status: true, data });
 });
 
-
 export const getSingleBrandPerfumes = asyncHandler(async (req, res) => {
+  const { brandName } = req?.params;
+  console.log(brand);
+  const brandData = await brand.findOne({ brand: brandName });
+  if (!brandData) {
+    return res.status(404).json({ message: "Brand not found" });
+  }
 
-  const {brandName} = req?.params
-  console.log(brand)
-   const brandData = await brand.findOne({ brand: brandName });
-   if (!brandData) {
-       return res.status(404).json({ message: "Brand not found" });
-   }
+  // Find perfumes that match the brand ID
+  const perfumes = await perfume
+    .find({ brand: brandData._id })
+    .sort({ createdAt: -1 })
+    .select("perfume banner brand");
 
-   // Find perfumes that match the brand ID
-   const perfumes = await perfume.find({ brand: brandData._id }).sort({'createdAt': -1}).select("perfume banner brand");
-
-   res.status(200).json(perfumes);
-})
+  res.status(200).json(perfumes);
+});
 
 export const deleteBrand = asyncHandler(async (req, res, next) => {
   const isValidId = await brand.findByIdAndDelete(req?.params?.id);

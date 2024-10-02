@@ -9,7 +9,10 @@ import {
   updatePerfume,
 } from "../controllers/perfume.js";
 import { getAllRecentPerfume } from "../controllers/recentPerfumes.js";
-import { addVoteToPerfume, addVoteToPerfumeProsCons } from "../controllers/userGlobalCount.js";
+import {
+  addVoteToPerfume,
+  addVoteToPerfumeProsCons,
+} from "../controllers/userGlobalCount.js";
 
 const router = express.Router();
 

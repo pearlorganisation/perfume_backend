@@ -27,6 +27,7 @@ import fragramsRouter from "./src/routes/fragrams.js";
 import { requestReviewRouter } from "./src/routes/requestReview.js";
 import { writeReviewRouter } from "./src/routes/writeReview.js";
 import globalDataRouter from "./src/routes/globalData.js";
+import { countryIsoCodes } from "./src/routes/countryISOcodes.js";
 
 //MIDDLEWARES
 dotenv.config();
@@ -76,7 +77,7 @@ app.use("/api/v1/fragrams", fragramsRouter);
 app.use("/api/v1/requestReview", requestReviewRouter);
 app.use("/api/v1/writeReview", writeReviewRouter);
 app.use("/api/v1/globalData", globalDataRouter);
-
+app.use("/api/v1/countryISOcodes", countryIsoCodes);
 
 app.use(error);
 app.listen(PORT, () => {

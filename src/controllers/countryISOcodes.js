@@ -5,9 +5,9 @@ import { countryISOcodesModel } from "../models/countryCodes.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 // @access  Public
-export const getCountries = asyncHandler(async (req, res) => {
+export const getCountries = asyncHandler(async (req, res,next) => {
   const countries = await countryISOcodesModel.find({});
-  res.status(200).json(countries);
+  res.status(200).json({status:true,message:"Fetched Data Successfully !!",data:countries});
 });
 
 // @desc    Create a new country ISO code
@@ -16,10 +16,9 @@ export const getCountries = asyncHandler(async (req, res) => {
 export const createCountry = asyncHandler(async (req, res) => {
   const { countryISOcodes } = req.body;
 
-  console.log("asdfdsafdsa", countryISOcodes);
+ 
   const countryCodes = await countryISOcodesModel.insertMany(countryISOcodes);
-  console.log("aasf", countryCodes);
-  res.status(201).json(countryCodes);
+  res.status(201).json({status:true,message:"Data Fetched Successfully !!",data:countryCodes});
 });
 
 // @desc    Update a country ISO code
@@ -54,14 +53,17 @@ export const updateCountry = asyncHandler(async (req, res, next) => {
 // @desc    Delete a country ISO code
 // @route   DELETE /api/countries/:id
 // @access  Public
-export const deleteCountry = asyncHandler(async (req, res) => {
-  const country = await countryISOcodesModel.findById(req.params.id);
+export const deleteCountry = asyncHandler(async (req, res,next) => {
+
+  const {id} = req.params;
+
+  const country = await countryISOcodesModel.findByIdAndDelete(id);
 
   if (!country) {
-    res.status(404);
-    throw new Error("Country not found");
+    res.status(404).json({status:false,message:"Data Not Found "});
+    
   }
 
-  await country.remove();
-  res.status(204).json({ message: "Country removed" });
+  
+  res.status(200).json({ status:true,message: "Data Removed Successfully !!" });
 });

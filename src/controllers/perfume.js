@@ -253,8 +253,8 @@ export const getPerfumeReview = asyncHandler(async (req, res, next) => {
 // get male perfumes
 
 export const getMalePerfumes = asyncHandler(async (req, res, next) => {
-  const { Page, Limit, Search ,Select} = req.query;
-  
+  const { Page, Limit, Search, Select } = req.query;
+
   let page = 1;
   let limit = 10;
   let search = "";
@@ -269,40 +269,41 @@ export const getMalePerfumes = asyncHandler(async (req, res, next) => {
     search = Search;
   }
 
-  if(Select)
-  {
+  if (Select) {
     select = Select;
   }
 
-  console.log("select",select);
-  
+  console.log("select", select);
+
   let skip = (page - 1) * limit;
 
   const totalDocuments = await perfumeModel.countDocuments({
     perfume: { $regex: search, $options: "i" },
-    "ratingFragrams.gender":{$in:['M',"O"]}
+    "ratingFragrams.gender": { $in: ["M", "O"] },
   });
   const totalPage = Math.ceil(totalDocuments / limit);
 
   if (Limit === "infinite") {
     limit = totalDocuments;
   }
-  const data = await perfumeModel.find({
-    perfume: { $regex: search, $options: "i" },
-    "ratingFragrams.gender":{$in:['M',"O"]}
-  })
-  .skip(skip)
-  .limit(limit)
-  .select(select)
- .sort({ createdAt: -1 });
-  res.status(200).json({ status: true, data ,totalPage,totalDocuments});
+  const data = await perfumeModel
+    .find({
+      perfume: { $regex: search, $options: "i" },
+      "ratingFragrams.gender": { $in: ["M", "O"] },
+    })
+    .skip(skip)
+    .limit(limit)
+    .select(select)
+    .sort({ createdAt: -1 })
+    .lean();
+  res.status(200).json({ status: true, data, totalPage, totalDocuments });
 });
 
 // get female perfumes
 
 export const getFemalePerfumes = asyncHandler(async (req, res, next) => {
-  const { Page, Limit, Search ,Select} = req.query;
-  
+  const { Page, Limit, Search, Select } = req.query;
+
   let page = 1;
   let limit = 10;
   let search = "";
@@ -317,31 +318,31 @@ export const getFemalePerfumes = asyncHandler(async (req, res, next) => {
     search = Search;
   }
 
-  if(Select)
-  {
+  if (Select) {
     select = Select;
   }
 
-  console.log("select",select);
-  
+  console.log("select", select);
+
   let skip = (page - 1) * limit;
 
   const totalDocuments = await perfumeModel.countDocuments({
     perfume: { $regex: search, $options: "i" },
-    "ratingFragrams.gender":{$in:['F',"O"]}
+    "ratingFragrams.gender": { $in: ["F", "O"] },
   });
   const totalPage = Math.ceil(totalDocuments / limit);
 
   if (Limit === "infinite") {
     limit = totalDocuments;
   }
-  const data = await perfumeModel.find({
-    perfume: { $regex: search, $options: "i" },
-    "ratingFragrams.gender":{$in:['F',"O"]}
-  })
-  .skip(skip)
-  .limit(limit)
-  .select(select)
- .sort({ createdAt: -1 });
-  res.status(200).json({ status: true, data ,totalPage,totalDocuments});
+  const data = await perfumeModel
+    .find({
+      perfume: { $regex: search, $options: "i" },
+      "ratingFragrams.gender": { $in: ["F", "O"] },
+    })
+    .skip(skip)
+    .limit(limit)
+    .select(select)
+    .sort({ createdAt: -1 });
+  res.status(200).json({ status: true, data, totalPage, totalDocuments });
 });

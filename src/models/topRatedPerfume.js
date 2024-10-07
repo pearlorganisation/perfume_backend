@@ -12,7 +12,7 @@ const topRatedSchema = new mongoose.Schema({
     banner:{
         type:String
     }
-});
+},{timestamps:true});
 
 
 

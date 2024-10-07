@@ -3,9 +3,7 @@ import mongoose from "mongoose";
 const writeReviewSchema = new mongoose.Schema({
   perfumeName: {
     type: String,
-    minlength: [
-      3,
-      "Perufume Name should be greater than 3 Words or more than that",
+    minlength: [3,"Perufume Name should be greater than 3 Words or more than that",
     ],
     maxlength: [150, "Perufume Name should be less than 150 Words"],
   },
@@ -27,7 +25,7 @@ const writeReviewSchema = new mongoose.Schema({
     enum: ["approved", "discarded", "pending"],
     default: "pending",
   },
-});
+},{timestamps:true});
 
 export const WriteReviewSchema = new mongoose.model(
   "WriteReview",

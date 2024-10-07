@@ -79,6 +79,8 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
   if (gallery && gallery.length > 0) {
     const gall = await uploadFile(gallery);
     query.gallery = gall.result;
+
+    
   }
 
   if (banner && banner.length > 0) {
@@ -97,7 +99,7 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
   if (video && video.length > 0) {
     const vid = await uploadFile(video);
 
-    console.log("we came here");
+    console.log("we came here",vid);
     query.video = vid.result;
   }
 
@@ -161,9 +163,8 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
 
   const updatedPerfume = await perfumeModel.findByIdAndUpdate(id, { ...query });
 
-  // await newPerfume.save();
+  console.log("query",query);
 
-  console.log("Data for the pros cons");
 
   res.status(200).json({
     status: true,
@@ -342,6 +343,8 @@ export const getFemalePerfumes = asyncHandler(async (req, res, next) => {
   .skip(skip)
   .limit(limit)
   .select(select)
- .sort({ createdAt: -1 });
+ .sort({ createdAt: -1 })
+ .lean();
+ ;
   res.status(200).json({ status: true, data ,totalPage,totalDocuments});
 });

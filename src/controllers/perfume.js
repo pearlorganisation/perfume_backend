@@ -6,6 +6,8 @@ import { uploadFile } from "../config/cloudinary2.js";
 export const newPerfume = asyncHandler(async (req, res, next) => {
   const { gallery, banner, logo, video } = req?.files;
 
+  console.log("gallery", gallery);
+
   const {
     purchaseLinks,
     mainAccords,

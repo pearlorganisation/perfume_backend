@@ -32,7 +32,7 @@ const prosConsCountSchema = mongoose.Schema({
     }
 
 
-});
+},{timestamps:true});
 
 
 

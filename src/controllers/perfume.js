@@ -99,7 +99,7 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
   if (video && video.length > 0) {
     const vid = await uploadFile(video);
 
-    console.log("we came here");
+    console.log("we came here", vid);
     query.video = vid.result;
   }
 
@@ -163,9 +163,7 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
 
   const updatedPerfume = await perfumeModel.findByIdAndUpdate(id, { ...query });
 
-  // await newPerfume.save();
-
-  console.log("Data for the pros cons");
+  console.log("query", query);
 
   res.status(200).json({
     status: true,

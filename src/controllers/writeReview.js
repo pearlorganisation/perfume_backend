@@ -45,11 +45,10 @@ export const getAllWriteReview = asyncHandler(async (req, res) => {
   }
 
   let skip = (page-1)*limit;
-   console.log(search,"asdsada");
 
    const totalDocuments = await WriteReviewSchema.countDocuments( { perfumeName: { $regex: search, $options: 'i' } } );
    const totalPage = Math.ceil(totalDocuments / limit);
-  const reviews = await WriteReviewSchema.find({ perfumeName: { $regex: search, $options: 'i' } }).populate("userId").skip(skip).limit(limit).lean();
+  const reviews = await WriteReviewSchema.find({ perfumeName: { $regex: search, $options: 'i' } }).populate("userId").skip(skip).limit(limit).sort({ createdAt: -1 }).lean();
   res.status(200).json({
     status: true,
     message: "Data Fetched Successfully ",

@@ -51,7 +51,7 @@ export const getAllRequestReviews = asyncHandler(async (req, res) => {
 
 // Get a single review request by ID
 export const getRequestReviewById = asyncHandler(async (req, res) => {
-    const review = await RequestReviewModel.findById(req.params.id).populate('userId','userName').lean();
+    const review = await RequestReviewModel.findById(req.params.id).populate('userId','userName').sort({ createdAt: -1 }).lean();
     if (!review) {
         return res.status(404).json({ message: 'Review not found' });
     }
@@ -69,11 +69,13 @@ export const updateRequestReview = asyncHandler(async (req, res) => {
 
 // Delete a review request by ID
 export const deleteRequestReview = asyncHandler(async (req, res) => {
+
+
     const review = await RequestReviewModel.findByIdAndDelete(req.params.id);
     if (!review) {
         return res.status(404).json({ message: 'Review not found' });
     }
-    res.status(200).json({ message: 'Review deleted successfully' });
+    res.status(200).json({status:true, message: 'Review deleted successfully' });
 });
 
 export const approveRequestReview = asyncHandler(async (req, res) => {

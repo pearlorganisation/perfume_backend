@@ -26,7 +26,7 @@ const requestReviewSchema = new mongoose.Schema({
     default:"pending"
 
    }
-});
+},{timestamps:true});
 
 
 export const RequestReviewModel = new mongoose.model('RequestReview',requestReviewSchema)

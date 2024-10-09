@@ -29,7 +29,7 @@ const prosConsSchema = new mongoose.Schema({
         ref: "perfume",
     },
 
-});
+},{timestamps:true});
 
 
 export const ProsCons = mongoose.model('ProsCons', prosConsSchema);

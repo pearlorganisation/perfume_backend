@@ -59,7 +59,7 @@ const userGlobalCountSchema = new mongoose.Schema({
 
 
     
-});
+},{timestamps:true});
 
 
 export const userGlobalCountModel = mongoose.model('UserGlobalCount',userGlobalCountSchema);

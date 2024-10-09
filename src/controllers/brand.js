@@ -81,7 +81,9 @@ export const getSingleBrandPerfumes = asyncHandler(async (req, res) => {
   const perfumes = await perfume
     .find({ brand: brandData._id })
     .sort({ createdAt: -1 })
-    .select("perfume banner brand");
+    .select("perfume banner brand")
+    .lean()
+    .populate("brand", "brand _id");
 
   res.status(200).json(perfumes);
 });

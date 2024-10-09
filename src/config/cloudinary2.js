@@ -26,6 +26,7 @@ export const uploadFile = async (files) => {
               console.log("File deleted from disk:", file.path);
             }
           });
+          
           return res;
         } catch (uploadError) {
           console.error("Error uploading file:", uploadError);
@@ -33,8 +34,17 @@ export const uploadFile = async (files) => {
         }
       })
     );
+   
+    const result = resultArr.map((file)=>({
+      fieldname:file.asset_id,
+      originalname:file.original_filename,
+      mimetype: file.resource_type,
+      path: file. secure_url,
+      size: file.bytes,
+      filename: file.original_filename
+    }));
 
-    return { status: true, result: resultArr.filter(Boolean) };
+    return { status: true, result: result.filter(Boolean) };
   } catch (error) {
     return { status: false, message: error?.message };
   }

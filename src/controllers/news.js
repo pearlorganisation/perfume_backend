@@ -17,31 +17,34 @@ export const getAllNews = asyncHandler(async (req, res, next) => {
   res.status(200).json({ status: true, data });
 });
 export const getAllNewsAdmin = asyncHandler(async (req, res, next) => {
-  const {Page,Limit,Search} = req.query;
-  
+  const { Page, Limit, Search } = req.query;
+
   let page = 1;
   let limit = 10;
-  let search = '';
+  let search = "";
 
-  if(Page)
-  {
-    page = Math.max(page,Page);
+  if (Page) {
+    page = Math.max(page, Page);
   }
-  if(Limit)
-  {
-    limit = Math.max(limit,Limit);
+  if (Limit) {
+    limit = Math.max(limit, Limit);
   }
-  if(Search)
-  {
+  if (Search) {
     search = Search;
   }
 
-  let skip = (page-1)*limit;
+  let skip = (page - 1) * limit;
 
-   const totalDocuments = await newsModel.countDocuments({ title: { $regex: search, $options: 'i' } });
-   const totalPage = Math.ceil(totalDocuments / limit);
-  const data = await newsModel.find({ title: { $regex: search, $options: 'i' } }).skip(skip).limit(limit).lean();
-  res.status(200).json({ status: true, data,totalPage,totalDocuments });
+  const totalDocuments = await newsModel.countDocuments({
+    title: { $regex: search, $options: "i" },
+  });
+  const totalPage = Math.ceil(totalDocuments / limit);
+  const data = await newsModel
+    .find({ title: { $regex: search, $options: "i" } })
+    .skip(skip)
+    .limit(limit)
+    .lean();
+  res.status(200).json({ status: true, data, totalPage, totalDocuments });
 });
 
 export const getNewsById = asyncHandler(async (req, res, next) => {
@@ -72,7 +75,7 @@ export const updateNews = asyncHandler(async (req, res) => {
 
   const payload = {
     title: req.body.title,
-    content: req.body.content,
+    description: req.body.content,
   };
 
   const banner = req?.file;
@@ -82,7 +85,6 @@ export const updateNews = asyncHandler(async (req, res) => {
   }
 
   const updateModel = await newsModel.findOneAndUpdate({ _id: id }, payload);
-  updateModel.save();
 
   res.status(200).json({ status: true, message: "Blog Updated successfully" });
 });

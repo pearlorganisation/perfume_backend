@@ -82,3 +82,25 @@ export const deleteNote = asyncHandler(async (req, res, next) => {
     .status(200)
     .json({ status: true, message: "Note deleted successfully!!", data: data });
 });
+
+export const getSingleNote = asyncHandler(async (req, res, next) => {
+  const data = await notes.findById(req?.params?.id);
+  if (!data) {
+    return res
+      .status(400)
+      .json({ status: false, messaeg: "No note found with given id!!" });
+  }
+
+  res.status(200).json({ status: true, message: "Successfull!!", data: data });
+});
+
+export const updateNote = asyncHandler(async (req, res, next) => {
+  const data = await notes.findByIdAndUpdate(req?.params?.id, req?.body);
+  if (!data) {
+    return res
+      .status(400)
+      .json({ status: false, messaeg: "No note found with given id!!" });
+  }
+
+  res.status(200).json({ status: true, message: "Successfull!!", data: data });
+});

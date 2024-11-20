@@ -3,6 +3,8 @@ import perfumeModel from "../models/perfume.js";
 import { ProductReviewCount } from "../models/productReviewCount.js";
 import { upload2 } from "../config/multer2.js";
 import { uploadFile } from "../config/cloudinary2.js";
+import chalk from "chalk";
+
 export const newPerfume = asyncHandler(async (req, res, next) => {
   const { gallery, banner, logo, video } = req?.files;
 
@@ -76,6 +78,8 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
 
   const { gallery, banner, logo, video } = req?.files;
 
+  console.log(chalk.red("shashank", JSON.stringify(req.files)));
+
   let query = {};
 
   if (gallery && gallery.length > 0) {
@@ -87,22 +91,23 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
     const bann = await uploadFile(banner);
     console.log("we came here bann", bann);
 
-    query.banner = bann.result[0].url;
+    query.banner = bann.result[0].path;
   }
   if (logo && logo.length > 0) {
     const log = await uploadFile(logo);
 
     console.log("we came here", log);
-    query.logo = log.result[0].url;
+    query.logo = log.result[0].path;
   }
 
   if (video && video.length > 0) {
     const vid = await uploadFile(video);
 
     console.log("we came here", vid);
-    query.video = vid.result;
+    query.video = vid?.result;
   }
 
+  chalk.yellow(JSON.stringify(query));
   const {
     perfume,
     details,
@@ -253,7 +258,7 @@ export const getPerfumeReview = asyncHandler(async (req, res, next) => {
 // get male perfumes
 
 export const getMalePerfumes = asyncHandler(async (req, res, next) => {
-  const { Page, Limit, Search, Select } = req.query;
+  const { Page, Limit, Search, Select, BrandId } = req.query;
 
   let page = 1;
   let limit = 10;
@@ -273,36 +278,66 @@ export const getMalePerfumes = asyncHandler(async (req, res, next) => {
     select = Select;
   }
 
-  console.log("select", select);
-
   let skip = (page - 1) * limit;
+  let totalDocuments;
+  let totalPage;
+  let data;
 
-  const totalDocuments = await perfumeModel.countDocuments({
-    perfume: { $regex: search, $options: "i" },
-    "ratingFragrams.gender": { $in: ["M", "O"] },
-  });
-  const totalPage = Math.ceil(totalDocuments / limit);
+  if (BrandId) {
+    totalDocuments = await perfumeModel.countDocuments({
+      perfume: { $regex: search, $options: "i" },
+      brand: BrandId,
+      "ratingFragrams.gender": { $in: ["M", "O"] },
+    });
 
-  if (Limit === "infinite") {
-    limit = totalDocuments;
-  }
-  const data = await perfumeModel
-    .find({
+    totalPage = Math.ceil(totalDocuments / limit);
+
+    if (Limit === "infinite") {
+      limit = totalDocuments;
+    }
+
+    data = await perfumeModel
+      .find({
+        perfume: { $regex: search, $options: "i" },
+        brand: BrandId,
+        "ratingFragrams.gender": { $in: ["M", "O"] },
+      })
+      .skip(skip)
+      .limit(limit)
+      .select(select)
+      .sort({ createdAt: -1 })
+      .lean();
+  } else {
+    totalDocuments = await perfumeModel.countDocuments({
       perfume: { $regex: search, $options: "i" },
       "ratingFragrams.gender": { $in: ["M", "O"] },
-    })
-    .skip(skip)
-    .limit(limit)
-    .select(select)
-    .sort({ createdAt: -1 })
-    .lean();
+    });
+
+    totalPage = Math.ceil(totalDocuments / limit);
+
+    if (Limit === "infinite") {
+      limit = totalDocuments;
+    }
+
+    data = await perfumeModel
+      .find({
+        perfume: { $regex: search, $options: "i" },
+        "ratingFragrams.gender": { $in: ["M", "O"] },
+      })
+      .skip(skip)
+      .limit(limit)
+      .select(select)
+      .sort({ createdAt: -1 })
+      .lean();
+  }
+
   res.status(200).json({ status: true, data, totalPage, totalDocuments });
 });
 
 // get female perfumes
 
 export const getFemalePerfumes = asyncHandler(async (req, res, next) => {
-  const { Page, Limit, Search, Select } = req.query;
+  const { Page, Limit, Search, Select, BrandId } = req.query;
 
   let page = 1;
   let limit = 10;
@@ -326,23 +361,75 @@ export const getFemalePerfumes = asyncHandler(async (req, res, next) => {
 
   let skip = (page - 1) * limit;
 
-  const totalDocuments = await perfumeModel.countDocuments({
-    perfume: { $regex: search, $options: "i" },
-    "ratingFragrams.gender": { $in: ["F", "O"] },
-  });
-  const totalPage = Math.ceil(totalDocuments / limit);
+  let totalDocuments;
+  let data;
+  if (BrandId) {
+    totalDocuments = await perfumeModel.countDocuments({
+      perfume: { $regex: search, $options: "i" },
+      brand: BrandId,
+      "ratingFragrams.gender": { $in: ["F", "O"] },
+    });
 
-  if (Limit === "infinite") {
-    limit = totalDocuments;
-  }
-  const data = await perfumeModel
-    .find({
+    if (Limit === "infinite") {
+      limit = totalDocuments;
+      skip = 0;
+    }
+    data = await perfumeModel
+      .find({
+        perfume: { $regex: search, $options: "i" },
+        brand: BrandId,
+
+        "ratingFragrams.gender": { $in: ["F", "O"] },
+      })
+      .skip(skip)
+      .limit(limit)
+      .select(select)
+      .sort({ createdAt: -1 });
+  } else {
+    totalDocuments = await perfumeModel.countDocuments({
       perfume: { $regex: search, $options: "i" },
       "ratingFragrams.gender": { $in: ["F", "O"] },
-    })
-    .skip(skip)
-    .limit(limit)
-    .select(select)
-    .sort({ createdAt: -1 });
+    });
+
+    if (Limit === "infinite") {
+      limit = totalDocuments;
+      skip = 0;
+    }
+
+    data = await perfumeModel
+      .find({
+        perfume: { $regex: search, $options: "i" },
+
+        "ratingFragrams.gender": { $in: ["F", "O"] },
+      })
+      .skip(skip)
+      .limit(limit)
+      .select(select)
+      .sort({ createdAt: -1 });
+  }
+
+  const totalPage = Math.ceil(totalDocuments / limit);
+
   res.status(200).json({ status: true, data, totalPage, totalDocuments });
+});
+
+export const getPerfumeVote = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+
+  console.log(id);
+  let perfumeVotes = await perfumeModel
+    .findOne({ _id: id })
+    .lean()
+    .select("likes dislike");
+  if (!perfumeVotes) {
+    return next(
+      new errorResponse("Bad Request Perfume Data Does Not Exists !!", 401)
+    );
+  }
+
+  res.status(200).json({
+    status: true,
+    message: "Data Fetched Successfully !!",
+    data: perfumeVotes,
+  });
 });

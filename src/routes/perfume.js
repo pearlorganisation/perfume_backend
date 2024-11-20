@@ -4,6 +4,7 @@ import { upload2 } from "../config/multer2.js";
 import {
   deletePerfume,
   getAllPerfume,
+  getPerfumeVote,
   getSinglePerfume,
   newPerfume,
   updatePerfume,
@@ -46,4 +47,5 @@ router
     updatePerfume
   );
 
+router.route("/like-dislike/:id").get(getPerfumeVote);
 export default router;

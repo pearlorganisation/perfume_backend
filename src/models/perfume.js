@@ -75,6 +75,12 @@ const perfumeSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: "brand",
     },
+    brandAltAttribute:{
+      type:String,
+    },
+    mainImageAltAttribute:{
+      type:String,
+    },
     banner: {
       type: String,
       required: true,

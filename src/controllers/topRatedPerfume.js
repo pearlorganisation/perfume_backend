@@ -1,5 +1,4 @@
 import perfume from "../models/perfume.js";
-import reviews from "../models/reviews.js";
 import { TopRatedPerfume } from "../models/topRatedPerfume.js"; // Adjust the import path as necessary
 import { asyncHandler } from "../utils/asyncHandler.js";
 import errorResponse from "../utils/errorResponse.js";

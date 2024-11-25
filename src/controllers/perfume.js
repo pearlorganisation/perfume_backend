@@ -17,6 +17,8 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
     topNote,
     baseNote,
     ratingFragrams,
+    mainImageAltAttribute,
+    brandAltAttribute,
     pros,
     cons,
   } = req?.body;
@@ -64,6 +66,8 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
     middleNote: JSON.parse(middleNote),
     topNote: JSON.parse(topNote),
     baseNote: JSON.parse(baseNote),
+    brandAltAttribute,
+    mainImageAltAttribute
   });
 
   await newPerfume.save();
@@ -119,6 +123,8 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
     topNote,
     baseNote,
     ratingFragrams,
+    mainImageAltAttribute,
+    brandAltAttribute,
     pros,
     cons,
   } = req?.body;
@@ -165,6 +171,9 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
   query.description = description;
   query.perfume = perfume;
   query.brand = brand;
+  query.brandAltAttribute = brandAltAttribute;
+  query.mainImageAltAttribute = mainImageAltAttribute;
+
 
   const updatedPerfume = await perfumeModel.findByIdAndUpdate(id, { ...query });
 

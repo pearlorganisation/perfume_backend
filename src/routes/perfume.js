@@ -47,5 +47,5 @@ router
     updatePerfume
   );
 
-router.route("/like-dislike/:id").get(getPerfumeVote);
+router.route("/like-dislike/:id").get(getPerfumeVote); //this route is to get like dislike for perfumes
 export default router;

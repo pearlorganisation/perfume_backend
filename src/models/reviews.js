@@ -77,21 +77,21 @@ const reviewsSchema = new mongoose.Schema(
 reviewsSchema.pre("save", async function (next) {
   if (!this.isNew) {
     try {
-      const perfumeDoc = await perfume.findById(this.perfumeId).exec();
-      if (perfumeDoc) {
-        this.productReviewCount = perfumeDoc.productReviewCoundId;
-        console.log("thisdgadajd is", this.productReviewCount);
-        console.log("thisdgadajd is", perfumeDoc.productReviewCoundId);
+      // const perfumeDoc = await perfume.findById(this.perfumeId).exec();
+      // if (perfumeDoc) {
+      //   this.productReviewCount = perfumeDoc.productReviewCoundId;
+      //   console.log("thisdgadajd is", this.productReviewCount);
+      //   console.log("thisdgadajd is", perfumeDoc.productReviewCoundId);
 
-        this.previousValues = {
-          reaction: perfumeDoc.reaction,
-          sillage: perfumeDoc.sillage,
-          longevity: perfumeDoc.longevity,
-          gender: perfumeDoc.gender,
-          priceValue: perfumeDoc.priceValue,
-          season: perfumeDoc.season,
-        };
-      }
+      //   this.previousValues = {
+      //     reaction: perfumeDoc.reaction,
+      //     sillage: perfumeDoc.sillage,
+      //     longevity: perfumeDoc.longevity,
+      //     gender: perfumeDoc.gender,
+      //     priceValue: perfumeDoc.priceValue,
+      //     season: perfumeDoc.season,
+      //   };
+      // }
       next();
     } catch (err) {
       next(err);
@@ -125,39 +125,39 @@ reviewsSchema.post("save", async function (doc) {
       if (doc.reaction) updates[`reaction.${doc.reaction}`] = 1;
     } else {
       // Update: Adjust counts based on previous and new values
-      if (previousValues.sillage !== doc.sillage) {
-        if (previousValues.sillage)
-          updates[`sillage.${previousValues.sillage}`] = -1;
-        if (doc.sillage) updates[`sillage.${doc.sillage}`] = 1;
-      }
-      if (previousValues.longevity !== doc.longevity) {
-        if (previousValues.longevity)
-          updates[`longevity.${previousValues.longevity}`] = -1;
-        if (doc.longevity) updates[`longevity.${doc.longevity}`] = 1;
-      }
-      if (previousValues.gender !== doc.gender) {
-        if (previousValues.gender)
-          updates[`gender.${previousValues.gender}`] = -1;
-        if (doc.gender) updates[`gender.${doc.gender}`] = 1;
-      }
-      if (previousValues.priceValue !== doc.priceValue) {
-        if (previousValues.priceValue)
-          updates[`priceValue.${previousValues.priceValue}`] = -1;
-        if (doc.priceValue) updates[`priceValue.${doc.priceValue}`] = 1;
-      }
-      if (previousValues.season !== doc.season) {
-        if (previousValues.season)
-          updates[`season.${previousValues.season}`] = -1;
-        if (doc.season) updates[`season.${doc.season}`] = 1;
-      }
-      if (previousValues.reaction !== doc.reaction) {
-        if (previousValues.reaction)
-          updates[`reaction.${previousValues.reaction}`] = -1;
-        if (doc.reaction) updates[`reaction.${doc.reaction}`] = 1;
-      }
+      // if (previousValues.sillage !== doc.sillage) {
+      //   if (previousValues.sillage)
+      //     updates[`sillage.${previousValues.sillage}`] = -1;
+      //   if (doc.sillage) updates[`sillage.${doc.sillage}`] = 1;
+      // }
+      // if (previousValues.longevity !== doc.longevity) {
+      //   if (previousValues.longevity)
+      //     updates[`longevity.${previousValues.longevity}`] = -1;
+      //   if (doc.longevity) updates[`longevity.${doc.longevity}`] = 1;
+      // }
+      // if (previousValues.gender !== doc.gender) {
+      //   if (previousValues.gender)
+      //     updates[`gender.${previousValues.gender}`] = -1;
+      //   if (doc.gender) updates[`gender.${doc.gender}`] = 1;
+      // }
+      // if (previousValues.priceValue !== doc.priceValue) {
+      //   if (previousValues.priceValue)
+      //     updates[`priceValue.${previousValues.priceValue}`] = -1;
+      //   if (doc.priceValue) updates[`priceValue.${doc.priceValue}`] = 1;
+      // }
+      // if (previousValues.season !== doc.season) {
+      //   if (previousValues.season)
+      //     updates[`season.${previousValues.season}`] = -1;
+      //   if (doc.season) updates[`season.${doc.season}`] = 1;
+      // }
+      // if (previousValues.reaction !== doc.reaction) {
+      //   if (previousValues.reaction)
+      //     updates[`reaction.${previousValues.reaction}`] = -1;
+      //   if (doc.reaction) updates[`reaction.${doc.reaction}`] = 1;
+      // }
     }
 
-    // Apply updates to ProductReviewCount
+   if(this.isNew){ // Apply updates to ProductReviewCount
     if (Object.keys(updates).length > 0) {
       console.log("this is product review count", this.productReviewCount);
       const productReviewdata = await ProductReviewCount.findOneAndUpdate(
@@ -174,7 +174,7 @@ reviewsSchema.post("save", async function (doc) {
         commentGallery: doc.commentGallery,
       });
       console.log("New Comment Created", newComment);
-    }
+    }}
   } catch (err) {
     console.error("Error updating ProductReviewCount:", err);
   }

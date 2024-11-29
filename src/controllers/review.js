@@ -14,18 +14,20 @@ export const newPerfumeReview = asyncHandler(async (req, res, next) => {
     gender,
     priceValue,
     reviewBy,
-    perfumeId 
+    perfume,
   } = req?.body;
 
-  if(req.body.reviewBy)
-  {
-    const isReviewExists = await reviews.findOne({reviewBy:req?.body?.reviewBy,perfume:perfumeId}).lean();
-    console.log(chalk.magenta("isReviewExists",JSON.stringify(req.body)));
-   
-    if(isReviewExists)
-    {
+  if (req.body.reviewBy) {
+    const isReviewExists = await reviews
+      .findOne({ reviewBy: req?.body?.reviewBy, perfume })
+      .lean();
+    console.log(chalk.magenta("isReviewExists", JSON.stringify(req.body)));
 
-      return res.status(400).json({status:false,message:"You have already given review on this Perfume !!"})
+    if (isReviewExists) {
+      return res.status(400).json({
+        status: false,
+        message: "You have already given review on this Perfume !!",
+      });
     }
   }
 
@@ -34,10 +36,9 @@ export const newPerfumeReview = asyncHandler(async (req, res, next) => {
     commentGallery = [];
   }
   const commentData = commentsFields ? JSON.parse(commentsFields) : {};
-   
 
   const newReview = new reviews({
-    perfume:perfumeId,
+    perfume,
     reviewBy,
     notes: notes ? JSON.parse(notes) : [],
     season: season || "",

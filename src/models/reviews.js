@@ -121,7 +121,6 @@ reviewsSchema.pre("save", async function (next) {
         // Update gender
         if (this.gender) {
           productCount.gender[`${this.gender}`] += 1;
-          productCount.gender.male = 1;
         }
 
         // Update price value

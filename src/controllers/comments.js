@@ -126,7 +126,11 @@ export const deleteComment = async (req, res) => {
 export const likeComment = async (req, res) => {
   try {
     const { id } = req.params;
+
+
     const comment = await Comments.findByIdAndDelete(id);
+    
+    
     if (!comment)
       return res
         .status(404)

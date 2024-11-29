@@ -35,10 +35,12 @@ const commentSchema = mongoose.Schema(
     likes: {
       type: Number,
       default: 0,
+      min:[0,"Min Length For Likes Must Be Zero"]
     },
     disLikes: {
       type: Number,
       default: 0,
+      min:[0,"Min Length For Likes Must Be Zero"]
     },
   },
   {

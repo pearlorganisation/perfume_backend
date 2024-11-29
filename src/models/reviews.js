@@ -3,6 +3,7 @@ import { ProductReviewCount } from "./productReviewCount.js";
 import perfume from "./perfume.js";
 import { Comments } from "./comments.js";
 import chalk from "chalk";
+import errorResponse from "../utils/errorResponse.js";
 
 const reviewsSchema = new mongoose.Schema(
   {
@@ -78,12 +79,12 @@ const reviewsSchema = new mongoose.Schema(
 reviewsSchema.pre("save", async function (next) {
   if (!this.isNew) {
     try {
-       next();
+      next();
     } catch (err) {
       next(err);
     }
   } else {
-    const perfumeDoc = await perfume.findById(this.perfume).exec();
+    const perfumeDoc = await perfume.findOne({ _id: this.perfume }).exec();
     if (perfumeDoc) {
       try {
         console.log("shasshaj", "perfuyfufh", this.isNew);
@@ -96,43 +97,36 @@ reviewsSchema.pre("save", async function (next) {
         // Update reaction
         if (this.reaction) {
           productCount.reaction[`${this.reaction}`] = 1;
-      }
+        }
 
-      // Update season
-      if (this.season) {
+        // Update season
+        if (this.season) {
           productCount.season[`${this.season}`] = 1;
+        }
 
-      }
-
-      // Update longevity
-      if (this.longevity) {
+        // Update longevity
+        if (this.longevity) {
           productCount.longevity[`${this.longevity}`] = 1;
-      }
+        }
 
-      // Update sillage
-      if (this.sillage) {
+        // Update sillage
+        if (this.sillage) {
           productCount.sillage[`${this.sillage}`] = 1;
-      }
+        }
 
-      // Update gender
-      if (this.gender) {
+        // Update gender
+        if (this.gender) {
           productCount.gender[`${this.gender}`] = 1;
+        }
 
-      }
-
-      // Update price value
-      if (this.priceValue) {
+        // Update price value
+        if (this.priceValue) {
           productCount.priceValue[`${this.priceValue}`] = 1;
-
-      }
-      await productCount.save({runValidators:true});
-
+        }
+        await productCount.save({ runValidators: true });
       } catch (err) {
         next(err);
       }
-    }
-    else{
-      next(new errorResponse("Perfume Does Not Exists ",400));
     }
     next();
   }

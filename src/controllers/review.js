@@ -14,12 +14,12 @@ export const newPerfumeReview = asyncHandler(async (req, res, next) => {
     gender,
     priceValue,
     reviewBy,
-    perfumeId,
+    perfume,
   } = req?.body;
 
   if (req.body.reviewBy) {
     const isReviewExists = await reviews
-      .findOne({ reviewBy: req?.body?.reviewBy, perfume: perfumeId })
+      .findOne({ reviewBy: req?.body?.reviewBy, perfume })
       .lean();
     console.log(chalk.magenta("isReviewExists", JSON.stringify(req.body)));
 
@@ -38,7 +38,7 @@ export const newPerfumeReview = asyncHandler(async (req, res, next) => {
   const commentData = commentsFields ? JSON.parse(commentsFields) : {};
 
   const newReview = new reviews({
-    perfume: perfumeId,
+    perfume,
     reviewBy,
     notes: notes ? JSON.parse(notes) : [],
     season: season || "",

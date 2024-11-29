@@ -1,6 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import errorResponse from "../utils/errorResponse.js";
 import reviews from "../models/reviews.js";
+import chalk from "chalk";
 
 export const newPerfumeReview = asyncHandler(async (req, res, next) => {
   const {
@@ -11,15 +12,19 @@ export const newPerfumeReview = asyncHandler(async (req, res, next) => {
     sillage,
     longevity,
     gender,
-    priceValue 
+    priceValue,
+    reviewBy,
+    perfumeId 
   } = req?.body;
 
   if(req.body.reviewBy)
   {
-    const isReviewExists = await reviews.findOne({reviewBy:req?.body?.reviewBy}).lean();
-
+    const isReviewExists = await reviews.findOne({reviewBy:req?.body?.reviewBy,perfume:perfumeId}).lean();
+    console.log(chalk.magenta("isReviewExists",JSON.stringify(req.body)));
+   
     if(isReviewExists)
     {
+
       return res.status(400).json({status:false,message:"You have already given review on this Perfume !!"})
     }
   }
@@ -32,7 +37,8 @@ export const newPerfumeReview = asyncHandler(async (req, res, next) => {
    
 
   const newReview = new reviews({
-    ...req?.body,
+    perfume:perfumeId,
+    reviewBy,
     notes: notes ? JSON.parse(notes) : [],
     season: season || "",
     longevity: longevity || "",

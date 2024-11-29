@@ -81,16 +81,16 @@ export const updatePefumeReview = asyncHandler(async (req, res, next) => {
 
   const newReview = await reviews.findByIdAndUpdate(id, {
     ...req?.body,
-
+    
     likes: likes ? existingPerfume?.likes : 0,
     notes: notes ? JSON.parse(notes) : "",
     disLikes: disLikes ? existingPerfume?.disLikes + 1 : 0,
     pros: pros ? JSON.parse(pros) : "",
     cons: cons ? JSON.parse(cons) : "",
     season: season ? JSON.parse(season) : "",
-    review: review
-      ? review.push({ review: JSON.parse(review), gallery: reviewGallery })
-      : "",
+    // review: review
+    //   ? review.push({ review: JSON.parse(review), gallery: reviewGallery })
+    //   : "",
   });
 });
 

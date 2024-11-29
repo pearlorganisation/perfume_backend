@@ -84,10 +84,14 @@ reviewsSchema.pre("save", async function (next) {
       next(err);
     }
   } else {
+    
+    console.log(chalk.green(this))
     const perfumeDoc = await perfume.findOne({ _id: this.perfume }).exec();
+
+    console.log(chalk.yellow(JSON.stringify(perfumeDoc)));
+
     if (perfumeDoc) {
       try {
-        console.log("shasshaj", "perfuyfufh", this.isNew);
 
         // this.productReviewCount = perfumeDoc.productReviewCoundId;
         const productCount = await ProductReviewCount.findById(
@@ -96,33 +100,36 @@ reviewsSchema.pre("save", async function (next) {
 
         // Update reaction
         if (this.reaction) {
-          productCount.reaction[`${this.reaction}`] = 1;
+          productCount.reaction[`${this.reaction}`] += 1;
         }
 
         // Update season
         if (this.season) {
-          productCount.season[`${this.season}`] = 1;
+          productCount.season[`${this.season}`] += 1;
         }
 
         // Update longevity
         if (this.longevity) {
-          productCount.longevity[`${this.longevity}`] = 1;
+          productCount.longevity[`${this.longevity}`] += 1;
         }
 
         // Update sillage
         if (this.sillage) {
-          productCount.sillage[`${this.sillage}`] = 1;
+          productCount.sillage[`${this.sillage}`] += 1;
         }
 
         // Update gender
         if (this.gender) {
-          productCount.gender[`${this.gender}`] = 1;
+          productCount.gender[`${this.gender}`] += 1;
+          productCount.gender.male = 1;
         }
 
         // Update price value
         if (this.priceValue) {
-          productCount.priceValue[`${this.priceValue}`] = 1;
+          productCount.priceValue[`${this.priceValue}`] += 1;
         }
+
+        console.log(chalk.red(JSON.stringify(productCount)));
         await productCount.save({ runValidators: true });
       } catch (err) {
         next(err);

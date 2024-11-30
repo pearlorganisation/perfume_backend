@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { mongo, Schema } from "mongoose";
 
 
 const perfumeCategoriesSchema = new mongoose.Schema({
@@ -6,17 +6,21 @@ const perfumeCategoriesSchema = new mongoose.Schema({
         type:String,
         required: true
     },
-    price:{
-        type:String,
-        required: true,
-    },
-    priceMl:{
-        type:String,
-        required: true
-    },
-    link: {
-        type: String,
-        required: true
+    // price:{
+    //     type:String,
+    //     required: true,
+    // },
+    // priceMl:{
+    //     type:String,
+    //     required: true
+    // },
+    // link: {
+    //     type: String,
+    //     required: true
+    // },
+    mapOfLinks:{
+        type:Map,
+        of:mongoose.Schema.Types.Mixed
     },
     banner: {
         type: String,

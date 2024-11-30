@@ -14,7 +14,7 @@ export const addFragram = asyncHandler(async (req, res, next) => {
   if (!title && !banner && !postBy && !rating && !links) {
     res.status(500).json({ status: false, message: "Incomplete data" });
   }
-  const allLinks = JSON?.parse(links)||[{country:'IN',link:'something went wrong with url !!'}];
+  const allLinks = JSON?.parse(links)||[];
   
   const map = new Map();
   

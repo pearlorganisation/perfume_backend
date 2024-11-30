@@ -1,31 +1,44 @@
+import chalk from "chalk";
 import { perfumeCategories as perfumeCategoriesModel } from "../models/perfumeCategories.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 export const addPerfumeCategories = asyncHandler(async (req, res, next) => {
-  const { perfumeName, price, priceMl,link, perfumeId } = req?.body;
+  const { perfumeName,links } = req?.body;
+  const {perfumeId} = req.query;
 
   if (!perfumeId) {
-    res.status(500).json({ status: false, message: "Missing Perfume ID" });
+    return res.status(500).json({ status: false, message: "Missing Perfume ID" });
   }
-
+   
+  const allLinks = JSON?.parse(links)||[]
+  if(allLinks.length < 1 )
+     return res.status(400).json({status:false,message:"Bad Request Wrong Input Values For Links !!"})
   const { banner } = req?.files;
 
-  if (!perfumeName && !banner && !price && !priceMl && !link) {
+
+  if (!perfumeName && !banner && !links) {
     res.status(500).json({ status: false, message: "Incomplete data" });
   }
+  
+  const map = new Map();
+  
+  allLinks.forEach((el)=>{
+    const { country,...rest} = el;
+    map.set(country,{...rest});
+  })
+
+  const mapOfLinks = Object.fromEntries(map);
+
 
   const payload = {
     perfumeName,
     banner: banner[0]?.path,
-    price,
-    priceMl,
-    link,
+    mapOfLinks,
     perfume: perfumeId,
   };
 
-  await perfumeCategoriesModel.create(payload);
+  const result = await perfumeCategoriesModel.create(payload);
 
-  const result = await perfumeCategoriesModel.find({ perfume: perfumeId });
 
   res
     .status(200)
@@ -86,27 +99,38 @@ export const getSinglePerfumeCategories = asyncHandler(async (req, res, next) =>
 
 export const updatePerfumeCategories = asyncHandler(async (req, res) => {
   
-  const { perfumeName, price, priceMl, link } = req?.body;
+  const { perfumeName, links } = req?.body;
   const { id } = req.params;
 
   if (!id) {
     res.status(500).json({ status: false, message: "Missing id" });
   }
+  
+  const allLinks = JSON?.parse(links)||[];
+  if(allLinks.length < 1 )
+    return res.status(400).json({status:false,message:"Bad Request Wrong Input Values For Links !!"})
 
-  const payload = {
-    perfumeName,
-    link,
-    price,
-    priceMl
-  };
+
+
 
   const { banner } = req?.files;
 
   if (banner && banner?.length > 0) {
     payload.banner = banner[0]?.path;
   }
+  const map = new Map();
+  
+  allLinks.forEach((el)=>{
+    const { country,...rest} = el;
+    map.set(country,{...rest});
+  })
 
-  console.log(payload)
+  const mapOfLinks = Object.fromEntries(map);
+  const payload = {
+    perfumeName,
+     mapOfLinks,
+
+  };
 
   await perfumeCategoriesModel.findOneAndUpdate({ _id: id }, payload);
   res

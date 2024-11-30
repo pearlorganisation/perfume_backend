@@ -1,9 +1,10 @@
+import chalk from "chalk";
 import { NewArrivalPerfume as newArrivalModel } from "../models/newArrival.js";
 import { relatedFragrams as relatedFragramsModel } from "../models/relatedFragrams.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 export const addRelatedFragram = asyncHandler(async (req, res, next) => {
-  const { perfumeName, brand, link, perfumeId } = req?.body;
+  const { perfumeName, brand, links, perfumeId } = req?.body;
 
   if (!perfumeId) {
     res.status(500).json({ status: false, message: "Missing Perfume ID" });
@@ -11,21 +12,37 @@ export const addRelatedFragram = asyncHandler(async (req, res, next) => {
 
   const { banner } = req?.files;
 
-  if (!perfumeName && !banner && !brand && !link) {
+  if (!perfumeName && !banner && !brand && !links) {
     res.status(500).json({ status: false, message: "Incomplete data" });
   }
+
+  const allLinks = JSON.parse(links)||[];
+
+  console.log(chalk.red(JSON.stringify(allLinks)));
+
+  if(allLinks?.length < 1)
+    {
+     return res.status(400).json({status:false,message:"Give At Least One Link For Related Fragram !!"});
+    }
+  const map = new Map(); 
+
+  allLinks.forEach((el)=>{
+   map.set(el.country,el.link);
+  })
+ 
+   const mapOfLinks = Object.fromEntries(map);
+
 
   const payload = {
     perfumeName,
     banner: banner[0]?.path,
     brand,
-    link,
+    mapOfLinks,
     perfume: perfumeId,
   };
 
-  await relatedFragramsModel.create(payload);
+ const result =   await relatedFragramsModel.create(payload);
 
-  const result = await relatedFragramsModel.find({ perfume: perfumeId });
 
   res
     .status(200)
@@ -86,18 +103,36 @@ export const getSingleRelatedFragram = asyncHandler(async (req, res, next) => {
 });
 
 export const updateRelatedFragram = asyncHandler(async (req, res) => {
-  const { perfumeName, brand, link } = req?.body;
+  const { perfumeName, brand, links } = req?.body;
   const { id } = req.params;
 
   if (!id) {
     res.status(500).json({ status: false, message: "Missing id" });
   }
 
+  const allLinks = JSON?.parse(links)||[];
+
+   if(allLinks?.length < 1)
+   {
+    return res.status(400).json({status:false,message:"Give At Least One Link For Related Fragram !!"});
+   }
+  const map = new Map(); 
+  
+  allLinks.forEach((el)=>{
+   map.set(el.country,el.link);
+  })
+ 
+  const mapOfLinks = Object.fromEntries(map);
+
+
   const payload = {
     perfumeName,
+    banner: banner[0]?.path,
     brand,
-    link,
+    mapOfLinks,
+    perfume: perfumeId,
   };
+
 
   const { banner } = req?.files;
 

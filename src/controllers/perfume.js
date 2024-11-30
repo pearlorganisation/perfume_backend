@@ -82,7 +82,6 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
 
   const { gallery, banner, logo, video } = req?.files;
 
-  console.log(chalk.red("shashank", JSON.stringify(req.files)));
 
   let query = {};
 

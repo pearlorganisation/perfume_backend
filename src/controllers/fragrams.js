@@ -1,8 +1,9 @@
+import chalk from "chalk";
 import { fragrams as fragramsModel } from "../models/fragrams.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 export const addFragram = asyncHandler(async (req, res, next) => {
-  const { title, postBy, link, rating, perfumeId } = req?.body;
+  const { title, postBy, links, rating, perfumeId } = req?.body;
 
   if (!perfumeId) {
     res.status(500).json({ status: false, message: "Missing Perfume ID" });
@@ -10,22 +11,33 @@ export const addFragram = asyncHandler(async (req, res, next) => {
 
   const { banner } = req?.files;
 
-  if (!title && !banner && !postBy && !rating && !link) {
+  if (!title && !banner && !postBy && !rating && !links) {
     res.status(500).json({ status: false, message: "Incomplete data" });
   }
+  const allLinks = JSON?.parse(links)||[{country:'IN',link:'something went wrong with url !!'}];
+  
+  const map = new Map();
+  
+  if(allLinks?.length < 1 )
+    return res.status(400).json({status:false,message:'Please Do Provide At least One Link  in Fragrams !!'})
 
+  allLinks.forEach(element => {
+    map.set(element.country,element.link);
+  
+  });
+   
+  const mapOfLinks = Object.fromEntries(map);
   const payload = {
     title,
     banner: banner[0]?.path,
     postBy,
-    link,
+    mapOfLinks,
     rating,
     perfume: perfumeId,
   };
 
-  await fragramsModel.create(payload);
+  const result =  await fragramsModel.create(payload);
 
-  const result = await fragramsModel.find({ perfume: perfumeId });
 
   res
     .status(200)
@@ -83,20 +95,34 @@ export const getSingleFragram = asyncHandler(async (req, res, next) => {
 });
 
 export const updateFragram = asyncHandler(async (req, res) => {
-  const { title, postBy, rating, link } = req?.body;
+  const { title, postBy, rating, links } = req?.body;
   const { id } = req.params;
 
   if (!id) {
     res.status(500).json({ status: false, message: "Missing id" });
   }
 
+  const allLinks = JSON?.parse(links)||[{country:'IN',link:'something went wrong with url !!'}];
+  
+  const map = new Map();
+  
+  if(allLinks?.length < 1 )
+    return res.status(400).json({status:false,message:'Please Do Provide At least One Link  in Fragrams !!'})
+
+  allLinks.forEach(element => {
+    map.set(element.country,element.link);
+  
+  });
+   
+  const mapOfLinks = Object.fromEntries(map);
   const payload = {
     title,
-    link,
+    banner: banner[0]?.path,
     postBy,
+    mapOfLinks,
     rating,
+    perfume: perfumeId,
   };
-
   const { banner } = req?.files;
 
   if (banner && banner?.length > 0) {

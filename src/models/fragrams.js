@@ -10,9 +10,13 @@ const fragramsSchema = new mongoose.Schema({
         type:String,
         required: true,
     },
-    link: {
-        type: String,
-        required: true
+    // link: {
+    //     type: String,
+    // },
+    mapOfLinks: {
+        type: Map,
+        of: mongoose.Schema.Types.Mixed,
+        required:true
     },
     rating: {
         type: Number,

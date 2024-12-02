@@ -15,10 +15,6 @@ const relatedFragramsSchema = new mongoose.Schema({
         type:String,
         required: true
     },
-    // link: {
-    //     type: String,
-    //     required: true
-    // },
     mapOfLinks:{
       type:Map,
       of:mongoose.Schema.Types.Mixed,

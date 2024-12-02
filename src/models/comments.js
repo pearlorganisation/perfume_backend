@@ -27,7 +27,7 @@ const commentSchema = mongoose.Schema(
     perfumeId: {
       type: mongoose.Types.ObjectId,
       ref: "perfume",
-      // required:[true,"PerfumeId is required field "]
+      required:[true,"PerfumeId is required field "]
     },
     commentGallery: {
       type: [{}],

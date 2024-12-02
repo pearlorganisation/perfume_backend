@@ -54,7 +54,23 @@ const userGlobalCountSchema = new mongoose.Schema({
             
         }],
         default:[]
-    }
+    },
+    commentsVote:[
+        {
+            perfumeId:{
+                type:mongoose.Types.ObjectId,
+                ref:'auth'
+            },
+            vote:{
+                type:Number,
+                enum:[0,-1,1]
+            },
+            commentId:{
+                type:mongoose.Types.ObjectId,
+                ref:'Comments'
+            }
+        }
+    ]
 
 
 

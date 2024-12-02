@@ -1,7 +1,10 @@
+import mongoose from "mongoose";
 import auth from "../models/auth.js";
 import { Comments } from "../models/comments.js";
 import perfume from "../models/perfume.js";
+import { userGlobalCountModel } from "../models/userGlobalCounts.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import chalk from "chalk";
 
 // Create a new comment
 export const createComment = async (req, res) => {
@@ -9,7 +12,6 @@ export const createComment = async (req, res) => {
     const { id: perfumeId } = req.params;
     const { description, userId } = req.body;
     const gallery = req?.files;
-    console.log(req.files, "sh");
 
     let commentImages = gallery || [];
 
@@ -17,9 +19,8 @@ export const createComment = async (req, res) => {
     let isUser = await auth.findById(userId).lean();
 
     if (!isUser) {
-      isUser = "Defaul User";
+     res.status(400).json({status:false,message:"Something Went Wrong Try Again !!"});
     }
-    console.log("user id ", isUser);
 
     if (!isPerfumeValid) {
       return res
@@ -123,22 +124,108 @@ export const deleteComment = async (req, res) => {
 };
 
 //like the comment
-export const likeComment = async (req, res) => {
+export const voteComment = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
   try {
     const { id } = req.params;
-
-
-    const comment = await Comments.findByIdAndDelete(id);
+    let {userId,perfumeId,vote} = req.body;
+    vote = parseInt(vote)||0;
     
-    
+    const comment = await Comments.findOne({_id:id}).session(session);
+    const currUser = await userGlobalCountModel.findOne({userId}).session(session);
+
     if (!comment)
       return res
         .status(404)
         .json({ success: false, message: "Comment not found" });
+    if (!currUser)
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+   
+    const currCommentMetData = currUser.commentsVote.find((el=>  el.commentId == id));
+    
+    console.log(chalk.yellow(JSON.stringify(currUser.commentsVote)));
+    if(!currCommentMetData)
+    {
+      currUser.commentsVote.push({
+        commentId:id,perfumeId,vote
+      });
+
+      if(vote === -1)
+      {
+        comment.disLikes += 1;
+      }
+      else
+      {
+        console.log(chalk.red("im coming here"));
+        comment.likes += 1;
+        
+      }
+    }
+    else
+    {
+      if(currCommentMetData.vote === vote)
+      {
+        currCommentMetData.vote = 0;
+        if(vote === -1)
+        {
+          comment.disLikes -=1;
+        }
+        else if(vote === 1){
+          comment.likes -=1;
+
+        }
+      }
+      else{
+        
+      if(currCommentMetData.vote === 0)
+      {
+          if(vote === -1)
+          {
+            comment.disLikes += 1;
+          }
+          else if (vote === 1)
+          {
+            comment.likes += 1;
+          }
+          currCommentMetData.vote = vote;
+      }
+      else
+      {
+        if(vote === -1)
+          {
+           comment.disLikes += 1;
+           comment.likes -=1;
+          }
+          else if(vote === 1){
+           comment.likes += 1;
+           comment.disLikes -= 1;
+   
+          }
+          currCommentMetData.vote = vote;
+
+      }
+       
+   
+
+      }
+    }
+   
+
+   console.log(await currUser.save());
+   console.log(await comment.save());
+   await session.commitTransaction(); 
+
     res
       .status(200)
-      .json({ success: true, message: "Comment deleted successfully" });
+      .json({ success: true, message: "Comment Updated successfully" });
   } catch (error) {
+    await session.abortTransaction();
     res.status(500).json({ success: false, message: error.message });
+  }finally{
+    session.endSession();
+
   }
 };

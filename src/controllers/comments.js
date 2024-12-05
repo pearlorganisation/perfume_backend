@@ -74,10 +74,10 @@ export const getAllComments = asyncHandler(async (req, res) => {
 
 // Get a comment by ID
 export const getCommentById = asyncHandler(async (req, res) => {
-  const { perfumeId } = req.params;
-  const { id } = req.body;
-
-  const comment = await Comments.findMany({ perfumeId, _id: id });
+  const { id } = req.params;
+  
+  console.log(chalk.green(JSON.stringify(req.body)))
+  const comment = await Comments.findOne({_id: id }).select('likes disLikes');
 
   if (!comment)
     return res

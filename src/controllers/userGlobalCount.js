@@ -308,7 +308,7 @@ export const getUserGlobalCount = asyncHandler(async (req, res, next) => {
   if (userGlobalCount) {
     res.status(200).json({
       status: true,
-      message: "Feched History Successfully !!",
+      message: "Fetched History Successfully !!",
       data: userGlobalCount,
     });
   }

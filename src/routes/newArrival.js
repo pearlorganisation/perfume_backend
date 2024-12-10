@@ -1,19 +1,19 @@
 import express from "express";
 import { upload } from "../config/cloudinary.js";
-import { createNewArrivalPerfume, deleteAllNewArrivalPerfume, getAllNewArrivalPerfume, getAllNewArrivalPerfumeById } from "../controllers/newArrival.js";
+import { addNewArrival, deleteNewArrival, getAllNewArrival, getAllNewArrivalAdmin, getNewArrival } from "../controllers/newArrival.js";
 
 const router = express.Router();
 
-
+router.route("/admin").get(getAllNewArrivalAdmin);
 router
   .route("/")
   .post(
-    upload.fields([{ name: "gallery" }, { name: "banner" }, { name: "logo" }]),
-    createNewArrivalPerfume
+    upload.fields([{ name: "banner" }]),
+    addNewArrival
   )
-  .get(getAllNewArrivalPerfume);
+  .get(getNewArrival);
 
-router.route("/:id").delete(deleteAllNewArrivalPerfume).get(getAllNewArrivalPerfumeById);
+router.route("/:id").delete(deleteNewArrival).get(getAllNewArrival);
 
 
 

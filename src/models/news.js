@@ -3,7 +3,7 @@ const newsSchema = new mongoose.Schema(
   {
     image: {
       type: String,
-      required: true,
+      // required: true,
     },
     title: {
       type: String,
@@ -17,7 +17,7 @@ const newsSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    content: {
+    details: {
       type: String,
       required: true,
     },

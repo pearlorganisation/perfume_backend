@@ -3,20 +3,23 @@ import mongoose from "mongoose";
 
 const newArrivalSchema = new mongoose.Schema({
     perfumeName:{
-        type:String
+        type:String,
+        required: true
     },
-    perfumeId:{
+    brand:{
         type:mongoose.Schema.ObjectId,
-        ref:"perfume"
+        ref:"brand"
     },
     banner:{
-        type:String
+        type:String,
+        required: true
     },
+    link: {
+        type: String,
+        required: true
+    }
     
-});
+}, {timestamps: true});
 
 
-
-
-
-export const NewArrivalPerfume = mongoose.model('NewArrival',newArrivalSchema);
+export const NewArrivalPerfume = mongoose.model('NewArrival',newArrivalSchema, 'NewArrival');

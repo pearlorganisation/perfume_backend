@@ -10,24 +10,24 @@ const commentSchema = mongoose.Schema(
     //title is name
     title: {
       type: String,
-      minlength: [5, "Min Required Length is 10!!"],
+      minlength: [1, "Min Required Length is 1!!"],
       maxlength: [100, "Max Required Length is 150!!"],
       required: [true, "Comment Title is Required Field"],
     },
     description: {
       type: String,
-      minlength: [10, "Min Required Length is 10!!"],
-      maxlength: [150, "Max Required Length is 150!!"],
+      minlength: [1, "Min Required Length is 1!!"],
+      maxlength: [500, "Max Required Length is 500!!"],
       required: [true, "Description  is Required Field"],
     },
     userId: {
       type: mongoose.Types.ObjectId,
-      ref: "perfume",
+      ref: "auth",
     },
     perfumeId: {
       type: mongoose.Types.ObjectId,
       ref: "perfume",
-      // required:[true,"PerfumeId is required field "]
+      required:[true,"PerfumeId is required field "]
     },
     commentGallery: {
       type: [{}],
@@ -35,10 +35,12 @@ const commentSchema = mongoose.Schema(
     likes: {
       type: Number,
       default: 0,
+      min:[0,"Min Length For Likes Must Be Zero"]
     },
     disLikes: {
       type: Number,
       default: 0,
+      min:[0,"Min Length For Likes Must Be Zero"]
     },
   },
   {

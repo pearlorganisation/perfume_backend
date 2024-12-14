@@ -232,7 +232,7 @@ export const deletePerfume = asyncHandler(async (req, res, next) => {
       .status(400)
       .json({ status: true, message: "No data found with given id!!" });
   }
-
+ 
   res.status(200).json({
     status: true,
     message: "Deleted successfully!!",

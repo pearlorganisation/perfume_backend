@@ -8,34 +8,40 @@ import { asyncHandler } from "../utils/asyncHandler.js";
  */
 export const createSalesOff = asyncHandler(async (req, res) => {
   let { title, links, rating } = req.body;
-  
+
   links = JSON.parse(links);
   const banner = req?.file?.path;
-  
-   const map = new Map();
-  links.forEach(element => {
-    map.set(element.country,{price:element?.price||'100$',link:element?.link||'https://learn.onemonth.com/what-is-a-404-page/'})
-  });
- const  mapOfLinks = Object.fromEntries(map);
- 
- const numOfData = await salesOffModel.countDocuments();
 
- if(numOfData == 6)
- {
-    return res.status(400).json({status:false,message:"Sales Off Section Can only hold up 6 products !!"})
- }
-  
- const salesOff = await salesOffModel.create({
+  const map = new Map();
+  links.forEach((element) => {
+    map.set(element.country, {
+      price: element?.price || "100$",
+      link: element?.link || "https://learn.onemonth.com/what-is-a-404-page/",
+      quantity: el?.quantity || "400 ML",
+    });
+  });
+  const mapOfLinks = Object.fromEntries(map);
+
+  const numOfData = await salesOffModel.countDocuments();
+
+  if (numOfData == 6) {
+    return res.status(400).json({
+      status: false,
+      message: "Sales Off Section Can only hold up 6 products !!",
+    });
+  }
+
+  const salesOff = await salesOffModel.create({
     title,
     mapOfLinks,
     rating,
-    banner:banner||"",
+    banner: banner || "",
   });
 
   res.status(201).json({
     success: true,
     data: salesOff,
-    message:"Sales Off Created Successfully !!"
+    message: "Sales Off Created Successfully !!",
   });
 });
 
@@ -44,11 +50,14 @@ export const createSalesOff = asyncHandler(async (req, res) => {
  * @route GET /api/sales-off
  */
 export const getSalesOffs = asyncHandler(async (req, res) => {
-  const salesOffs = await salesOffModel.find().select("title mapOfLinks rating banner").lean();
+  const salesOffs = await salesOffModel
+    .find()
+    .select("title mapOfLinks rating banner")
+    .lean();
   res.status(200).json({
     success: true,
     data: salesOffs,
-    message:"Data Fetched Successfully !!"
+    message: "Data Fetched Successfully !!",
   });
 });
 
@@ -59,7 +68,10 @@ export const getSalesOffs = asyncHandler(async (req, res) => {
 export const getSalesOffById = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  const salesOff = await salesOffModel.findOne({_id:id}).select("title mapOfLinks rating banner").lean();
+  const salesOff = await salesOffModel
+    .findOne({ _id: id })
+    .select("title mapOfLinks rating banner")
+    .lean();
 
   if (!salesOff) {
     res.status(404);
@@ -69,8 +81,7 @@ export const getSalesOffById = asyncHandler(async (req, res) => {
   res.status(200).json({
     success: true,
     data: salesOff,
-    message:"Data Fetched Successfully !!"
-
+    message: "Data Fetched Successfully !!",
   });
 });
 
@@ -81,11 +92,10 @@ export const getSalesOffById = asyncHandler(async (req, res) => {
 export const updateSalesOff = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  const updatedSalesOff = await salesOffModel.findByIdAndUpdate(
-    id,
-    req.body,
-    { new: true, runValidators: true }
-  );
+  const updatedSalesOff = await salesOffModel.findByIdAndUpdate(id, req.body, {
+    new: true,
+    runValidators: true,
+  });
 
   if (!updatedSalesOff) {
     res.status(404);

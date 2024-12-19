@@ -16,7 +16,6 @@ const reviewsSchema = new mongoose.Schema(
     reaction: {
       type: String,
       enum: ["worst", "good", "notGood", "fine", "veryGood"],
-      required: true,
     },
     season: {
       type: String,

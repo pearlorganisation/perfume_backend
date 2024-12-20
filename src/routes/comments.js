@@ -4,6 +4,7 @@ import {
   createComment,
   deleteComment,
   getAllComments,
+  getCommentById,
   getComments,
   voteComment,
 } from "../controllers/comments.js";
@@ -16,8 +17,10 @@ router.route("/:id")
 .get(getAllComments)
 .delete(deleteComment)
 
+
 router.route("/vote-comment/:id")
 .patch(voteComment)
+.get(getCommentById)
 ;
 
 

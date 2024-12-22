@@ -8,7 +8,7 @@ import chalk from "chalk";
 export const newPerfume = asyncHandler(async (req, res, next) => {
   const { gallery, banner, logo, video } = req?.files;
 
-  console.log("gallery", gallery);
+  // console.log("gallery", gallery);
 
   const {
     purchaseLinks,
@@ -45,12 +45,12 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
       map.set(currentItem.country, { companiesList: companies });
     }
   }
-  console.log("Map content before conversion:", Array.from(map.entries()));
+  // console.log("Map content before conversion:", Array.from(map.entries()));
 
   // Convert the Map to an object for MongoDB
   const mapsOfLinks = Object.fromEntries(map);
 
-  console.log("Converted mapsOfLinks:", JSON.stringify(mapsOfLinks, null, 2));
+  // console.log("Converted mapsOfLinks:", JSON.stringify(mapsOfLinks, null, 2));
   const newPerfume = new perfumeModel({
     ...req?.body,
     banner: banner[0]?.path,
@@ -67,12 +67,12 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
     topNote: JSON.parse(topNote),
     baseNote: JSON.parse(baseNote),
     brandAltAttribute,
-    mainImageAltAttribute
+    mainImageAltAttribute,
   });
 
   await newPerfume.save();
 
-  console.log("Data for the pros cons");
+  // console.log("Data for the pros cons");
 
   res.status(201).json({ status: true, newPerfume });
 });
@@ -81,7 +81,6 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
 
   const { gallery, banner, logo, video } = req?.files;
-
 
   let query = {};
 
@@ -92,21 +91,21 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
 
   if (banner && banner.length > 0) {
     const bann = await uploadFile(banner);
-    console.log("we came here bann", bann);
+    // console.log("we came here bann", bann);
 
     query.banner = bann.result[0].path;
   }
   if (logo && logo.length > 0) {
     const log = await uploadFile(logo);
 
-    console.log("we came here", log);
+    // console.log("we came here", log);
     query.logo = log.result[0].path;
   }
 
   if (video && video.length > 0) {
     const vid = await uploadFile(video);
 
-    console.log("we came here", vid);
+    // console.log("we came here", vid);
     query.video = vid?.result;
   }
 
@@ -173,7 +172,6 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
   query.brandAltAttribute = brandAltAttribute;
   query.mainImageAltAttribute = mainImageAltAttribute;
 
-
   const updatedPerfume = await perfumeModel.findByIdAndUpdate(id, { ...query });
 
   console.log("query", query);
@@ -232,13 +230,27 @@ export const deletePerfume = asyncHandler(async (req, res, next) => {
       .status(400)
       .json({ status: true, message: "No data found with given id!!" });
   }
- 
+
   res.status(200).json({
     status: true,
     message: "Deleted successfully!!",
   });
 });
 
+export const getSinglePerfumeBySlug = asyncHandler(async (req, res, next) => {
+  const { slug } = req.query;
+  const data = await perfumeModel
+    .findOne({ slug })
+    .populate(["middleNote", "topNote", "baseNote"]);
+  if (!data) {
+    return res.status(400).json({
+      status: false,
+      message: "No perfume data found with given id!!",
+    });
+  }
+
+  res.status(200).json({ status: true, data });
+});
 export const getSinglePerfume = asyncHandler(async (req, res, next) => {
   const data = await perfumeModel
     .findById(req?.params?.id)

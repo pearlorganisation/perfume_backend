@@ -62,13 +62,24 @@ export const updateProductReviewCount = asyncHandler(async (req, res, next) => {
     session.startTransaction();
 
     try {
-        const review = await ReviewCountModel.findOne({ perfume: productId, reviewBy: userId }).session(session);
         const productCount = await ProductReviewCount.findOne({ productId }).session(session);
 
-        if (!review || !productCount) {
+        if (!productCount) {
             await session.abortTransaction();
             session.endSession();
-            return res.status(404).json("Review Not Found !!");
+            return res.status(404).json({status:true,message:"Review Not Found !!"});
+        }
+
+         
+         let review ;
+        if(!await ReviewCountModel.findOne({ perfume: productId, reviewBy: userId }))
+        {
+          review = await  ReviewCountModel.create({perfume: productId, reviewBy: userId}).session(session) ;
+        }
+        else
+        {
+            review = await ReviewCountModel.findOne({ perfume: productId, reviewBy: userId }).session(session) ;
+
         }
 
         // Update reaction

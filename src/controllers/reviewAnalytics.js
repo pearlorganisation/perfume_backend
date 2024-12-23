@@ -5,14 +5,6 @@ import chalk from "chalk";
 
 // Controller for fetching review analytics
 export const getReviewAnalytics = asyncHandler(async (req, res, next) => {
-  // Extract parameters from the request if needed
-  // const { productId } = req.query;
-
-  // // Validate input
-  // if (!productId) {
-  //     return res.status(400).json({ message: "Product ID is required" });
-  // }
-
   // Simulate data retrieval from database or any service
   const analytics = await ProductReviewCount.aggregate([
     {
@@ -119,10 +111,6 @@ export const getReviewAnalyticsById = asyncHandler(async (req, res, next) => {
   // Extract parameters from the request if needed
   let { productId } = req.params;
 
-  // productId =   new mongoose.Types.ObjectId;
-
-  console.log(chalk.yellow(productId, "productId"));
-  // Validate input
   if (!productId) {
     return res.status(400).json({ message: "Product ID is required" });
   }

@@ -13,7 +13,7 @@ export const addPerfumeCategories = asyncHandler(async (req, res, next) => {
   }
 
   const allLinks = JSON?.parse(links) || [];
-  console.log(chalk.yellow(JSON?.stringify(allLinks)));
+  // console.log(chalk.yellow(JSON?.stringify(allLinks)));
 
   if (allLinks.length < 1)
     return res.status(400).json({

@@ -17,19 +17,19 @@ export const newPerfumeReview = asyncHandler(async (req, res, next) => {
     perfume,
   } = req?.body;
 
-  if (req.body.reviewBy) {
-    const isReviewExists = await reviews
-      .findOne({ reviewBy: req?.body?.reviewBy, perfume })
-      .lean();
-    console.log(chalk.magenta("isReviewExists", JSON.stringify(req.body)));
+  // if (req.body.reviewBy) {
+  //   const isReviewExists = await reviews
+  //     .findOne({ reviewBy: req?.body?.reviewBy, perfume })
+  //     .lean();
+  //   console.log(chalk.magenta("isReviewExists", JSON.stringify(req.body)));
 
-    if (isReviewExists) {
-      return res.status(400).json({
-        status: false,
-        message: "You have already given review on this Perfume !!",
-      });
-    }
-  }
+  //   if (isReviewExists) {
+  //     return res.status(400).json({
+  //       status: false,
+  //       message: "You have already given review on this Perfume !!",
+  //     });
+  //   }
+  // }
 
   let commentGallery = req?.files?.commentGallery;
   if (!commentGallery) {
@@ -41,12 +41,12 @@ export const newPerfumeReview = asyncHandler(async (req, res, next) => {
     perfume,
     reviewBy,
     notes: notes ? JSON.parse(notes) : [],
-    season: season || "",
-    longevity: longevity || "",
-    sillage: sillage || "",
-    gender: gender || "",
-    priceValue: priceValue || "",
-    reaction: reaction || "",
+    season,
+    longevity,
+    sillage,
+    gender,
+    priceValue,
+    reaction,
     commentsFields: commentData || [],
     commentGallery: commentGallery || [],
   });
@@ -94,175 +94,6 @@ export const updatePefumeReview = asyncHandler(async (req, res, next) => {
   });
 });
 
-// export const singleReview = asyncHandler(async (req, res, next) => {
-
-//   const aggregationPipeline = [
-//     {
-//       $facet: {
-//         reaction: [
-//           { $match: { "reaction.name": { $ne: null } } },
-//           {
-//             $group: {
-//               _id: "$reaction.name",
-//               count: { $sum: 1 },
-//             },
-//           },
-//           {
-//             $group: {
-//               _id: null,
-//               result: {
-//                 $push: {
-//                   k: "$_id",
-//                   v: "$count",
-//                 },
-//               },
-//             },
-//           },
-//           {
-//             $project: {
-//               _id: 0,
-//               reaction: { $arrayToObject: "$result" },
-//             },
-//           },
-//         ],
-//         season: [
-//           { $unwind: "$season" },
-//           { $match: { "season.name": { $ne: null } } },
-//           {
-//             $group: {
-//               _id: "$season.name",
-//               count: { $sum: 1 },
-//             },
-//           },
-//           {
-//             $group: {
-//               _id: null,
-//               result: {
-//                 $push: {
-//                   k: "$_id",
-//                   v: "$count",
-//                 },
-//               },
-//             },
-//           },
-//           {
-//             $project: {
-//               _id: 0,
-//               season: { $arrayToObject: "$result" },
-//             },
-//           },
-//         ],
-//         priceValue: [
-//           { $match: { priceValue: { $ne: null } } },
-//           {
-//             $group: {
-//               _id: "$priceValue",
-//               count: { $sum: 1 },
-//             },
-//           },
-//           {
-//             $group: {
-//               _id: null,
-//               result: {
-//                 $push: {
-//                   k: "$_id",
-//                   v: "$count",
-//                 },
-//               },
-//             },
-//           },
-//           {
-//             $project: {
-//               _id: 0,
-//               priceValue: { $arrayToObject: "$result" },
-//             },
-//           },
-//         ],
-//         gender: [
-//           { $match: { gender: { $ne: null } } },
-//           {
-//             $group: {
-//               _id: "$gender",
-//               count: { $sum: 1 },
-//             },
-//           },
-//           {
-//             $group: {
-//               _id: null,
-//               result: {
-//                 $push: {
-//                   k: "$_id",
-//                   v: "$count",
-//                 },
-//               },
-//             },
-//           },
-//           {
-//             $project: {
-//               _id: 0,
-//               gender: { $arrayToObject: "$result" },
-//             },
-//           },
-//         ],
-//         sillage: [
-//           { $match: { sillage: { $ne: null } } },
-//           {
-//             $group: {
-//               _id: "$sillage",
-//               count: { $sum: 1 },
-//             },
-//           },
-//           {
-//             $group: {
-//               _id: null,
-//               result: {
-//                 $push: {
-//                   k: "$_id",
-//                   v: "$count",
-//                 },
-//               },
-//             },
-//           },
-//           {
-//             $project: {
-//               _id: 0,
-//               sillage: { $arrayToObject: "$result" },
-//             },
-//           },
-//         ],
-//         longevity: [
-//           { $match: { longevity: { $ne: null } } },
-//           {
-//             $group: {
-//               _id: "$longevity",
-//               count: { $sum: 1 },
-//             },
-//           },
-//           {
-//             $group: {
-//               _id: null,
-//               result: {
-//                 $push: {
-//                   k: "$_id",
-//                   v: "$count",
-//                 },
-//               },
-//             },
-//           },
-//           {
-//             $project: {
-//               _id: 0,
-//               longevity: { $arrayToObject: "$result" },
-//             },
-//           },
-//         ],
-//       },
-//     },
-//   ];
-
-//   const data = await reviews.aggregate(aggregationPipeline).exec();
-//   res.status(200).json({ status: true, data });
-// });
 
 export const getAllReview = asyncHandler(async (req, res, next) => {
   const { id } = req.params;

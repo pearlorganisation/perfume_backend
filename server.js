@@ -49,6 +49,7 @@ app.use(
       "http://localhost:5175",
       "https://perfumetrics.com",
       "https://admin.perfumetrics.com",
+      "https://slow-papers-stand.loca.lt",
     ],
     credentials: true,
     methods: ["GET", "PUT", "POST", "PATCH", "DELETE"],

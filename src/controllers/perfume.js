@@ -20,6 +20,7 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
     mainImageAltAttribute,
     brandAltAttribute,
     pros,
+    slug,
     cons,
   } = req?.body;
 
@@ -68,6 +69,7 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
     baseNote: JSON.parse(baseNote),
     brandAltAttribute,
     mainImageAltAttribute,
+    slug:slug||req.body?.perfume
   });
 
   await newPerfume.save();
@@ -124,6 +126,7 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
     mainImageAltAttribute,
     brandAltAttribute,
     pros,
+    slug,
     cons,
   } = req?.body;
 
@@ -171,6 +174,7 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
   query.brand = brand;
   query.brandAltAttribute = brandAltAttribute;
   query.mainImageAltAttribute = mainImageAltAttribute;
+  query.slug = slug;
 
   const updatedPerfume = await perfumeModel.findByIdAndUpdate(id, { ...query });
 
@@ -200,7 +204,6 @@ export const getAllPerfume = asyncHandler(async (req, res, next) => {
   }
 
   let skip = (page - 1) * limit;
-  console.log(search, "asdsada");
 
   const totalDocuments = await perfumeModel.countDocuments({
     perfume: { $regex: search, $options: "i" },

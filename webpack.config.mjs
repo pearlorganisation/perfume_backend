@@ -4,6 +4,8 @@ import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 export default {
   entry: "./server.js", // Ensure this points to your server entry file
   output: {
@@ -12,7 +14,7 @@ export default {
     clean: true, // Cleans the output directory before each build
   },
   target: "node", // Ensure the build targets a Node.js environment
-  mode: "production", // Change to 'production' for optimized builds
+  mode: isProduction ? "production" : "development", // Set mode based on environment
   module: {
     rules: [
       {
@@ -28,15 +30,20 @@ export default {
     ],
   },
   optimization: {
-    usedExports: true, // Enable tree-shaking
+    usedExports: true, // Enable tree-shaking to eliminate unused code
   },
   resolve: {
     extensions: [".js"], // Resolve .js files automatically
   },
   externals: {
-    // Exclude Node.js built-in modules from the bundle
-    fs: "commonjs fs",
-    path: "commonjs path",
+    fs: "commonjs fs", // Exclude fs module from the bundle
+    path: "commonjs path", // Exclude path module from the bundle
+    http: "commonjs http", // Exclude http module from the bundle
+    express: "commonjs express", // Exclude express from the bundle
+    bodyParser: "commonjs body-parser", // Exclude body-parser from the bundle
+    // Add other external modules as needed
   },
-  plugins: [new BundleAnalyzerPlugin()],
+  plugins: [new HtmlWebpackPlugin({ template: './src/index.html' }),
+    isProduction && new BundleAnalyzerPlugin(),  // Only include analyzer in production
+  ].filter(Boolean),
 };

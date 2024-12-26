@@ -20,6 +20,7 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
     mainImageAltAttribute,
     brandAltAttribute,
     pros,
+    keywords,
     slug,
     cons,
   } = req?.body;
@@ -69,7 +70,8 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
     baseNote: JSON.parse(baseNote),
     brandAltAttribute,
     mainImageAltAttribute,
-    slug:slug||req.body?.perfume
+    slug:slug||req.body?.perfume,
+    keywords:JSON?.parse(keywords)||[]
   });
 
   await newPerfume.save();
@@ -86,32 +88,31 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
 
   let query = {};
 
-  if (gallery && gallery.length > 0) {
+  if (gallery && gallery?.length > 0) {
     const gall = await uploadFile(gallery);
     query.gallery = gall.result;
   }
 
-  if (banner && banner.length > 0) {
+  if (banner && banner?.length > 0) {
     const bann = await uploadFile(banner);
     // console.log("we came here bann", bann);
 
-    query.banner = bann.result[0].path;
+    query.banner = bann?.result[0].path;
   }
-  if (logo && logo.length > 0) {
+  if (logo && logo?.length > 0) {
     const log = await uploadFile(logo);
 
     // console.log("we came here", log);
     query.logo = log.result[0].path;
   }
 
-  if (video && video.length > 0) {
+  if (video && video?.length > 0) {
     const vid = await uploadFile(video);
 
     // console.log("we came here", vid);
     query.video = vid?.result;
   }
 
-  chalk.yellow(JSON.stringify(query));
   const {
     perfume,
     details,
@@ -127,6 +128,7 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
     brandAltAttribute,
     pros,
     slug,
+    keywords,
     cons,
   } = req?.body;
 
@@ -153,7 +155,7 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
       map.set(currentItem.country, { companiesList: companies });
     }
   }
-  console.log("Map content before conversion:", Array.from(map.entries()));
+  // console.log("Map content before conversion:", Array.from(map.entries()));
 
   // Convert the Map to an object for MongoDB
   const mapsOfLinks = Object.fromEntries(map);
@@ -175,10 +177,12 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
   query.brandAltAttribute = brandAltAttribute;
   query.mainImageAltAttribute = mainImageAltAttribute;
   query.slug = slug;
+  query.keywords = JSON?.parse(keywords);
+  console.log(chalk.yellow(JSON.stringify(query),"slugg"));
 
   const updatedPerfume = await perfumeModel.findByIdAndUpdate(id, { ...query });
 
-  console.log("query", query);
+  // console.log("query", query);
 
   res.status(200).json({
     status: true,
@@ -218,8 +222,9 @@ export const getAllPerfume = asyncHandler(async (req, res, next) => {
     .populate(["middleNote", "topNote", "baseNote", "brand"])
     .skip(skip)
     .limit(limit)
+    .sort({ createdAt: -1 })
     .lean()
-    .sort({ createdAt: -1 });
+    ;
 
   res
     .status(200)

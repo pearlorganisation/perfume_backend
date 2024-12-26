@@ -105,7 +105,8 @@ export const getAllTopRatedPerfumes = asyncHandler(async (req, res) => {
         _id:"$_id",
         perfumeId:"$perfumeData._id",
         perfumeName:"$perfumeData.perfume",
-        banner:"$perfumeData.banner"
+        banner:"$perfumeData.banner",
+        slug:"$perfumeData.slug"
       }
     }
    ]);
@@ -175,7 +176,8 @@ export const getAllTopRatedPerfumesForAdmin = asyncHandler(async (req, res) => {
         _id:"$_id",
         perfumeId:"$perfumeData._id",
         perfumeName:"$perfumeData.perfume",
-        banner:"$perfumeData.banner"
+        banner:"$perfumeData.banner",
+        slug:"$perfumeData.slug"
       }
     }
    ]);

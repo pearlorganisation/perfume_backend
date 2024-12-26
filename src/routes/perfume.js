@@ -6,6 +6,7 @@ import {
   getAllPerfume,
   getPerfumeVote,
   getSinglePerfume,
+  getSinglePerfumeBySlug,
   newPerfume,
   updatePerfume,
 } from "../controllers/perfume.js";
@@ -46,6 +47,6 @@ router
     ]),
     updatePerfume
   );
-
+router.route("/slug",getSinglePerfumeBySlug)
 router.route("/like-dislike/:id").get(getPerfumeVote); //this route is to get like dislike for perfumes
 export default router;

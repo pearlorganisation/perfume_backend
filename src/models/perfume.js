@@ -123,6 +123,13 @@ const perfumeSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    slug:{
+      type:String,
+      required:[true,"Slug Is Required Field"]
+    },
+    keywords:{
+      type:[]
+    },
     // commentsId :{
     //   type:mongoose.Types.ObjectId,ref:'comments'
     // },

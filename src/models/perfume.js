@@ -140,6 +140,12 @@ const perfumeSchema = new mongoose.Schema(
     productReviewCoundId: {
       type: mongoose.Types.ObjectId,
     },
+    slug:{
+      type:String
+    },
+    keywords:{
+      tupe:[]
+    }
   },
   { timestamps: true }
 );

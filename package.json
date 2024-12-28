@@ -33,7 +33,6 @@
     "path-browserify": "^1.0.1",
     "querystring-es3": "^0.2.1",
     "stream-browserify": "^3.0.0",
-    "webpack-bundle-analyzer": "^4.10.2",
     "zlib-browserify": "^0.0.3"
   },
   "devDependencies": {
@@ -41,6 +40,7 @@
     "@babel/preset-env": "^7.26.0",
     "babel-loader": "^9.2.1",
     "webpack": "^5.97.1",
+    "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^6.0.1"
   }
 }

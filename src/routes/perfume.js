@@ -28,6 +28,7 @@ router
       { name: "banner" },
       { name: "logo" },
       { name: "video" },
+      { name: "companyImages"}
     ]),
     newPerfume
   )

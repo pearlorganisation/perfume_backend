@@ -6,7 +6,7 @@ import { uploadFile } from "../config/cloudinary2.js";
 import chalk from "chalk";
 
 export const newPerfume = asyncHandler(async (req, res, next) => {
-  const { gallery, banner, logo, video } = req?.files;
+  const { gallery, banner, logo, video , companyImages} = req?.files;
 
   // console.log("gallery", gallery);
 
@@ -34,8 +34,10 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
     if (map.has(currentItem.country)) {
       let prevCompanyData = map.get(currentItem.country);
       prevCompanyData.companiesList.push({
-        company: currentItem.company,
-        link: currentItem.link || "abhishek",
+        company: currentItem?.company||"something went wrong with link",
+        link: currentItem.link || "something went wrong with link",
+        price:currentItem?.price||"something went wrong with price",
+        companyImage:companyImages?.[i]?.path||"something went wrong with company image"
       });
       map.set(currentItem.country, prevCompanyData);
     } else {
@@ -43,6 +45,8 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
       companies.push({
         company: currentItem.company,
         link: currentItem?.link || "abhishek",
+        price:currentItem?.price||"something went wrong with price",
+        companyImage:companyImages?.[i]?.path||"something went wrong with company image"
       });
       map.set(currentItem.country, { companiesList: companies });
     }

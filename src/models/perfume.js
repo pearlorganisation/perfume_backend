@@ -75,11 +75,11 @@ const perfumeSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: "brand",
     },
-    brandAltAttribute:{
-      type:String,
+    brandAltAttribute: {
+      type: String,
     },
-    mainImageAltAttribute:{
-      type:String,
+    mainImageAltAttribute: {
+      type: String,
     },
     banner: {
       type: String,
@@ -140,12 +140,12 @@ const perfumeSchema = new mongoose.Schema(
     productReviewCoundId: {
       type: mongoose.Types.ObjectId,
     },
-    slug:{
-      type:String
+    slug: {
+      type: String,
     },
-    keywords:{
-      tupe:[]
-    }
+    keywords: {
+      type: [],
+    },
   },
   { timestamps: true }
 );
@@ -159,7 +159,6 @@ perfumeSchema.pre("save", async function (next) {
         totalVotes: 0,
         productId: this._id,
       });
-
 
       const newProsCons = await ProsCons.create({
         pros: this.pros,
@@ -176,9 +175,7 @@ perfumeSchema.pre("save", async function (next) {
       next(error); // Handle errors
     }
   } else {
-
-
-    next(); 
+    next();
   }
 });
 

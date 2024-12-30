@@ -37,7 +37,15 @@ const ratingFragramSchema = new mongoose.Schema({
     maxlength: 1,
     enum: ["M", "F", "O"],
   },
+
 });
+
+const mapOfLinksSchema = new mongoose.Schema({
+  link:String,
+  company:String,
+  companyImage:String,
+  price:String
+})
 const proConSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -98,7 +106,7 @@ const perfumeSchema = new mongoose.Schema(
     },
     mapOfLinks: {
       type: Map,
-      of: mongoose.Schema.Types.Mixed,
+      of:[mapOfLinksSchema],
       required: true,
     },
     gallery: [{}],
@@ -123,9 +131,12 @@ const perfumeSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    // commentsId :{
-    //   type:mongoose.Types.ObjectId,ref:'comments'
-    // },
+    slug:{
+      type:String
+    },
+    keywords:{
+      type:[]
+    },
     mainAccords: [{ name: String, color: String, percentage: Number }],
 
     baseNote: [{ type: mongoose.Types.ObjectId, ref: "notes" }],

@@ -33,7 +33,7 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
 
     if (map.has(currentItem.country)) {
       let prevCompanyData = map.get(currentItem.country);
-      prevCompanyData.companiesList.push({
+      prevCompanyData.push({
         company: currentItem?.company || "something went wrong with link",
         link: currentItem.link || "something went wrong with link",
         price: currentItem?.price || "something went wrong with price",
@@ -50,7 +50,7 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
         companyImage:
           companyImages?.[i]?.path || "something went wrong with company image",
       });
-      map.set(currentItem.country, { companiesList: companies });
+      map.set(currentItem.country, companies);
     }
   }
   // console.log("Map content before conversion:", Array.from(map.entries()));
@@ -68,7 +68,7 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
     cons: JSON.parse(cons),
     logo: logo[0]?.path,
     mapOfLinks: mapsOfLinks, // Set the converted object here
-    purchaseLinks: JSON.parse(purchaseLinks),
+    // purchaseLinks: JSON.parse(purchaseLinks),
     ratingFragrams: JSON.parse(ratingFragrams),
     mainAccords: JSON.parse(mainAccords),
     middleNote: JSON.parse(middleNote),
@@ -139,15 +139,17 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
   } = req?.body;
 
   const arr = JSON.parse(purchaseLinks);
-
+  console.log(chalk.red(JSON.stringify(keywords)));
   let map = new Map();
+
+  //This needs to be reconsidered
 
   for (let i = 0; i < arr.length; i++) {
     const currentItem = arr[i];
 
     if (map.has(currentItem.country)) {
       let prevCompanyData = map.get(currentItem.country);
-      prevCompanyData.companiesList.push({
+      prevCompanyData.push({
         company: currentItem.company,
         link: currentItem.link || "abhishek",
       });
@@ -158,7 +160,7 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
         company: currentItem.company,
         link: currentItem?.link || "abhishek",
       });
-      map.set(currentItem.country, { companiesList: companies });
+      map.set(currentItem.country, companies);
     }
   }
   // console.log("Map content before conversion:", Array.from(map.entries()));
@@ -183,8 +185,8 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
   query.brandAltAttribute = brandAltAttribute;
   query.mainImageAltAttribute = mainImageAltAttribute;
   query.slug = slug;
-  query.keywords = JSON.parse(keywords) || [];
-  console.log(chalk.yellow(JSON.stringify(query), "slugg"));
+  query.keywords = JSON.parse(keywords);
+  console.log(query, "keywords");
 
   const updatedPerfume = await perfumeModel.findByIdAndUpdate(id, { ...query });
 

@@ -42,8 +42,9 @@ const ratingFragramSchema = new mongoose.Schema({
 
 const mapOfLinksSchema = new mongoose.Schema({
   link:String,
-  company:String,
-  companyImage:String,
+  company:{
+    type:{}
+  },
   price:String
 })
 const proConSchema = new mongoose.Schema({

@@ -75,12 +75,11 @@ export const updateBrandLinkedImage = asyncHandler(async (req, res) => {
 export const deleteBrandLinkedImage = asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    const brandImage = await BrandLinkedImageModel.findById(id);
+    const brandImage = await BrandLinkedImageModel.findOneAndDelete({_id:id});
     if (!brandImage) {
         res.status(404);
         throw new Error("Brand linked image not found!");
     }
 
-    await brandImage.remove();
     res.status(200).json({ message: "Brand linked image deleted successfully!" });
 });

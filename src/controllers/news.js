@@ -3,9 +3,12 @@ import newsModel from "../models/news.js";
 import errorResponse from "../utils/errorResponse.js";
 
 export const newNews = asyncHandler(async (req, res, next) => {
-  console.log("sadfsadfas", req.body);
-
-  const newDoc = new newsModel({ ...req?.body, image: req?.file?.path });
+ 
+  const slug = req.body.title.trim() // Remove leading/trailing spaces
+  .toLowerCase() // Convert to lowercase
+  .replace(/[^a-z0-9]+/g, '-') // Replace non-alphanumeric characters with '-'
+  .replace(/^-+|-+$/g, '');
+  const newDoc = new newsModel({ ...req?.body, image: req?.file?.path,slug });
   await newDoc.save();
   res
     .status(201)
@@ -51,9 +54,18 @@ export const getNewsById = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
 
   if (!id) {
-    res.status(500).json({ status: false, message: "Missing id" });
+    return res.status(500).json({ status: false, message: "Missing id" });
   }
   const data = await newsModel.findById({ _id: id });
+  res.status(200).json({ status: true, data });
+});
+export const getNewsBySlug = asyncHandler(async (req, res, next) => {
+  const { slug } = req.params;
+
+  if (!slug) {
+    return res.status(500).json({ status: false, message: "Missing id" });
+  }
+  const data = await newsModel.findById({ slug});
   res.status(200).json({ status: true, data });
 });
 
@@ -76,6 +88,10 @@ export const updateNews = asyncHandler(async (req, res) => {
   const payload = {
     title: req.body.title,
     description: req.body.content,
+    slug:req.body.title.trim() // Remove leading/trailing spaces
+    .toLowerCase() // Convert to lowercase
+    .replace(/[^a-z0-9]+/g, '-') // Replace non-alphanumeric characters with '-'
+    .replace(/^-+|-+$/g, '')
   };
 
   const banner = req?.file;

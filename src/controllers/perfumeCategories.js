@@ -89,7 +89,7 @@ export const getSinglePerfumeCategories = asyncHandler(
     const { id } = req?.params;
 
     if (!id) {
-      req.status(500).json({ status: false, message: "Missing ID" });
+      return res.status(500).json({ status: false, message: "Missing ID" });
     }
 
     const data = await perfumeCategoriesModel.findById(id);

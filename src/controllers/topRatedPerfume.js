@@ -5,7 +5,7 @@ import errorResponse from "../utils/errorResponse.js";
 
 // Create a new top-rated perfume
 export const createTopRatedPerfume = asyncHandler(async (req, res, next) => {
-  console.log(req.body.topRatedPerfume);
+  // console.log(req.body.topRatedPerfume);
 
   if (req.body.topRatedPerfume && Array.isArray(req.body.topRatedPerfume)) {
     try {
@@ -19,7 +19,8 @@ export const createTopRatedPerfume = asyncHandler(async (req, res, next) => {
       // console.log(topRatedPerfumeData,"topRatedPerfumeData")
       if((topRatedPerfumeData).length === 0){
 
-        res.status(400).json({status:false,message:"Bad Request Empty Array "});
+         return res.status(400).json({status:false,message:"Bad Request Empty Array "});
+         
       }
 
       const data = await TopRatedPerfume.insertMany(topRatedPerfumeData);
@@ -189,7 +190,7 @@ export const getTopRatedPerfumeById = asyncHandler(async (req, res) => {
   const topRatedPerfume = await TopRatedPerfume.findById(id).lean();
 
   if (!topRatedPerfume) {
-    res.status(404).json({ message: "TopRatedPerfume not found" });
+    return res.status(404).json({ message: "TopRatedPerfume not found" });
   }
 
   res.status(200).json({status:true,message:"Top Rated Perfume Fetched Successfully !!",topRatedPerfume});
@@ -222,7 +223,7 @@ export const deleteTopRatedPerfume = asyncHandler(async (req, res) => {
 
 
   if (!deletedTopRatedPerfume) {
-    res.status(404).json({ message: "TopRatedPerfume not found" });
+    return res.status(404).json({ message: "TopRatedPerfume not found" });
   }
 
   res.status(200).json({status:true, message: "TopRatedPerfume deleted successfully" });

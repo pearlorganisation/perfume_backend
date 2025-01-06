@@ -37,18 +37,16 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
         company: currentItem?.company || "something went wrong with link",
         link: currentItem.link || "something went wrong with link",
         price: currentItem?.price || "something went wrong with price",
-        companyImage:
-          companyImages?.[i]?.path || "something went wrong with company image",
+        // companyImage:companyImages?.[i]?.path||"something went wrong with company image"
       });
       map.set(currentItem.country, prevCompanyData);
     } else {
       let companies = [];
       companies.push({
-        company: currentItem.company,
+        company: currentItem?.company,
         link: currentItem?.link || "abhishek",
         price: currentItem?.price || "something went wrong with price",
-        companyImage:
-          companyImages?.[i]?.path || "something went wrong with company image",
+        // companyImage:companyImages?.[i]?.path||"something went wrong with company image"
       });
       map.set(currentItem.country, companies);
     }
@@ -76,7 +74,7 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
     baseNote: JSON.parse(baseNote),
     brandAltAttribute,
     mainImageAltAttribute,
-    slug: slug || req.body?.perfume,
+    slug: slug ? slug.replace(/ /g, "-") : req.body?.perfume,
     keywords: JSON.parse(keywords) || [],
   });
 
@@ -152,6 +150,7 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
       prevCompanyData.push({
         company: currentItem.company,
         link: currentItem.link || "abhishek",
+        price: currentItem.price,
       });
       map.set(currentItem.country, prevCompanyData);
     } else {
@@ -159,6 +158,7 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
       companies.push({
         company: currentItem.company,
         link: currentItem?.link || "abhishek",
+        price: currentItem.price,
       });
       map.set(currentItem.country, companies);
     }
@@ -184,7 +184,7 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
   query.brand = brand;
   query.brandAltAttribute = brandAltAttribute;
   query.mainImageAltAttribute = mainImageAltAttribute;
-  query.slug = slug;
+  query.slug = slug.replace(/ /g, "-");
   query.keywords = JSON.parse(keywords);
   console.log(query, "keywords");
 
@@ -252,7 +252,8 @@ export const deletePerfume = asyncHandler(async (req, res, next) => {
 });
 
 export const getSinglePerfumeBySlug = asyncHandler(async (req, res, next) => {
-  const { slug } = req.query;
+  const { slug } = req.params;
+  console.log(chalk.bgGreenBright(slug));
   const data = await perfumeModel
     .findOne({ slug })
     .populate(["middleNote", "topNote", "baseNote"]);
@@ -269,6 +270,186 @@ export const getSinglePerfume = asyncHandler(async (req, res, next) => {
   const data = await perfumeModel
     .findById(req?.params?.id)
     .populate(["middleNote", "topNote", "baseNote"]);
+
+  // const data = await perfumeModel.aggregate([
+  //   {
+  //     $match: {
+  //       _id: new mongoose.Types.ObjectId("677766881dac62640185cf6b")
+  //     }
+  //   },
+  //   {
+  //     $addFields: {
+  //       mapOfLinksArray: {
+  //         $objectToArray: "$mapOfLinks"
+  //       }
+  //     }
+  //   },
+  //   {
+  //     $unwind: "$mapOfLinksArray"
+  //   },
+  //   {
+  //     $lookup: {
+  //       from: "brandlinkedimages",
+  //       localField: "mapOfLinksArray.v.company",
+  //       foreignField: "_id",
+  //       as: "mapOfLinksArray.v.companyDetails"
+  //     }
+  //   },
+  //   {
+  //     $group: {
+  //       _id: "$_id",
+  //       perfume: {
+  //         $first: "$perfume"
+  //       },
+  //       brand: {
+  //         $first: "$brand"
+  //       },
+  //       keywords: {
+  //         $first: "$keywords"
+  //       },
+  //       slug: {
+  //         $first: "$slug"
+  //       },
+  //       logo: {
+  //         $first: "$logo"
+  //       },
+  //       video: {
+  //         $first: "$video"
+  //       },
+  //       pros: {
+  //         $first: "$pros"
+  //       },
+  //       cons: {
+  //         $first: "$cons"
+  //       },
+  //       likes: {
+  //         $first: "$likes"
+  //       },
+  //       dislike: {
+  //         $first: "$dislike"
+  //       },
+  //       banner: {
+  //         $first: "$banner"
+  //       },
+  //       mainAccords: {
+  //         $first: "$mainAccords"
+  //       },
+  //       middleNote: {
+  //         $first: "$middleNote"
+  //       },
+  //       baseNote: {
+  //         $first: "$baseNote"
+  //       },
+  //       topNote: {
+  //         $first: "$topNote"
+  //       },
+  //       description: {
+  //         $first: "$description"
+  //       },
+  //       details: {
+  //         $first: "$details"
+  //       },
+  //       gallery: {
+  //         $first: "$gallery"
+  //       },
+  //       ratingFragrams: {
+  //         $first: "$ratingFragrams"
+  //       },
+  //       productReviewCoundId: {
+  //         $first: "$productReviewCoundId"
+  //       },
+  //       mapOfLinks: {
+  //         $push: {
+  //           k: "$mapOfLinksArray.k",
+  //           v: {
+  //             link: "$mapOfLinksArray.v.link",
+  //             price: "$mapOfLinksArray.v.price",
+  //             companyDetails: {
+  //               $arrayElemAt: [
+  //                 "$mapOfLinksArray.v.companyDetails",
+  //                 0
+  //               ]
+  //             }
+  //           }
+  //         }
+  //       }
+
+  //       // Include other fields as necessary
+  //     }
+  //   },
+  //   {
+  //     $lookup: {
+  //       from:"brand" ,
+  //       localField: "brand",
+  //       foreignField: "_id",
+  //       as: "brand"
+  //     }
+  //   },
+  //   {
+  //     $lookup: {
+  //       from:"notes" ,
+  //       localField: "middleNote",
+  //       foreignField: "_id",
+  //       as: "middleNote"
+  //     }
+  //   },
+  //   {
+  //     $lookup: {
+  //       from:"notes" ,
+  //       localField: "topNote",
+  //       foreignField: "_id",
+  //       as: "topNote"
+  //     }
+  //   },
+  //   {
+  //     $lookup: {
+  //       from:"notes" ,
+  //       localField: "baseNote",
+  //       foreignField: "_id",
+  //       as: "baseNote"
+  //     }
+  //   },
+
+  //   {
+  //     $project: {
+  //       brand:{
+  //         $first:'$brand'
+  //       },
+  //       mapOfLinks:1,
+  //       perfume:1,
+  //       keywords:1,
+  //       slug:1,
+  //       middleNote:1,
+  //       baseNote:1,
+  //       topNote:1,
+  //       logo:1,
+  //       video:1,
+  //       // pros:1,
+  //       likes:1,
+  //       dislike:1,
+  //       banner:1,
+  //       mainAccords:1,
+  //       description:1,
+  //       gallery:1,
+  //       ratingFragrams:1,
+  //       productReviewCoundId:1,
+  //       // cons:1
+
+  //     }
+  //   },
+  //   {
+  //     $addFields: {
+  //       mapOfLinks: {
+  //         $arrayToObject: "$mapOfLinks"
+  //       }
+  //     }
+  //   },
+  //   {
+  //     $project: {
+  //       mapOfLinksArray: 0 // Remove temporary field
+  //     }
+  //   }
+  // ]);
   if (!data) {
     return res.status(400).json({
       status: false,

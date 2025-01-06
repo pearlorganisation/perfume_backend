@@ -61,7 +61,7 @@ export const getRelatedFragrams = asyncHandler(async (req, res, next) => {
     .populate({
       path: "perfume",
       as: "perfume",
-      select: "perfume banner",
+      select: "perfume banner slug",
     })
     .populate("brand")
     .sort({ createdAt: -1 });

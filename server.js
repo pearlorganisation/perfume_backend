@@ -30,6 +30,8 @@ import globalDataRouter from "./src/routes/globalData.js";
 import { countryIsoCodes } from "./src/routes/countryISOcodes.js";
 import { salesOffRouter } from "./src/routes/salesOff.js";
 import { reviewAnalyticsRouter } from "./src/routes/reviewAnalytics.js";
+import { contactUsRouter } from "./src/routes/contactUs.js";
+import { ImageUrlRouter } from "./src/routes/brandLinksImage.js";
 
 //MIDDLEWARES
 dotenv.config();
@@ -83,6 +85,8 @@ app.use("/api/v1/globalData", globalDataRouter);
 app.use("/api/v1/countryISOcodes", countryIsoCodes);
 app.use("/api/v1/salesOff", salesOffRouter);
 app.use("/api/v1/review-analytics", reviewAnalyticsRouter);
+app.use("/api/v1/contact-us", contactUsRouter);
+app.use("/api/v1/url-Image", ImageUrlRouter);
 
 app.use(error);
 app.listen(PORT, () => {

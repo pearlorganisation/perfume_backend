@@ -60,6 +60,7 @@ export const getAllBrandsMenu = asyncHandler(async (req, res, next) => {
         brand: 1,
         AllPerfume: {
           perfume: 1,
+          slug: 1,
           _id: 1,
         },
       },
@@ -110,12 +111,13 @@ export const getSingleBrandPerfumes = asyncHandler(async (req, res) => {
   const perfumes = await perfume
     .find({ brand: brandData._id, perfume: { $regex: search, $options: "i" } })
     .sort({ createdAt: -1 })
-    .select("perfume banner brand")
+    .select("perfume banner brand slug")
     .skip(skip)
     .limit(limit)
-    .lean()
-    .populate("brand", "brand _id");
+    .populate("brand", "brand _id")
+    .lean();
 
+  console.log("adasdsa", perfume);
   res.status(200).json({ totalPage, totalDocuments, perfumes });
 });
 

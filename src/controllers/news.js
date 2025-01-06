@@ -1,6 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import newsModel from "../models/news.js";
 import errorResponse from "../utils/errorResponse.js";
+import chalk from "chalk";
 
 export const newNews = asyncHandler(async (req, res, next) => {
  
@@ -61,18 +62,17 @@ export const getNewsById = asyncHandler(async (req, res, next) => {
 });
 export const getNewsBySlug = asyncHandler(async (req, res, next) => {
   const { slug } = req.params;
-
   if (!slug) {
-    return res.status(500).json({ status: false, message: "Missing id" });
+    return res.status(500).json({ status: false, message: "Missing Slug" });
   }
-  const data = await newsModel.findById({ slug});
+  const data = await newsModel.findOne({ slug});
   res.status(200).json({ status: true, data });
 });
 
 export const deleteNews = asyncHandler(async (req, res, next) => {
   const deletedData = await newsModel.findByIdAndDelete(req?.params?.id);
   if (!deletedData) {
-    return next(new errorResponse("No data found with given id!! "));
+    return next(new errorResponse("No data found with given Slug !! "));
   }
   res
     .status(200)
@@ -82,7 +82,7 @@ export const deleteNews = asyncHandler(async (req, res, next) => {
 export const updateNews = asyncHandler(async (req, res) => {
   const { id } = req.params;
   if (!id) {
-    res.status(500).json({ status: false, message: "Missing id" });
+   return  res.status(500).json({ status: false, message: "Missing id" });
   }
 
   const payload = {

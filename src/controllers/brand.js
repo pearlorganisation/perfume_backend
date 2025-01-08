@@ -4,9 +4,12 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 // import errorResponse from "../utils/errorResponse.js";
 
 export const newBrand = asyncHandler(async (req, res, next) => {
-  const newBrand = new brand(req?.body);
+  const slug = req?.body?.brand.trim() // Remove leading/trailing spaces
+  .toLowerCase() // Convert to lowercase
+  .replace(/[^a-z0-9]+/g, '-') // Replace non-alphanumeric characters with '-'
+  .replace(/^-+|-+$/g, '')
+  const newBrand = new brand({brand:req?.body?.brand,slug});
   await newBrand.save();
-  const data = await brand.find();
   res.status(201).json({ status: true, message: "Created successfully!!" });
 });
 

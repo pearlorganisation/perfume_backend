@@ -5,10 +5,14 @@ const brandSchema = new mongoose.Schema(
     brand: {
       type: String,
       required: true,
-      minlength: [3, "Min Length For Brand Is 3."],
-      maxlength: [60, "Max Length For Brand Is 60"],
+      unique: true,
+      trim: true,
+      minlength: [3, "Min Value must be greater than 3"],
+      maxlength: [50, "Max Value must be less than 50"],
     },
+    slug: { type: String, trim: true, unique: true },
   },
+
   { timestamps: true }
 );
 

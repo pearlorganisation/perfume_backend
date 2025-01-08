@@ -4,9 +4,12 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 // import errorResponse from "../utils/errorResponse.js";
 
 export const newBrand = asyncHandler(async (req, res, next) => {
-  const newBrand = new brand(req?.body);
+  const slug = req?.body?.brand.trim() // Remove leading/trailing spaces
+  .toLowerCase() // Convert to lowercase
+  .replace(/[^a-z0-9]+/g, '-') // Replace non-alphanumeric characters with '-'
+  .replace(/^-+|-+$/g, '')
+  const newBrand = new brand({brand:req?.body?.brand,slug});
   await newBrand.save();
-  const data = await brand.find();
   res.status(201).json({ status: true, message: "Created successfully!!" });
 });
 
@@ -71,7 +74,7 @@ export const getAllBrandsMenu = asyncHandler(async (req, res, next) => {
 });
 
 export const getSingleBrandPerfumes = asyncHandler(async (req, res) => {
-  const { brandName } = req?.params;
+  const { slug } = req?.params;
   const { Page, Limit, Search } = req.query;
   let page = 1;
   let limit = 10;
@@ -89,7 +92,7 @@ export const getSingleBrandPerfumes = asyncHandler(async (req, res) => {
 
   let skip = (page - 1) * limit;
 
-  const brandData = await brand.findOne({ brand: brandName });
+  const brandData = await brand.findOne({ slug });
   if (!brandData) {
     return res.status(404).json({ message: "Brand not found" });
   }

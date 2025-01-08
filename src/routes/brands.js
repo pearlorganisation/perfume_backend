@@ -12,5 +12,5 @@ const router = express.Router();
 router.route("/menu").get(getAllBrandsMenu);
 router.route("/").get(getAllBrands).post(newBrand);
 router.route("/:id").delete(deleteBrand).patch(updateBrand);
-router.route("/single/:brandName").get(getSingleBrandPerfumes);
+router.route("/slug/:slug").get(getSingleBrandPerfumes);
 export default router;

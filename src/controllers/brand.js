@@ -58,6 +58,7 @@ export const getAllBrandsMenu = asyncHandler(async (req, res, next) => {
     {
       $project: {
         brand: 1,
+        slug: 1,
         AllPerfume: {
           perfume: 1,
           slug: 1,
@@ -71,7 +72,7 @@ export const getAllBrandsMenu = asyncHandler(async (req, res, next) => {
 });
 
 export const getSingleBrandPerfumes = asyncHandler(async (req, res) => {
-  const { brandName } = req?.params;
+  const { slug } = req?.params;
   const { Page, Limit, Search } = req.query;
   let page = 1;
   let limit = 10;
@@ -89,7 +90,7 @@ export const getSingleBrandPerfumes = asyncHandler(async (req, res) => {
 
   let skip = (page - 1) * limit;
 
-  const brandData = await brand.findOne({ brand: brandName });
+  const brandData = await brand.findOne({ slug });
   if (!brandData) {
     return res.status(404).json({ message: "Brand not found" });
   }

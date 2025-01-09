@@ -14,13 +14,28 @@ const celebrityPerfumesSchema = new mongoose.Schema(
       type: String,
       required: [true, "Banner is required"],
     },
-    perfumeId: {
+    // perfumeId: {
+    //   type: String,
+    //   default: null,
+    // },
+    slug: {
+      trim: true,
       type: String,
-      default: null,
     },
   },
   { timestamps: true }
 );
+
+celebrityPerfumesSchema.pre("save", function (next) {
+  // Remove special characters and replace spaces with hyphens
+  this.slug = this.title
+    .toLowerCase() // Convert to lowercase
+    .replace(/[^a-zA-Z0-9\s]/g, "") // Remove special characters
+    .trim() // Trim leading and trailing whitespace
+    .replace(/\s+/g, "-"); // Replace spaces with hyphens
+
+  next();
+});
 
 export default mongoose.model(
   "celebrityPerfumes",

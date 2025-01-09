@@ -19,46 +19,46 @@ export const getCelebrityPerfumes = asyncHandler(async (req, res) => {
 // get a single celebrity perfume
 export const getCelebrityPerfume = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const result = await celebrityPerfumesModel.findById(id);
+  const result = await celebrityPerfumesModel.findOne({ slug: id });
 
   res.status(200).json({ status: true, data: result });
 });
 
-
 export const getCelebrityPerfumeAdmin = asyncHandler(async (req, res) => {
+  const { Page, Limit, Search } = req.query;
 
-  const {Page,Limit,Search} = req.query;
-  
   let page = 1;
   let limit = 10;
-  let search = '';
+  let search = "";
 
-  if(Page)
-  {
-    page = Math.max(page,Page);
+  if (Page) {
+    page = Math.max(page, Page);
   }
-  if(Limit)
-  {
-    limit = Math.max(limit,Limit);
+  if (Limit) {
+    limit = Math.max(limit, Limit);
   }
-  if(Search)
-  {
+  if (Search) {
     search = Search;
   }
 
-  let skip = (page-1)*limit;
-   console.log(search,"asdsada");
+  let skip = (page - 1) * limit;
+  console.log(search, "asdsada");
 
-   const totalDocuments = await celebrityPerfumesModel.countDocuments({ title: { $regex: search, $options: 'i' } });
-   const totalPage = Math.ceil(totalDocuments / limit);
-  
-  const result = await celebrityPerfumesModel.find({ title: { $regex: search, $options: 'i' } }).skip(skip).limit(limit).lean();
+  const totalDocuments = await celebrityPerfumesModel.countDocuments({
+    title: { $regex: search, $options: "i" },
+  });
+  const totalPage = Math.ceil(totalDocuments / limit);
 
-  res.status(200).json({ status: true,totalDocuments,totalPage, data: result });
+  const result = await celebrityPerfumesModel
+    .find({ title: { $regex: search, $options: "i" } })
+    .skip(skip)
+    .limit(limit)
+    .lean();
+
+  res
+    .status(200)
+    .json({ status: true, totalDocuments, totalPage, data: result });
 });
-
-
-
 
 export const addCelebrityPerfume = asyncHandler(async (req, res) => {
   const { title, content } = req?.body;
@@ -101,7 +101,11 @@ export const updateCelebrityPerfume = asyncHandler(async (req, res) => {
     payload.banner = banner[0]?.path;
   }
 
-  await celebrityPerfumesModel.findOneAndUpdate({ _id: id }, payload);
+  const updatedData = await celebrityPerfumesModel.findOneAndUpdate(
+    { _id: id },
+    payload
+  );
+  await updatedData.save();
   res
     .status(200)
     .json({ status: true, message: "Celebrity Perfume Updated successfully" });

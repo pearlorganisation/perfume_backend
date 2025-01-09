@@ -50,6 +50,8 @@ const mapOfLinksSchema = new mongoose.Schema({
 const proConSchema = new mongoose.Schema({
   title: {
     type: String,
+    minlength:[20,"Min Length for pros/cons must be greater than 20"],
+    maxlength:[120,"Min Length for pros/cons must be less than 120"],
     required: [true, "Title for pros or cons is a required field!"],
   },
   likes: {
@@ -70,6 +72,8 @@ const perfumeSchema = new mongoose.Schema(
   {
     perfume: {
       type: String,
+      minlength:[3,"Min Length for perfume must be greater than 3"],
+      maxlength:[250,"Max Length for perfume must be less than 100"],
       required: true,
     },
     logo: {
@@ -85,7 +89,7 @@ const perfumeSchema = new mongoose.Schema(
       ref: "brand",
     },
     brandAltAttribute:{
-      type:String,
+      type:String
     },
     mainImageAltAttribute:{
       type:String,
@@ -100,10 +104,14 @@ const perfumeSchema = new mongoose.Schema(
     details: {
       type: String,
       required: true,
+      minlength:[3,"Min Length for details must be greater than 3"],
+      maxlength:[1000,"Max Length for details must be less than 1000"],
     },
     description: {
       type: String,
       required: true,
+      minlength:[3,"Min Length for perfume must be greater than 3"],
+      maxlength:[1000,"Max Length for perfume must be less than 1000"],
     },
     mapOfLinks: {
       type: Map,
@@ -111,9 +119,9 @@ const perfumeSchema = new mongoose.Schema(
       required: true,
     },
     gallery: [{}],
-    purchaseLinks: {
-      type: [{}],
-    },
+    // purchaseLinks: {
+    //   type: [{}],
+    // },
     pros: {
       type: [proConSchema],
     },
@@ -133,12 +141,17 @@ const perfumeSchema = new mongoose.Schema(
       default: 0,
     },
     slug:{
-      type:String
+      type:String,
+      maxlength:[200,"Max Length For Slug is 200"]
     },
     keywords:{
       type:[]
     },
-    mainAccords: [{ name: String, color: String, percentage: Number }],
+    mainAccords: [{ name: {
+      type:String,
+      minlength:[3,"Min Length for mainAccords must be greater than 3"],
+      maxlength:[100,"Max Length for mainAccords must be less than 100"],
+    }, color: String, percentage: Number }],
 
     baseNote: [{ type: mongoose.Types.ObjectId, ref: "notes" }],
 

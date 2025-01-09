@@ -20,7 +20,6 @@ const productReviewCountSchema = new mongoose.Schema(
       enormous: { type: Number, default: 0 ,min:[0,"Min Value Should be Zero!!"]},
     },
     longevity: {
-      noVote: { type: Number, default: 0 ,min:[0,"Min Value Should be Zero!!"]},
       veryWeak: { type: Number, default: 0 ,min:[0,"Min Value Should be Zero!!"]},
       weak: { type: Number, default: 0 ,min:[0,"Min Value Should be Zero!!"]},
       moderate: { type: Number, default: 0 ,min:[0,"Min Value Should be Zero!!"]},

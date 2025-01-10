@@ -3,24 +3,24 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 
 export const addReviewSidebar = asyncHandler(async (req, res, next) => {
-    const { title, reviewBy, description, perfumeId } = req?.body;
+    const { title, reviewBy, description, link } = req?.body;
 
     const {banner} = req?.files
 
-    if (!title && !banner && !reviewBy && !description && !perfumeId) {
+    if (!title && !banner && !reviewBy && !description && !link) {
         res.status(500).json({ status: false, message: "Incomplete data" })
     }
     
 
-    const payload = { title, banner: banner[0]?.path, reviewBy, description, perfumeId }
+    const payload = { title, banner: banner[0]?.path, reviewBy, description, productUrl:link }
 
-    console.log(payload)
+    // console.log(payload)
 
     await reviewsSidebarModel.create(payload)
 
-    const result = await reviewsSidebarModel.find({})
 
-    res.status(200).json({ status: true, message: 'Perfume Review Added', data: result });
+
+    res.status(200).json({ status: true, message: 'Perfume Review Added' });
 });
 
 export const getReviewsSidebar = asyncHandler(async (req, res, next) => {

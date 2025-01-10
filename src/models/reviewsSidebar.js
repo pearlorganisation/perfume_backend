@@ -2,24 +2,28 @@ import mongoose from "mongoose";
 
 const reviewsSidebarSchema = new mongoose.Schema(
   {
-    productId: {
-      type: mongoose.Types.ObjectId,
-    },
+
     title: {
       type: String,
       required: true,
+      minlength:[3,"Min Length Should Be 3"],
+      maxlength:[30,"Max Length Should Be 30"]
     },
     description: {
       type: String,
       required: true,
+      minlength:[3,"Min Length Should Be 3"],
+      maxlength:[300,"Max Length Should Be 300"]
     },
     reviewBy: {
       type: String,
       required: true,
+      minlength:[3,"Min Length Should Be 3"],
+      maxlength:[300,"Max Length Should Be 300"]
     },
-    perfumeId: {
-      type: mongoose.Types.ObjectId,
-      ref: "perfume",
+    productUrl:{
+      type:String,
+      required:true
     },
     banner: {
       type: String,

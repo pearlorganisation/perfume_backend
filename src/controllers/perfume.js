@@ -5,9 +5,8 @@ import { upload2 } from "../config/multer2.js";
 import { uploadFile } from "../config/cloudinary2.js";
 import chalk from "chalk";
 
-
 export const newPerfume = asyncHandler(async (req, res, next) => {
-  const { gallery, banner, logo, video , companyImages} = req?.files;
+  const { gallery, banner, logo, video, companyImages } = req?.files;
 
   // console.log("gallery", gallery);
 
@@ -35,9 +34,9 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
     if (map.has(currentItem.country)) {
       let prevCompanyData = map.get(currentItem.country);
       prevCompanyData.push({
-        company: currentItem?.company||"something went wrong with link",
+        company: currentItem?.company || "something went wrong with link",
         link: currentItem.link || "something went wrong with link",
-        price:currentItem?.price||"something went wrong with price",
+        price: currentItem?.price || "something went wrong with price",
         // companyImage:companyImages?.[i]?.path||"something went wrong with company image"
       });
       map.set(currentItem.country, prevCompanyData);
@@ -46,17 +45,17 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
       companies.push({
         company: currentItem?.company,
         link: currentItem?.link || "abhishek",
-        price:currentItem?.price||"something went wrong with price",
+        price: currentItem?.price || "something went wrong with price",
         // companyImage:companyImages?.[i]?.path||"something went wrong with company image"
       });
-      map.set(currentItem.country,companies);
+      map.set(currentItem.country, companies);
     }
   }
   // console.log("Map content before conversion:", Array.from(map.entries()));
 
   // Convert the Map to an object for MongoDB
   const mapsOfLinks = Object.fromEntries(map);
-
+  console.log(chalk.green(keywords));
   // console.log("Converted mapsOfLinks:", JSON.stringify(mapsOfLinks, null, 2));
   const newPerfume = new perfumeModel({
     ...req?.body,
@@ -75,8 +74,8 @@ export const newPerfume = asyncHandler(async (req, res, next) => {
     baseNote: JSON.parse(baseNote),
     brandAltAttribute,
     mainImageAltAttribute,
-    slug:slug ? slug.replace(/ /g,'-') :req.body?.perfume,
-    keywords:JSON.parse(keywords)||[]
+    slug: slug ? slug.replace(/ /g, "-") : req.body?.perfume,
+    keywords: JSON.parse(keywords) || [],
   });
 
   await newPerfume.save();
@@ -141,8 +140,7 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
   console.log(chalk.red(JSON.stringify(keywords)));
   let map = new Map();
 
-
-  //This needs to be reconsidered 
+  //This needs to be reconsidered
 
   for (let i = 0; i < arr.length; i++) {
     const currentItem = arr[i];
@@ -152,7 +150,7 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
       prevCompanyData.push({
         company: currentItem.company,
         link: currentItem.link || "abhishek",
-        price:currentItem.price
+        price: currentItem.price,
       });
       map.set(currentItem.country, prevCompanyData);
     } else {
@@ -160,9 +158,9 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
       companies.push({
         company: currentItem.company,
         link: currentItem?.link || "abhishek",
-        price:currentItem.price
+        price: currentItem.price,
       });
-      map.set(currentItem.country,companies);
+      map.set(currentItem.country, companies);
     }
   }
   // console.log("Map content before conversion:", Array.from(map.entries()));
@@ -186,9 +184,9 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
   query.brand = brand;
   query.brandAltAttribute = brandAltAttribute;
   query.mainImageAltAttribute = mainImageAltAttribute;
-  query.slug = slug.replace(/ /g,"-");
+  query.slug = slug.replace(/ /g, "-");
   query.keywords = JSON.parse(keywords);
-  console.log(query,"keywords");
+  console.log(query, "keywords");
 
   const updatedPerfume = await perfumeModel.findByIdAndUpdate(id, { ...query });
 
@@ -233,9 +231,7 @@ export const getAllPerfume = asyncHandler(async (req, res, next) => {
     .skip(skip)
     .limit(limit)
     .sort({ createdAt: -1 })
-    .lean()
-    ;
-
+    .lean();
   res
     .status(200)
     .json({ status: true, data: perfumeData, totalDocuments, totalPage });
@@ -256,7 +252,8 @@ export const deletePerfume = asyncHandler(async (req, res, next) => {
 });
 
 export const getSinglePerfumeBySlug = asyncHandler(async (req, res, next) => {
-  const { slug } = req.query;
+  const { slug } = req.params;
+  console.log(chalk.bgGreenBright(slug));
   const data = await perfumeModel
     .findOne({ slug })
     .populate(["middleNote", "topNote", "baseNote"]);
@@ -376,7 +373,7 @@ export const getSinglePerfume = asyncHandler(async (req, res, next) => {
   //           }
   //         }
   //       }
-  
+
   //       // Include other fields as necessary
   //     }
   //   },
@@ -412,7 +409,7 @@ export const getSinglePerfume = asyncHandler(async (req, res, next) => {
   //       as: "baseNote"
   //     }
   //   },
-   
+
   //   {
   //     $project: {
   //       brand:{
@@ -437,7 +434,7 @@ export const getSinglePerfume = asyncHandler(async (req, res, next) => {
   //       ratingFragrams:1,
   //       productReviewCoundId:1,
   //       // cons:1
-        
+
   //     }
   //   },
   //   {

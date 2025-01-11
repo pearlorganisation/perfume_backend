@@ -6,6 +6,7 @@ import {
   getAllPerfume,
   getPerfumeVote,
   getSinglePerfume,
+  getSinglePerfumeBySlug,
   newPerfume,
   updatePerfume,
 } from "../controllers/perfume.js";
@@ -18,6 +19,7 @@ import {
 const router = express.Router();
 
 router.route("/recent").get(getAllRecentPerfume);
+router.route("/slug/:slug").get(getSinglePerfumeBySlug);
 router.route("/voteProsCons").patch(addVoteToPerfumeProsCons);
 router.route("/votePerfume").patch(addVoteToPerfume);
 router
@@ -28,7 +30,7 @@ router
       { name: "banner" },
       { name: "logo" },
       { name: "video" },
-      { name: "companyImages"}
+      { name: "companyImages" },
     ]),
     newPerfume
   )

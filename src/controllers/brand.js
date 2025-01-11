@@ -4,11 +4,12 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 // import errorResponse from "../utils/errorResponse.js";
 
 export const newBrand = asyncHandler(async (req, res, next) => {
-  const slug = req?.body?.brand.trim() // Remove leading/trailing spaces
-  .toLowerCase() // Convert to lowercase
-  .replace(/[^a-z0-9]+/g, '-') // Replace non-alphanumeric characters with '-'
-  .replace(/^-+|-+$/g, '')
-  const newBrand = new brand({brand:req?.body?.brand,slug});
+  const slug = req?.body?.brand
+    .trim() // Remove leading/trailing spaces
+    .toLowerCase() // Convert to lowercase
+    .replace(/[^a-z0-9]+/g, "-") // Replace non-alphanumeric characters with '-'
+    .replace(/^-+|-+$/g, "");
+  const newBrand = new brand({ brand: req?.body?.brand, slug });
   await newBrand.save();
   res.status(201).json({ status: true, message: "Created successfully!!" });
 });
@@ -44,6 +45,7 @@ export const getAllBrands = asyncHandler(async (req, res, next) => {
     .find({ brand: { $regex: search, $options: "i" } })
     .skip(skip)
     .limit(limit)
+    .sort({ createdAt: -1 })
     .lean();
   res.status(200).json({ status: true, data, totalDocuments, totalPage });
 });
@@ -61,9 +63,10 @@ export const getAllBrandsMenu = asyncHandler(async (req, res, next) => {
     {
       $project: {
         brand: 1,
+        slug: 1,
         AllPerfume: {
           perfume: 1,
-          slug:1,
+          slug: 1,
           _id: 1,
         },
       },
@@ -117,9 +120,10 @@ export const getSingleBrandPerfumes = asyncHandler(async (req, res) => {
     .select("perfume banner brand slug")
     .skip(skip)
     .limit(limit)
-    .lean()
-    .populate("brand", "brand _id");
+    .populate("brand", "brand _id")
+    .lean();
 
+  console.log("adasdsa", perfume);
   res.status(200).json({ totalPage, totalDocuments, perfumes });
 });
 

@@ -61,7 +61,7 @@ export const getComments = asyncHandler(async (req, res) => {
 export const getAllComments = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  const comments = await Comments.find({ perfumeId: id });
+  const comments = await Comments.find({ perfumeId: id }).sort("-createdAt");
   if (!comments) {
     res.status(400).json({ success: false, message: "Not found !!" });
   }

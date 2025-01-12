@@ -4,12 +4,12 @@ import errorResponse from "../utils/errorResponse.js";
 import chalk from "chalk";
 
 export const newNews = asyncHandler(async (req, res, next) => {
- 
-  const slug = req.body.title.trim() // Remove leading/trailing spaces
-  .toLowerCase() // Convert to lowercase
-  .replace(/[^a-z0-9]+/g, '-') // Replace non-alphanumeric characters with '-'
-  .replace(/^-+|-+$/g, '');
-  const newDoc = new newsModel({ ...req?.body, image: req?.file?.path,slug });
+  const slug = req.body.title
+    .trim() // Remove leading/trailing spaces
+    .toLowerCase() // Convert to lowercase
+    .replace(/[^a-z0-9]+/g, "-") // Replace non-alphanumeric characters with '-'
+    .replace(/^-+|-+$/g, "");
+  const newDoc = new newsModel({ ...req?.body, image: req?.file?.path, slug });
   await newDoc.save();
   res
     .status(201)
@@ -65,7 +65,7 @@ export const getNewsBySlug = asyncHandler(async (req, res, next) => {
   if (!slug) {
     return res.status(500).json({ status: false, message: "Missing Slug" });
   }
-  const data = await newsModel.findOne({ slug});
+  const data = await newsModel.findOne({ slug });
   res.status(200).json({ status: true, data });
 });
 
@@ -82,16 +82,17 @@ export const deleteNews = asyncHandler(async (req, res, next) => {
 export const updateNews = asyncHandler(async (req, res) => {
   const { id } = req.params;
   if (!id) {
-   return  res.status(500).json({ status: false, message: "Missing id" });
+    return res.status(500).json({ status: false, message: "Missing id" });
   }
 
   const payload = {
     title: req.body.title,
     description: req.body.content,
-    slug:req.body.title.trim() // Remove leading/trailing spaces
-    .toLowerCase() // Convert to lowercase
-    .replace(/[^a-z0-9]+/g, '-') // Replace non-alphanumeric characters with '-'
-    .replace(/^-+|-+$/g, '')
+    slug: req.body.title
+      .trim() // Remove leading/trailing spaces
+      .toLowerCase() // Convert to lowercase
+      .replace(/[^a-z0-9]+/g, "-") // Replace non-alphanumeric characters with '-'
+      .replace(/^-+|-+$/g, ""),
   };
 
   const banner = req?.file;
@@ -100,7 +101,7 @@ export const updateNews = asyncHandler(async (req, res) => {
     payload.image = banner.path;
   }
 
-  const updateModel = await newsModel.findOneAndUpdate({ _id: id }, payload);
+  // const updateModel = await newsModel.findOneAndUpdate({ _id: id }, payload);
 
   res.status(200).json({ status: true, message: "Blog Updated successfully" });
 });

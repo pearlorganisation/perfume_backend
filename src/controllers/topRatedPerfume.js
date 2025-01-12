@@ -89,7 +89,7 @@ export const createTopRatedPerfume = asyncHandler(async (req, res, next) => {
 });
 
 // Retrieve all top-rated perfumes
-export const getAllTopRatedPerfumes = asyncHandler(async (req, res) => {
+export const getAllTopRatedPerfumes = asyncHandler(async (req, res, next) => {
   const topRatedPerfumes = await TopRatedPerfume.aggregate([
     {
       $lookup: {
@@ -115,79 +115,81 @@ export const getAllTopRatedPerfumes = asyncHandler(async (req, res) => {
   res.status(200).json(topRatedPerfumes);
 });
 
-export const getAllTopRatedPerfumesForAdmin = asyncHandler(async (req, res) => {
-  const { Page, Limit, Search } = req.query;
+export const getAllTopRatedPerfumesForAdmin = asyncHandler(
+  async (req, res, next) => {
+    const { Page, Limit, Search } = req.query;
 
-  let page = 1;
-  let limit = 10;
-  let search = "";
+    let page = 1;
+    let limit = 10;
+    let search = "";
 
-  if (Page) {
-    page = Math.max(page, Page);
-  }
-  if (Limit) {
-    limit = Math.max(limit, Limit);
-  }
-  if (Search) {
-    search = Search;
-  }
+    if (Page) {
+      page = Math.max(page, Page);
+    }
+    if (Limit) {
+      limit = Math.max(limit, Limit);
+    }
+    if (Search) {
+      search = Search;
+    }
 
-  let skip = (page - 1) * limit;
+    let skip = (page - 1) * limit;
 
-  const totalDocuments = await TopRatedPerfume.aggregate([
-    {
-      $lookup: {
-        from: "perfume",
-        localField: "perfumeId",
-        foreignField: "_id",
-        as: "perfumeData",
+    const totalDocuments = await TopRatedPerfume.aggregate([
+      {
+        $lookup: {
+          from: "perfume",
+          localField: "perfumeId",
+          foreignField: "_id",
+          as: "perfumeData",
+        },
       },
-    },
-    { $match: { "perfumeData.perfume": { $regex: search, $options: "i" } } },
-    { $skip: skip },
-    { $limit: limit },
-    {
-      $count: "totalDocument",
-    },
-  ]);
+      { $match: { "perfumeData.perfume": { $regex: search, $options: "i" } } },
+      { $skip: skip },
+      { $limit: limit },
+      {
+        $count: "totalDocument",
+      },
+    ]);
 
-  let totalPage = 0;
-  const allDocumentsCount = totalDocuments[0].totalDocument;
-  if (totalDocuments.length > 0 && totalDocuments[0].totalDocument) {
-    totalPage = Math.ceil(allDocumentsCount / limit);
+    let totalPage = 0;
+    const allDocumentsCount = totalDocuments[0].totalDocument;
+    if (totalDocuments.length > 0 && totalDocuments[0].totalDocument) {
+      totalPage = Math.ceil(allDocumentsCount / limit);
+    }
+
+    const topRatedPerfumes = await TopRatedPerfume.aggregate([
+      {
+        $lookup: {
+          from: "perfume",
+          localField: "perfumeId",
+          foreignField: "_id",
+          as: "perfumeData",
+        },
+      },
+      { $match: { "perfumeData.perfume": { $regex: search, $options: "i" } } },
+      {
+        $unwind: "$perfumeData",
+      },
+      {
+        $project: {
+          _id: "$_id",
+          perfumeId: "$perfumeData._id",
+          perfumeName: "$perfumeData.perfume",
+          banner: "$perfumeData.banner",
+        },
+      },
+    ]);
+
+    res.status(200).json({
+      status: true,
+      message: "Top Rated Perfume Fetched Successfully !!",
+      totalDocuments: allDocumentsCount,
+      totalPage,
+      topRatedPerfumes,
+    });
   }
-
-  const topRatedPerfumes = await TopRatedPerfume.aggregate([
-    {
-      $lookup: {
-        from: "perfume",
-        localField: "perfumeId",
-        foreignField: "_id",
-        as: "perfumeData",
-      },
-    },
-    { $match: { "perfumeData.perfume": { $regex: search, $options: "i" } } },
-    {
-      $unwind: "$perfumeData",
-    },
-    {
-      $project: {
-        _id: "$_id",
-        perfumeId: "$perfumeData._id",
-        perfumeName: "$perfumeData.perfume",
-        banner: "$perfumeData.banner",
-      },
-    },
-  ]);
-
-  res.status(200).json({
-    status: true,
-    message: "Top Rated Perfume Fetched Successfully !!",
-    totalDocuments: allDocumentsCount,
-    totalPage,
-    topRatedPerfumes,
-  });
-});
+);
 
 // Retrieve a single top-rated perfume by ID
 export const getTopRatedPerfumeById = asyncHandler(async (req, res) => {
@@ -218,7 +220,7 @@ export const updateTopRatedPerfume = asyncHandler(async (req, res) => {
   );
 
   if (!updatedTopRatedPerfume) {
-    res.status(404).json({ message: "TopRatedPerfume not found" });
+    return res.status(404).json({ message: "TopRatedPerfume not found" });
   }
 
   res.status(200).json(updatedTopRatedPerfume);

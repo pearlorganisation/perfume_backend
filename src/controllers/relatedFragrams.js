@@ -7,31 +7,34 @@ export const addRelatedFragram = asyncHandler(async (req, res, next) => {
   const { perfumeName, brand, links, perfumeId } = req?.body;
 
   if (!perfumeId) {
-    res.status(500).json({ status: false, message: "Missing Perfume ID" });
+    return res
+      .status(500)
+      .json({ status: false, message: "Missing Perfume ID" });
   }
 
   const { banner } = req?.files;
 
   if (!perfumeName && !banner && !brand && !links) {
-    res.status(500).json({ status: false, message: "Incomplete data" });
+    return res.status(500).json({ status: false, message: "Incomplete data" });
   }
 
-  const allLinks = JSON.parse(links)||[];
+  const allLinks = JSON.parse(links) || [];
 
   console.log(chalk.red(JSON.stringify(allLinks)));
 
-  if(allLinks?.length < 1)
-    {
-     return res.status(400).json({status:false,message:"Give At Least One Link For Related Fragram !!"});
-    }
-  const map = new Map(); 
+  if (allLinks?.length < 1) {
+    return res.status(400).json({
+      status: false,
+      message: "Give At Least One Link For Related Fragram !!",
+    });
+  }
+  const map = new Map();
 
-  allLinks.forEach((el)=>{
-   map.set(el.country,el.link);
-  })
- 
-   const mapOfLinks = Object.fromEntries(map);
+  allLinks.forEach((el) => {
+    map.set(el.country, el.link);
+  });
 
+  const mapOfLinks = Object.fromEntries(map);
 
   const payload = {
     perfumeName,
@@ -41,8 +44,7 @@ export const addRelatedFragram = asyncHandler(async (req, res, next) => {
     perfume: perfumeId,
   };
 
- const result =   await relatedFragramsModel.create(payload);
-
+  const result = await relatedFragramsModel.create(payload);
 
   res
     .status(200)
@@ -53,7 +55,9 @@ export const getRelatedFragrams = asyncHandler(async (req, res, next) => {
   const { perfumeId } = req?.query;
 
   if (!perfumeId) {
-    res.status(500).json({ status: false, message: "Missing Perfume ID" });
+    return res
+      .status(500)
+      .json({ status: false, message: "Missing Perfume ID" });
   }
 
   const relatedFragramsData = await relatedFragramsModel
@@ -89,7 +93,7 @@ export const getSingleRelatedFragram = asyncHandler(async (req, res, next) => {
   const { id } = req?.params;
 
   if (!id) {
-    req.status(500).json({ status: false, message: "Missing ID" });
+    return req.status(500).json({ status: false, message: "Missing ID" });
   }
 
   const data = await relatedFragramsModel.findById(id);
@@ -107,23 +111,24 @@ export const updateRelatedFragram = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
   if (!id) {
-    res.status(500).json({ status: false, message: "Missing id" });
+    return res.status(500).json({ status: false, message: "Missing id" });
   }
 
-  const allLinks = JSON?.parse(links)||[];
+  const allLinks = JSON?.parse(links) || [];
 
-   if(allLinks?.length < 1)
-   {
-    return res.status(400).json({status:false,message:"Give At Least One Link For Related Fragram !!"});
-   }
-  const map = new Map(); 
-  
-  allLinks.forEach((el)=>{
-   map.set(el.country,el.link);
-  })
- 
+  if (allLinks?.length < 1) {
+    return res.status(400).json({
+      status: false,
+      message: "Give At Least One Link For Related Fragram !!",
+    });
+  }
+  const map = new Map();
+
+  allLinks.forEach((el) => {
+    map.set(el.country, el.link);
+  });
+
   const mapOfLinks = Object.fromEntries(map);
-
 
   const payload = {
     perfumeName,
@@ -132,7 +137,6 @@ export const updateRelatedFragram = asyncHandler(async (req, res) => {
     mapOfLinks,
     perfume: perfumeId,
   };
-
 
   const { banner } = req?.files;
 

@@ -96,7 +96,7 @@ export const getReviewAnalytics = asyncHandler(async (req, res, next) => {
   ]);
 
   if (!analytics)
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       message: "Perfume Data Not Found !!",
     });
@@ -209,7 +209,7 @@ export const getReviewAnalyticsById = asyncHandler(async (req, res, next) => {
   ]);
 
   if (!analytics)
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       message: "Perfume Data Not Found !!",
     });

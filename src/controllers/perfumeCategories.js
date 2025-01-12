@@ -53,7 +53,9 @@ export const getPerfumeCategories = asyncHandler(async (req, res, next) => {
   const { perfumeId } = req?.query;
 
   if (!perfumeId) {
-    res.status(500).json({ status: false, message: "Missing Perfume ID" });
+    return res
+      .status(500)
+      .json({ status: false, message: "Missing Perfume ID" });
   }
 
   const perfumeCategoriesData = await perfumeCategoriesModel
@@ -108,7 +110,7 @@ export const updatePerfumeCategories = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
   if (!id) {
-    res.status(500).json({ status: false, message: "Missing id" });
+    return res.status(500).json({ status: false, message: "Missing id" });
   }
 
   const allLinks = JSON?.parse(links) || [];

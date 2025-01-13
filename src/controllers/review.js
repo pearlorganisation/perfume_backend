@@ -108,11 +108,11 @@ export const getAllReview = asyncHandler(async (req, res, next) => {
 
 export const getReviewByUserId = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-  const {productId} = req.query;
+  const { productId } = req.query;
 
   // const data = await reviews.findMany({perfume:"66d2dd11dd2391f48772a570"}).lean();
   const data = await reviews
-    .findOne({ reviewBy: id ,perfume:productId})
+    .findOne({ reviewBy: id, perfume: productId })
     .select(
       "-commentsFields -notes -productReviewCount -updatedAt -createdAt -commentGallery"
     )

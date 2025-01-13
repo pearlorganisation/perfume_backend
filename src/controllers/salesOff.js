@@ -74,8 +74,10 @@ export const getSalesOffById = asyncHandler(async (req, res) => {
     .lean();
 
   if (!salesOff) {
-    res.status(404);
-    throw new Error("Sales Off record not found");
+    return (
+      res.status(404),
+      json({ status: false, message: "Sales Off record not found" })
+    );
   }
 
   res.status(200).json({
@@ -98,8 +100,9 @@ export const updateSalesOff = asyncHandler(async (req, res) => {
   });
 
   if (!updatedSalesOff) {
-    res.status(404);
-    throw new Error("Sales Off record not found");
+    return res
+      .status(404)
+      .json({ status: false, message: "Sales Off record not found" });
   }
 
   res.status(200).json({
@@ -118,8 +121,9 @@ export const deleteSalesOff = asyncHandler(async (req, res) => {
   const deletedSalesOff = await salesOffModel.findByIdAndDelete(id);
 
   if (!deletedSalesOff) {
-    res.status(404);
-    throw new Error("Sales Off record not found");
+    return res
+      .status(404)
+      .json({ status: false, message: "Sales Off record not found" });
   }
 
   res.status(200).json({

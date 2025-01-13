@@ -129,7 +129,6 @@ export const getSingleBrandPerfumes = asyncHandler(async (req, res) => {
 
 export const deleteBrand = asyncHandler(async (req, res, next) => {
   const isValidId = await brand.findByIdAndDelete(req?.params?.id);
-  const data = await brand.find();
   if (!isValidId) {
     return res
       .status(400)

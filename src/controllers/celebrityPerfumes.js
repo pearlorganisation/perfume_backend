@@ -42,7 +42,6 @@ export const getCelebrityPerfumeAdmin = asyncHandler(async (req, res) => {
   }
 
   let skip = (page - 1) * limit;
-  console.log(search, "asdsada");
 
   const totalDocuments = await celebrityPerfumesModel.countDocuments({
     title: { $regex: search, $options: "i" },
@@ -65,7 +64,7 @@ export const addCelebrityPerfume = asyncHandler(async (req, res) => {
   const { banner } = req?.files;
 
   if (!title && !content && !banner) {
-    req
+    return req
       .status(500)
       .json({ status: false, message: "Incomplete form parameters" });
   }
@@ -75,7 +74,7 @@ export const addCelebrityPerfume = asyncHandler(async (req, res) => {
     banner: banner[0]?.path,
   };
 
-  console.log(payload);
+  // console.log(payload);
 
   await celebrityPerfumesModel.create(payload);
 

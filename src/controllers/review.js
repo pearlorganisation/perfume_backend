@@ -54,7 +54,7 @@ export const newPerfumeReview = asyncHandler(async (req, res, next) => {
   await newReview.save();
 
   if (!newReview) {
-    res.status(400).json({
+    return res.status(400).json({
       status: false,
       message: "Bad Request ",
     });
@@ -81,7 +81,7 @@ export const updatePefumeReview = asyncHandler(async (req, res, next) => {
 
   const newReview = await reviews.findByIdAndUpdate(id, {
     ...req?.body,
-    
+
     likes: likes ? existingPerfume?.likes : 0,
     notes: notes ? JSON.parse(notes) : "",
     disLikes: disLikes ? existingPerfume?.disLikes + 1 : 0,
@@ -93,7 +93,6 @@ export const updatePefumeReview = asyncHandler(async (req, res, next) => {
     //   : "",
   });
 });
-
 
 export const getAllReview = asyncHandler(async (req, res, next) => {
   const { id } = req.params;

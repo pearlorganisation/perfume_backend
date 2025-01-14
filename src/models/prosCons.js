@@ -7,11 +7,14 @@ const proCon = new mongoose.Schema({
     },
     likesVote:{
         type:Number,
-        default:0
+        default:0,
+        min:[0,"Min Value For Likes/Dislike Vote Must be Above Or Equal to Zero"]
     },
     disLikesVote:{
         type:Number,
-        default:0
+        default:0,
+        min:[0,"Min Value For Likes/Dislike Vote Must be Above Or Equal to Zero"]
+
     }
 
 })

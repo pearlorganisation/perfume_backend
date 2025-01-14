@@ -1,15 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ProsCons } from "../models/prosCons.js";
 // Create a new ProsCons entry
-// export const createProsCons = async (req, res) => {
-//     try {
-//         const prosCons = new ProsCons(req.body);
-//         await prosCons.save();
-//         res.status(201).json(prosCons);
-//     } catch (error) {
-//         res.status(400).json({ message: error.message });
-//     }
-// };
+
 
 // Get all ProsCons entries
 export const getProsCons = asyncHandler(async (req, res, next) => {

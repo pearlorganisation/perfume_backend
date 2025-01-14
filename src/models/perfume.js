@@ -49,8 +49,8 @@ const mapOfLinksSchema = new mongoose.Schema({
 const proConSchema = new mongoose.Schema({
   title: {
     type: String,
-    minlength: [20, "Min Length for pros/cons must be greater than 20"],
-    maxlength: [120, "Min Length for pros/cons must be less than 120"],
+    minlength: [2, "Min Length for pros/cons must be greater than 2"],
+    maxlength: [520, "Min Length for pros/cons must be less than 520"],
     required: [true, "Title for pros or cons is a required field!"],
   },
   likes: {
@@ -66,6 +66,7 @@ const proConSchema = new mongoose.Schema({
 import { ProductReviewCount } from "./productReviewCount.js";
 import { ProsCons } from "./prosCons.js";
 import { Comments } from "./comments.js";
+import chalk from "chalk";
 
 const perfumeSchema = new mongoose.Schema(
   {
@@ -184,6 +185,7 @@ const perfumeSchema = new mongoose.Schema(
 perfumeSchema.index({ brand: 1, perfume: 1 },{createdAt:1}, { unique: true });
 perfumeSchema.index({createdAt:1});
 perfumeSchema.pre("save", async function (next) {
+
   if (this.isNew) {
     try {
       console.log("we are coming here man");
@@ -208,6 +210,16 @@ perfumeSchema.pre("save", async function (next) {
       next(error); // Handle errors
     }
   } else {
+    const deleteExistingProsCons = await ProsCons.findByIdAndDelete(this.prosConsId);
+    
+    const newProsCons = await ProsCons.create({
+      pros: this.pros,
+      cons: this.cons,
+      perfumeId: this.id,
+    });
+
+    // Assign the _id of the new ProductReviewCount document to productReviewCoundId
+    this.prosConsId = newProsCons._id;
     next();
   }
 });

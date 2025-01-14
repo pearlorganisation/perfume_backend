@@ -8,10 +8,11 @@ export const getAllRecentPerfume = asyncHandler(async (req, res, next) => {
       path: "brand",
       select: "brand",
     })
-    .lean()
     .select("perfume banner slug")
     .sort({ createdAt: -1 })
-    .limit(25);
+    .limit(25)
+     .lean()
+    ;
 
   res
     .status(200)

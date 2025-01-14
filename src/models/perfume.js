@@ -180,6 +180,7 @@ const perfumeSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+perfumeSchema.index({ brand: 1, perfume: 1 }, { unique: true });
 perfumeSchema.pre("save", async function (next) {
   if (this.isNew) {
     try {

@@ -1,14 +1,14 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import newsModel from "../models/news.js";
 import errorResponse from "../utils/errorResponse.js";
-import chalk from "chalk";
 
 export const newNews = asyncHandler(async (req, res, next) => {
-  const slug = req.body.title
-    .trim() // Remove leading/trailing spaces
-    .toLowerCase() // Convert to lowercase
-    .replace(/[^a-z0-9]+/g, "-") // Replace non-alphanumeric characters with '-'
-    .replace(/^-+|-+$/g, "");
+  const slug = req.body.slug
+  .trim() // Remove leading/trailing spaces
+  .toLowerCase() // Convert to lowercase
+  .replace(/[^a-z0-9\s'\-]/g, "") // Allow spaces, apostrophe and hyphen, remove others
+  .replace(/\s+/g, '-') // Replace spaces with hyphens
+  .replace(/^-+|-+$/g, "");
   const newDoc = new newsModel({ ...req?.body, image: req?.file?.path, slug });
   await newDoc.save();
   res
@@ -17,7 +17,7 @@ export const newNews = asyncHandler(async (req, res, next) => {
 });
 
 export const getAllNews = asyncHandler(async (req, res, next) => {
-  const data = await newsModel.find();
+  const data = await newsModel.find().select("title image details slug").lean();
   res.status(200).json({ status: true, data });
 });
 export const getAllNewsAdmin = asyncHandler(async (req, res, next) => {
@@ -81,6 +81,8 @@ export const deleteNews = asyncHandler(async (req, res, next) => {
 
 export const updateNews = asyncHandler(async (req, res) => {
   const { id } = req.params;
+
+  
   if (!id) {
     return res.status(500).json({ status: false, message: "Missing id" });
   }
@@ -88,7 +90,7 @@ export const updateNews = asyncHandler(async (req, res) => {
   const payload = {
     title: req.body.title,
     description: req.body.content,
-    slug: req.body.title
+    slug: req.body.slug
       .trim() // Remove leading/trailing spaces
       .toLowerCase() // Convert to lowercase
       .replace(/[^a-z0-9]+/g, "-") // Replace non-alphanumeric characters with '-'
@@ -100,8 +102,8 @@ export const updateNews = asyncHandler(async (req, res) => {
   if (banner) {
     payload.image = banner.path;
   }
-
-  // const updateModel = await newsModel.findOneAndUpdate({ _id: id }, payload);
+  
+  await newsModel.findByIdAndUpdate(id,payload);
 
   res.status(200).json({ status: true, message: "Blog Updated successfully" });
 });

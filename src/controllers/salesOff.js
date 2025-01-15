@@ -17,7 +17,7 @@ export const createSalesOff = asyncHandler(async (req, res) => {
     map.set(element.country, {
       price: element?.price || "100$",
       link: element?.link || "https://learn.onemonth.com/what-is-a-404-page/",
-      quantity: el?.quantity || "400 ML",
+      quantity: element?.quantity || "400 ML",
     });
   });
   const mapOfLinks = Object.fromEntries(map);

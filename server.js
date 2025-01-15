@@ -32,13 +32,16 @@ import { salesOffRouter } from "./src/routes/salesOff.js";
 import { reviewAnalyticsRouter } from "./src/routes/reviewAnalytics.js";
 import { contactUsRouter } from "./src/routes/contactUs.js";
 import { ImageUrlRouter } from "./src/routes/brandLinksImage.js";
+import compression from "compression";
 
 //MIDDLEWARES
 dotenv.config();
 const app = express();
+app.use(compression({ threshold: 1024 }));
 app.use(express.json({limit:'50mb'}));
 app.use(express.urlencoded({ extended: true ,limit:'50mb' }));
 app.use(morgan("dev"));
+
 const PORT = process.env.PORT || 8000;
 
 //CORS

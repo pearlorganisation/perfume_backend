@@ -1,35 +1,36 @@
 import mongoose from "mongoose";
 
-const proCon = new mongoose.Schema({    
-    title:{
-        type:String,
-        required : [true,"Title for pros is required field !!"]
-    },
-    likesVote:{
-        type:Number,
-        default:0
-    },
-    disLikesVote:{
-        type:Number,
-        default:0
-    }
+const proCon = new mongoose.Schema({
+  title: {
+    type: String,
+    required: [true, "Title for pros is required field !!"],
+  },
+  likesVote: {
+    type: Number,
+    default: 0,
+    min: [0, "Min Value For Likes/Dislike Vote Must be Above Or Equal to Zero"],
+  },
+  disLikesVote: {
+    type: Number,
+    default: 0,
+    min: [0, "Min Value For Likes/Dislike Vote Must be Above Or Equal to Zero"],
+  },
+});
 
-})
-
-const prosConsSchema = new mongoose.Schema({
-
+const prosConsSchema = new mongoose.Schema(
+  {
     pros: {
-       type:[proCon]
+      type: [proCon],
     },
     cons: {
-        type:[proCon]
+      type: [proCon],
     },
     perfumeId: {
-        type: mongoose.Types.ObjectId,
-        ref: "perfume",
+      type: mongoose.Types.ObjectId,
+      ref: "perfume",
     },
+  },
+  { timestamps: true }
+);
 
-},{timestamps:true});
-
-
-export const ProsCons = mongoose.model('ProsCons', prosConsSchema);
+export const ProsCons = mongoose.model("ProsCons", prosConsSchema);

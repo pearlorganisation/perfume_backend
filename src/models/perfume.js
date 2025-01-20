@@ -86,6 +86,7 @@ const perfumeSchema = new mongoose.Schema(
     brand: {
       type: mongoose.Types.ObjectId,
       ref: "brand",
+      unique: true,
     },
     brandAltAttribute: {
       type: String,
@@ -180,7 +181,12 @@ const perfumeSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-perfumeSchema.index({ brand: 1, perfume: 1 }, { unique: true });
+perfumeSchema.index(
+  { brand: 1, perfume: 1 },
+  { createdAt: 1 },
+  { unique: true }
+);
+perfumeSchema.index({ createdAt: 1 });
 perfumeSchema.pre("save", async function (next) {
   if (this.isNew) {
     try {

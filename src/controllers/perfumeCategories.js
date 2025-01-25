@@ -122,9 +122,6 @@ export const updatePerfumeCategories = asyncHandler(async (req, res) => {
 
   const { banner } = req?.files;
 
-  if (banner && banner?.length > 0) {
-    payload.banner = banner[0]?.path;
-  }
   const map = new Map();
 
   allLinks.forEach((el) => {
@@ -137,6 +134,9 @@ export const updatePerfumeCategories = asyncHandler(async (req, res) => {
     perfumeName,
     mapOfLinks,
   };
+  if (banner && banner?.length > 0) {
+    payload.banner = banner[0]?.path;
+  }
 
   await perfumeCategoriesModel.findOneAndUpdate({ _id: id }, payload);
   res

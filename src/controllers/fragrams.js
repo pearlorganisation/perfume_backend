@@ -19,12 +19,10 @@ export const addFragram = asyncHandler(async (req, res, next) => {
   const map = new Map();
 
   if (allLinks?.length < 1)
-    return res
-      .status(400)
-      .json({
-        status: false,
-        message: "Please Do Provide At least One Link  in Fragrams !!",
-      });
+    return res.status(400).json({
+      status: false,
+      message: "Please Do Provide At least One Link  in Fragrams !!",
+    });
 
   allLinks.forEach((element) => {
     map.set(element.country, element.link);
@@ -98,7 +96,7 @@ export const getSingleFragram = asyncHandler(async (req, res, next) => {
 });
 
 export const updateFragram = asyncHandler(async (req, res) => {
-  const { title, postBy, rating, links } = req?.body;
+  const { title, postBy, rating, links, perfumeId } = req?.body;
   const { id } = req.params;
 
   if (!id) {
@@ -112,27 +110,23 @@ export const updateFragram = asyncHandler(async (req, res) => {
   const map = new Map();
 
   if (allLinks?.length < 1)
-    return res
-      .status(400)
-      .json({
-        status: false,
-        message: "Please Do Provide At least One Link  in Fragrams !!",
-      });
+    return res.status(400).json({
+      status: false,
+      message: "Please Do Provide At least One Link  in Fragrams !!",
+    });
 
   allLinks.forEach((element) => {
     map.set(element.country, element.link);
   });
-
+  const { banner } = req?.files;
   const mapOfLinks = Object.fromEntries(map);
   const payload = {
     title,
-    banner: banner[0]?.path,
     postBy,
     mapOfLinks,
     rating,
     perfume: perfumeId,
   };
-  const { banner } = req?.files;
 
   if (banner && banner?.length > 0) {
     payload.banner = banner[0]?.path;
@@ -140,7 +134,16 @@ export const updateFragram = asyncHandler(async (req, res) => {
 
   console.log(payload);
 
-  await fragramsModel.findOneAndUpdate({ _id: id }, payload);
+  const data = await fragramsModel.findOneAndUpdate(
+    { _id: id, perfume: perfumeId },
+    { ...payload }
+  );
+
+  if (!data) {
+    res
+      .status(500)
+      .json({ status: false, message: "Fragram Updated Failed !!" });
+  }
   res
     .status(200)
     .json({ status: true, message: "Fragram Updated successfully" });

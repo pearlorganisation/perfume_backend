@@ -107,7 +107,7 @@ export const getSingleRelatedFragram = asyncHandler(async (req, res, next) => {
 });
 
 export const updateRelatedFragram = asyncHandler(async (req, res) => {
-  const { perfumeName, brand, links } = req?.body;
+  const { perfumeName, brand, links, perfumeId } = req?.body;
   const { id } = req.params;
 
   if (!id) {
@@ -130,16 +130,13 @@ export const updateRelatedFragram = asyncHandler(async (req, res) => {
 
   const mapOfLinks = Object.fromEntries(map);
 
+  const { banner } = req?.files;
   const payload = {
     perfumeName,
-    banner: banner[0]?.path,
     brand,
     mapOfLinks,
     perfume: perfumeId,
   };
-
-  const { banner } = req?.files;
-
   if (banner && banner?.length > 0) {
     payload.banner = banner[0]?.path;
   }

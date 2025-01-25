@@ -6,7 +6,7 @@ const authSchema = new mongoose.Schema(
     userName: {
       type: String,
       minlength: [8, "Minimum length is 8"],
-      maxlength: [100, "Maximum length is 100"],
+      // maxlength: [100, "Maximum length is 100"],
       required: true,
       unique: true,
       index: true,

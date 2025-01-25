@@ -5,13 +5,15 @@ import {
   deleteCelebrityPerfume,
   getCelebrityPerfume,
   getCelebrityPerfumeAdmin,
+  getCelebrityPerfumeById,
   getCelebrityPerfumes,
   updateCelebrityPerfume,
 } from "../controllers/celebrityPerfumes.js";
 
 const router = express.Router();
 
-router.route('/admin').get(getCelebrityPerfumeAdmin);
+router.route("/admin").get(getCelebrityPerfumeAdmin);
+router.route("/admin/:id").get(getCelebrityPerfumeById);
 
 router
   .route("/")

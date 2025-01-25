@@ -1,5 +1,6 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import celebrityPerfumesModel from "../models/celebrityPerfumes.js";
+import chalk from "chalk";
 
 // get a all celebrity perfumes
 export const getCelebrityPerfumes = asyncHandler(async (req, res) => {
@@ -20,6 +21,13 @@ export const getCelebrityPerfumes = asyncHandler(async (req, res) => {
 export const getCelebrityPerfume = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const result = await celebrityPerfumesModel.findOne({ slug: id });
+
+  res.status(200).json({ status: true, data: result });
+});
+export const getCelebrityPerfumeById = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  const result = await celebrityPerfumesModel.findOne({ _id: id });
 
   res.status(200).json({ status: true, data: result });
 });

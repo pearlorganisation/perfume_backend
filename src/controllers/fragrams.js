@@ -14,18 +14,22 @@ export const addFragram = asyncHandler(async (req, res, next) => {
   if (!title && !banner && !postBy && !rating && !links) {
     res.status(500).json({ status: false, message: "Incomplete data" });
   }
-  const allLinks = JSON?.parse(links)||[];
-  
-  const map = new Map();
-  
-  if(allLinks?.length < 1 )
-    return res.status(400).json({status:false,message:'Please Do Provide At least One Link  in Fragrams !!'})
+  const allLinks = JSON?.parse(links) || [];
 
-  allLinks.forEach(element => {
-    map.set(element.country,element.link);
-  
+  const map = new Map();
+
+  if (allLinks?.length < 1)
+    return res
+      .status(400)
+      .json({
+        status: false,
+        message: "Please Do Provide At least One Link  in Fragrams !!",
+      });
+
+  allLinks.forEach((element) => {
+    map.set(element.country, element.link);
   });
-   
+
   const mapOfLinks = Object.fromEntries(map);
   const payload = {
     title,
@@ -36,8 +40,7 @@ export const addFragram = asyncHandler(async (req, res, next) => {
     perfume: perfumeId,
   };
 
-  const result =  await fragramsModel.create(payload);
-
+  const result = await fragramsModel.create(payload);
 
   res
     .status(200)
@@ -102,18 +105,24 @@ export const updateFragram = asyncHandler(async (req, res) => {
     res.status(500).json({ status: false, message: "Missing id" });
   }
 
-  const allLinks = JSON?.parse(links)||[{country:'IN',link:'something went wrong with url !!'}];
-  
-  const map = new Map();
-  
-  if(allLinks?.length < 1 )
-    return res.status(400).json({status:false,message:'Please Do Provide At least One Link  in Fragrams !!'})
+  const allLinks = JSON?.parse(links) || [
+    { country: "IN", link: "something went wrong with url !!" },
+  ];
 
-  allLinks.forEach(element => {
-    map.set(element.country,element.link);
-  
+  const map = new Map();
+
+  if (allLinks?.length < 1)
+    return res
+      .status(400)
+      .json({
+        status: false,
+        message: "Please Do Provide At least One Link  in Fragrams !!",
+      });
+
+  allLinks.forEach((element) => {
+    map.set(element.country, element.link);
   });
-   
+
   const mapOfLinks = Object.fromEntries(map);
   const payload = {
     title,

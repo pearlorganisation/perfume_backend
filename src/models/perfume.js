@@ -72,7 +72,7 @@ const perfumeSchema = new mongoose.Schema(
     perfume: {
       type: String,
       minlength: [3, "Min Length for perfume must be greater than 3"],
-      maxlength: [250, "Max Length for perfume must be less than 100"],
+      // maxlength: [250, "Max Length for perfume must be less than 100"],
       required: true,
     },
     logo: {
@@ -105,13 +105,13 @@ const perfumeSchema = new mongoose.Schema(
       type: String,
       required: true,
       minlength: [3, "Min Length for details must be greater than 3"],
-      maxlength: [1000, "Max Length for details must be less than 1000"],
+      // maxlength: [1000, "Max Length for details must be less than 1000"],
     },
     description: {
       type: String,
       required: true,
       minlength: [3, "Min Length for perfume must be greater than 3"],
-      maxlength: [1000, "Max Length for perfume must be less than 1000"],
+      // maxlength: [1000, "Max Length for perfume must be less than 1000"],
     },
     mapOfLinks: {
       type: Map,
@@ -142,7 +142,7 @@ const perfumeSchema = new mongoose.Schema(
     },
     slug: {
       type: String,
-      maxlength: [200, "Max Length For Slug is 200"],
+      // maxlength: [200, "Max Length For Slug is 200"],
     },
     keywords: {
       type: [],
@@ -152,7 +152,7 @@ const perfumeSchema = new mongoose.Schema(
         name: {
           type: String,
           minlength: [3, "Min Length for mainAccords must be greater than 3"],
-          maxlength: [100, "Max Length for mainAccords must be less than 100"],
+          // maxlength: [100, "Max Length for mainAccords must be less than 100"],
         },
         color: String,
         percentage: Number,

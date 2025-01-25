@@ -4,7 +4,7 @@ import errorResponse from "../utils/errorResponse.js";
 import chalk from "chalk";
 
 export const newNews = asyncHandler(async (req, res, next) => {
-  const slug = req.body.title
+  const slug = req.body.slug
     .trim() // Remove leading/trailing spaces
     .toLowerCase() // Convert to lowercase
     .replace(/[^a-z0-9]+/g, "-") // Replace non-alphanumeric characters with '-'
@@ -88,7 +88,7 @@ export const updateNews = asyncHandler(async (req, res) => {
   const payload = {
     title: req.body.title,
     description: req.body.content,
-    slug: req.body.title
+    slug: req.body.slug
       .trim() // Remove leading/trailing spaces
       .toLowerCase() // Convert to lowercase
       .replace(/[^a-z0-9]+/g, "-") // Replace non-alphanumeric characters with '-'
@@ -101,7 +101,7 @@ export const updateNews = asyncHandler(async (req, res) => {
     payload.image = banner.path;
   }
 
-  // const updateModel = await newsModel.findOneAndUpdate({ _id: id }, payload);
+  const updateModel = await newsModel.findOneAndUpdate({ _id: id }, payload);
 
   res.status(200).json({ status: true, message: "Blog Updated successfully" });
 });

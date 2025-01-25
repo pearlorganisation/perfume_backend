@@ -8,13 +8,13 @@ const newsSchema = new mongoose.Schema(
     title: {
       type: String,
       required: true,
-      unique:true,
-      trim:true
+      unique: true,
+      trim: true,
     },
     description: {
       type: String,
-      minlength:[3,"Min Required Length for description is 500"],
-      maxlength:[500,"Min Required Length for description is 500"],
+      minlength: [3, "Min Required Length for description is 3"],
+      // maxlength:[500,"Min Required Length for description is 500"],
       required: true,
     },
     user: {
@@ -25,16 +25,16 @@ const newsSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    slug:{
-      type:String,
-      trim:true,
-      required:true
-    }
+    slug: {
+      type: String,
+      trim: true,
+      required: true,
+    },
   },
   {
-    timestamps:true
+    timestamps: true,
   }
-  );
+);
 // newsSchema.virtual('slug').get(function (){
 //   return  this.title .trim() // Remove leading/trailing spaces
 //   .toLowerCase() // Convert to lowercase

@@ -2,6 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import newsModel from "../models/news.js";
 import errorResponse from "../utils/errorResponse.js";
 import chalk from "chalk";
+import { redisClient } from "../Redis/Redis.js";
 
 export const newNews = asyncHandler(async (req, res, next) => {
   const slug = req.body.slug
@@ -16,10 +17,41 @@ export const newNews = asyncHandler(async (req, res, next) => {
     .json({ status: true, message: "created successfully!!", newDoc });
 });
 
+// export const getAllNews = asyncHandler(async (req, res, next) => {
+//   const data = await newsModel.find();
+//   res.status(200).json({ status: true, data });
+// });
+
 export const getAllNews = asyncHandler(async (req, res, next) => {
-  const data = await newsModel.find();
-  res.status(200).json({ status: true, data });
+  const cacheKey = 'all--News'; // Cache key for the list of news
+    console.log("came here")
+
+  const cachedData = await redisClient.get(cacheKey);
+
+  if(cachedData)
+  {
+    console.log('Cache hit');
+    return res.status(200).json({ status: true, data: JSON.parse(cachedData) });
+  }
+  else
+  {
+    // If no cached data, fetch from the database
+      try {
+        const data = await newsModel.find();
+
+        // Cache the fetched data with a TTL of 15 minutes
+        redisClient.set(cacheKey, JSON.stringify(data),900 ); // Cache for 15 minutes (900 seconds)
+
+        console.log('Cache miss');
+        return res.status(200).json({ status: true, data });
+      } catch (error) {
+        return next(error); // Pass any errors to the error handler
+      }
+  }
+
+
 });
+
 export const getAllNewsAdmin = asyncHandler(async (req, res, next) => {
   const { Page, Limit, Search } = req.query;
 

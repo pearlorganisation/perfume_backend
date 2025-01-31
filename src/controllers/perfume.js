@@ -151,7 +151,11 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
     });
      if(perfumeExists?.gallery.length > 0 )
      {
-       const trackOfDeletedGallery= perfumeExists?.gallery.filter(ele=> !keepTrackOfGalleryToBeDeleted.has(ele?.filename));
+       let trackOfDeletedGallery= perfumeExists?.gallery.filter(ele=> !keepTrackOfGalleryToBeDeleted.has(ele?.filename));
+       if(query?.gallery)
+       {
+        trackOfDeletedGallery = [...trackOfDeletedGallery,...query.gallery];
+       }
        perfumeExists.gallery = trackOfDeletedGallery;
       await perfumeExists.save();
      }

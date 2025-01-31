@@ -37,11 +37,13 @@ export const getAllNews = asyncHandler(async (req, res, next) => {
   {
     // If no cached data, fetch from the database
       try {
-        const data = await newsModel.find();
-
+        const expTime =  await newsModel.find().select('slug details user image title').explain();
+        const data = await newsModel.find().select('slug details user image title').lean();
+          
+        console.log("Data Req Time",expTime);
         // Cache the fetched data with a TTL of 15 minutes
         redisClient.set(cacheKey, JSON.stringify(data),900 ); // Cache for 15 minutes (900 seconds)
-
+   
         console.log('Cache miss');
         return res.status(200).json({ status: true, data });
       } catch (error) {

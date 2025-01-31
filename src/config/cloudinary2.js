@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import { v2 as cloudinary } from "cloudinary";
 import dotenv from "dotenv";
 import fs from "fs";
@@ -9,6 +10,38 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
+
+export const deleteFilesByAssetIds = async (assetIds) => {
+  try {
+    console.log(chalk.bgBlueBright("We are coming on deletion"))
+    // Step 1: Get Public IDs from Asset IDs
+    const response = await cloudinary.api.resources_by_asset_ids(assetIds);
+    console.log(chalk.bgBlueBright("We are coming on deletion",response))
+
+    if (!response.resources || response.resources.length === 0) {
+      console.log("No matching assets found.");
+      return { status: false, message: "No matching assets found." };
+    }
+
+    // Step 2: Extract Public IDs
+    const publicIds = response.resources.map((file) => file.public_id);
+    console.log("Public IDs found:", publicIds);
+
+    // Step 3: Delete Each File from Cloudinary
+    const deleteResults = await Promise.all(
+      publicIds.map(async (publicId) => {
+        return cloudinary.uploader.destroy(publicId);
+      })
+    );
+
+    console.log("Deletion Results:", deleteResults);
+    return { status: true, message: "Files deleted successfully", deleteResults };
+  } catch (error) {
+    console.error("Error deleting files:", error);
+    return { status: false, message: error?.message };
+  }
+};
+
 
 export const uploadFile = async (files) => {
   try {

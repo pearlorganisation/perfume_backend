@@ -2,7 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import perfumeModel from "../models/perfume.js";
 import { ProductReviewCount } from "../models/productReviewCount.js";
 import { upload2 } from "../config/multer2.js";
-import { uploadFile } from "../config/cloudinary2.js";
+import { deleteFilesByAssetIds, uploadFile } from "../config/cloudinary2.js";
 import chalk from "chalk";
 
 export const newPerfume = asyncHandler(async (req, res, next) => {
@@ -91,7 +91,11 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
   const { gallery, banner, logo, video } = req?.files;
 
   let query = {};
-
+  const perfumeExists = await perfumeModel.findById(id);
+  if(!perfumeExists)
+  {
+    return res.status(404).json({status:false,message:"Perfume Does Not Exists !!"})
+  }
   if (gallery && gallery?.length > 0) {
     const gall = await uploadFile(gallery);
     query.gallery = gall.result;
@@ -137,7 +141,24 @@ export const updatePerfume = asyncHandler(async (req, res, next) => {
   } = req?.body;
 
   const arr = JSON.parse(purchaseLinks);
-  console.log(chalk.red(JSON.stringify(keywords)));
+  const galleryImagesToBeDeleted = JSON?.parse(req.body?.removeGallery||'[]');
+
+  if(galleryImagesToBeDeleted?.length > 0)
+{     
+    const keepTrackOfGalleryToBeDeleted = new Map();
+    galleryImagesToBeDeleted.forEach(element => {
+      keepTrackOfGalleryToBeDeleted.set(element.filename,1);
+    });
+     if(perfumeExists?.gallery.length > 0 )
+     {
+       const trackOfDeletedGallery= perfumeExists?.gallery.filter(ele=> !keepTrackOfGalleryToBeDeleted.has(ele?.filename));
+       perfumeExists.gallery = trackOfDeletedGallery;
+      await perfumeExists.save();
+     }
+}
+
+
+  
   let map = new Map();
 
   //This needs to be reconsidered

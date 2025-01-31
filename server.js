@@ -33,10 +33,14 @@ import { reviewAnalyticsRouter } from "./src/routes/reviewAnalytics.js";
 import { contactUsRouter } from "./src/routes/contactUs.js";
 import { ImageUrlRouter } from "./src/routes/brandLinksImage.js";
 import compression from "compression";
-
+import cluster from "cluster";
+import os from "os";
+import chalk from "chalk";
+import { redisClient } from "./src/Redis/Redis.js";
 //MIDDLEWARES
 dotenv.config();
 const app = express();
+
 app.use(compression({ threshold: "1024" }));
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
@@ -91,7 +95,26 @@ app.use("/api/v1/contact-us", contactUsRouter);
 app.use("/api/v1/url-Image", ImageUrlRouter);
 
 app.use(error);
-app.listen(PORT, () => {
-  connectDB();
-  console.log(`Listening to port ${PORT}`);
-});
+
+try {
+  if (cluster.isPrimary) {
+    const numCpus = os.cpus().length;
+    console.log(chalk.bgGreenBright("No Of Cpu's", numCpus));
+    for (let i = 0; i < numCpus; i++) {
+      cluster.fork();
+    }
+
+    cluster.on("exit", (worker, code, signal) => {
+      console.log(`Worker ${worker?.process} died. Restarting..`);
+    });
+    // console.log("This is Primary Cluster ", cluster);
+  } else {
+    app.listen(PORT, () => {
+      connectDB();
+      redisClient?.connect();
+      console.log(`Listening to port ${PORT}`);
+    });
+  }
+} catch (err) {
+  console.log("Something Wrong Occured ", err);
+}

@@ -14,8 +14,8 @@ const userGlobalCountSchema = new mongoose.Schema(
         {
           perfumeId: {
             type: mongoose.Schema.Types.ObjectId,
-            index: true,
             ref: "perfume",
+            index: true,
           },
           vote: {
             type: Number,

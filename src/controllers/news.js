@@ -23,7 +23,7 @@ export const newNews = asyncHandler(async (req, res, next) => {
 // });
 
 export const getAllNews = asyncHandler(async (req, res, next) => {
-  const cacheKey = 'all--News'; // Cache key for the list of news
+  const cacheKey = 'allNews'; // Cache key for the list of news
     console.log("came here")
 
   const cachedData = await redisClient.get(cacheKey);
@@ -42,7 +42,7 @@ export const getAllNews = asyncHandler(async (req, res, next) => {
           
         console.log("Data Req Time",expTime);
         // Cache the fetched data with a TTL of 15 minutes
-        redisClient.set(cacheKey, JSON.stringify(data),900 ); // Cache for 15 minutes (900 seconds)
+        await redisClient.setEx(cacheKey,900,JSON.stringify(data)); // Cache for 15 minutes (900 seconds)
    
         console.log('Cache miss');
         return res.status(200).json({ status: true, data });

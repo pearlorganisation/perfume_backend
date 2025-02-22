@@ -17,7 +17,7 @@ export const createSalesOff = asyncHandler(async (req, res) => {
     map.set(element.country, {
       price: element?.price || "100$",
       link: element?.link || "https://learn.onemonth.com/what-is-a-404-page/",
-      quantity: el?.quantity || "400 ML",
+      quantity: element?.quantity || "400 ML",
     });
   });
   const mapOfLinks = Object.fromEntries(map);
@@ -93,8 +93,32 @@ export const getSalesOffById = asyncHandler(async (req, res) => {
  */
 export const updateSalesOff = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  let { title, links, rating } = req.body;
+  links = JSON.parse(links);
 
-  const updatedSalesOff = await salesOffModel.findByIdAndUpdate(id, req.body, {
+  const numOfData = await salesOffModel.countDocuments();
+
+  const map = new Map();
+  links.forEach((element) => {
+    map.set(element.country, {
+      price: element?.price || "100$",
+      link: element?.link || "https://learn.onemonth.com/what-is-a-404-page/",
+      quantity: element?.quantity || "400 ML",
+    });
+  });
+  const mapOfLinks = Object.fromEntries(map);
+
+
+  const banner = req?.file?.path;
+
+  const payload = {title,links,mapOfLinks,rating};
+
+  if(banner)
+  {
+    payload.banner = banner;
+  }
+  
+  const updatedSalesOff = await salesOffModel.findByIdAndUpdate(id, payload, {
     new: true,
     runValidators: true,
   });

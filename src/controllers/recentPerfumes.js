@@ -30,7 +30,7 @@ export const getAllRecentPerfume = asyncHandler(async (req, res, next) => {
     .lean()
     ;
    
-  redisClient.set(cacheKey,JSON.stringify(perfumeData),900);
+  await redisClient.setEx(cacheKey,900,JSON.stringify(perfumeData));
 
   
   res

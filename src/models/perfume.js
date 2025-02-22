@@ -49,7 +49,6 @@ const mapOfLinksSchema = new mongoose.Schema({
 const proConSchema = new mongoose.Schema({
   title: {
     type: String,
-    minlength: [20, "Min Length for pros/cons must be greater than 20"],
     maxlength: [120, "Min Length for pros/cons must be less than 120"],
     required: [true, "Title for pros or cons is a required field!"],
   },

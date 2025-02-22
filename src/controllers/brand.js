@@ -50,78 +50,78 @@ export const getAllBrands = asyncHandler(async (req, res, next) => {
   res.status(200).json({ status: true, data, totalDocuments, totalPage });
 });
 
+export const getAllBrandsMenu = asyncHandler(async (req, res, next) => {
+  const pipeLine = [
+    {
+      $lookup: {
+        from: "perfume",
+        localField: "_id",
+        foreignField: "brand",
+        as: "AllPerfume",
+      },
+    },
+    {
+      $project: {
+        brand: 1,
+        slug: 1,
+        AllPerfume: {
+          perfume: 1,
+          slug: 1,
+          _id: 1,
+        },
+      },
+    },
+  ];
+  const data = await brand.aggregate(pipeLine).exec();
+  res.status(200).json({ status: true, data });
+});
 // export const getAllBrandsMenu = asyncHandler(async (req, res, next) => {
-//   const pipeLine = [
-//     {
-//       $lookup: {
-//         from: "perfume",
-//         localField: "_id",
-//         foreignField: "brand",
-//         as: "AllPerfume",
-//       },
-//     },
-//     {
-//       $project: {
-//         brand: 1,
-//         slug: 1,
-//         AllPerfume: {
-//           perfume: 1,
-//           slug: 1,
-//           _id: 1,
+//   try {
+//     const pipeLine = [
+//       {
+//         $lookup: {
+//           from: "perfume",
+//           localField: "_id",
+//           foreignField: "brand",
+//           as: "AllPerfume",
 //         },
 //       },
-//     },
-//   ];
-//   const data = await brand.aggregate(pipeLine).exec();
-//   res.status(200).json({ status: true, data });
+//       {
+//         $project: {
+//           brand: 1,
+//           slug: 1,
+//           AllPerfume: {
+//             perfume: 1,
+//             slug: 1,
+//             _id: 1,
+//           },
+//         },
+//       },
+//     ];
+
+//     // Start the aggregation query and get the cursor
+//     const cursor = brand.aggregate(pipeLine).cursor();
+
+//     // Set the response header to JSON
+//     res.setHeader("Content-Type", "application/json");
+
+//     // Begin streaming the response
+//     res.write("[");  // Start of JSON array
+//     let first = true;
+
+//     // Iterate over the cursor and stream data
+//     for await (const doc of cursor) {
+//       if (!first) res.write(",");  // Add a comma between objects
+//       res.write(JSON.stringify(doc));  // Write each document as a JSON string
+//       first = false;
+//     }
+
+//     res.write("]");  // End of JSON array
+//     res.end();  // Close the response
+//   } catch (error) {
+//     next(error);  // Handle errors
+//   }
 // });
-export const getAllBrandsMenu = asyncHandler(async (req, res, next) => {
-  try {
-    const pipeLine = [
-      {
-        $lookup: {
-          from: "perfume",
-          localField: "_id",
-          foreignField: "brand",
-          as: "AllPerfume",
-        },
-      },
-      {
-        $project: {
-          brand: 1,
-          slug: 1,
-          AllPerfume: {
-            perfume: 1,
-            slug: 1,
-            _id: 1,
-          },
-        },
-      },
-    ];
-
-    // Start the aggregation query and get the cursor
-    const cursor = brand.aggregate(pipeLine).cursor();
-
-    // Set the response header to JSON
-    res.setHeader("Content-Type", "application/json");
-
-    // Begin streaming the response
-    res.write("[");  // Start of JSON array
-    let first = true;
-
-    // Iterate over the cursor and stream data
-    for await (const doc of cursor) {
-      if (!first) res.write(",");  // Add a comma between objects
-      res.write(JSON.stringify(doc));  // Write each document as a JSON string
-      first = false;
-    }
-
-    res.write("]");  // End of JSON array
-    res.end();  // Close the response
-  } catch (error) {
-    next(error);  // Handle errors
-  }
-});
 
 
 export const getSingleBrandPerfumes = asyncHandler(async (req, res) => {

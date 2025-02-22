@@ -1,5 +1,5 @@
 import express from "express";
-import { createSalesOff, deleteSalesOff, getSalesOffById, getSalesOffs } from "../controllers/salesOff.js";
+import { createSalesOff, deleteSalesOff, getSalesOffById, getSalesOffs, updateSalesOff } from "../controllers/salesOff.js";
 import { upload } from "../config/cloudinary.js";
 
 const router = express.Router();
@@ -10,6 +10,7 @@ router.route('/')
 
 router.route("/:id")
 .get(getSalesOffById)
+.patch(upload.single('banner'),updateSalesOff)
 .delete(deleteSalesOff);
 
 

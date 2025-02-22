@@ -37,6 +37,7 @@ import cluster from "cluster";
 import os from "os";
 import chalk from "chalk";
 import { redisClient } from "./src/Redis/Redis.js";
+import { newsLetterRouter } from "./src/routes/newsLetter.js";
 //MIDDLEWARES
 dotenv.config();
 const app = express();
@@ -69,6 +70,7 @@ app.use(
 //routes
 
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/newsLetter",newsLetterRouter);
 app.use("/api/v1/brand", brandRoutes);
 app.use("/api/v1/perfume", perfumeRoutes);
 app.use("/api/v1/topRatedPerfume", topRatedPerfumeRouter);

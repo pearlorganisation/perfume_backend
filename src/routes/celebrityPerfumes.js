@@ -17,13 +17,19 @@ router.route("/admin/:id").get(getCelebrityPerfumeById);
 
 router
   .route("/")
-  .post(upload.fields([{ name: "banner" }]), addCelebrityPerfume)
+  .post(
+    upload.fields([{ name: "banner" }, { name: "thumbnail" }]),
+    addCelebrityPerfume
+  )
   .get(getCelebrityPerfumes);
 
 router
   .route("/:id")
   .delete(deleteCelebrityPerfume)
   .get(getCelebrityPerfume)
-  .patch(upload.fields([{ name: "banner" }]), updateCelebrityPerfume);
+  .patch(
+    upload.fields([{ name: "banner" }, { name: "thumbnail" }]),
+    updateCelebrityPerfume
+  );
 
 export default router;

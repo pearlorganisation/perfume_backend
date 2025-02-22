@@ -68,10 +68,10 @@ export const getCelebrityPerfumeAdmin = asyncHandler(async (req, res) => {
 });
 
 export const addCelebrityPerfume = asyncHandler(async (req, res) => {
-  const { title, content } = req?.body;
-  const { banner } = req?.files;
+  const { title, content, imageAttribute } = req?.body;
+  const { banner, thumbnail } = req?.files;
 
-  if (!title && !content && !banner) {
+  if (!title && !content && !banner && !thumbnail) {
     return req
       .status(500)
       .json({ status: false, message: "Incomplete form parameters" });
@@ -80,6 +80,8 @@ export const addCelebrityPerfume = asyncHandler(async (req, res) => {
     title: title,
     content: content,
     banner: banner[0]?.path,
+    thumbnail: thumbnail[0]?.path,
+    imageAttribute: imageAttribute,
   };
 
   // console.log(payload);
@@ -93,8 +95,7 @@ export const addCelebrityPerfume = asyncHandler(async (req, res) => {
 
 export const updateCelebrityPerfume = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { title, content } = req?.body;
-
+  const { title, content, imageAttribute } = req?.body;
   if (!id && !title && !content) {
     res.status(500).json({ status: false, message: "Missing Parameters" });
   }
@@ -102,17 +103,21 @@ export const updateCelebrityPerfume = asyncHandler(async (req, res) => {
   const payload = {
     title: title,
     content: content,
+    imageAttribute: imageAttribute,
   };
-  const { banner } = req?.files;
+  const { banner, thumbnail } = req?.files;
   if (banner && banner?.length > 0) {
     payload.banner = banner[0]?.path;
+  }
+  if (thumbnail && thumbnail?.length > 0) {
+    payload.thumbnail = thumbnail[0]?.path;
   }
 
   const updatedData = await celebrityPerfumesModel.findOneAndUpdate(
     { _id: id },
     payload
   );
-  await updatedData.save();
+  await updatedData.save({ runValidators: false });
   res
     .status(200)
     .json({ status: true, message: "Celebrity Perfume Updated successfully" });

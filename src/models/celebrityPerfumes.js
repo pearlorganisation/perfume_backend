@@ -14,6 +14,13 @@ const celebrityPerfumesSchema = new mongoose.Schema(
       type: String,
       required: [true, "Banner is required"],
     },
+    thumbnail: {
+      type: String,
+      required: [true, "Thumbnail Is Required Field !!"],
+    },
+    imageAttribute: {
+      type: String,
+    },
     // perfumeId: {
     //   type: String,
     //   default: null,
